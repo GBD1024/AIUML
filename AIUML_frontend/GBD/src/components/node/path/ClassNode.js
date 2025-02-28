@@ -1,9 +1,9 @@
 // GBD/src/components/node/path/ClassNode.js
 import { h } from '@logicflow/core'
-import RectNode from '../basic/RectNode'
+import { RectResize } from '@logicflow/extension'
 
 // 类图节点模型
-class ClassModel extends RectNode.model {
+class ClassModel extends RectResize.model {
   initNodeData(data) {
     super.initNodeData(data)
     this.width = 120
@@ -39,7 +39,7 @@ class ClassModel extends RectNode.model {
 }
 
 // 类图节点视图
-class ClassView extends RectNode.view {
+class ClassView extends RectResize.view {
   getResizeShape() {
     const { x, y, width, height } = this.props.model
     const style = this.props.model.getNodeStyle()

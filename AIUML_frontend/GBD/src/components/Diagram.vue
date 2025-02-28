@@ -1,5 +1,7 @@
 <template>
   <div class="diagram">
+    <!-- ✅ 传递 `lf` 实例给 Navbar -->
+    <Navbar ref="navbar" />
     <diagram-toolbar class="diagram-toolbar" v-if="lf" :lf="lf" :activeEdges="activeEdges"
       @changeNodeFillColor="$_changeNodeFill" @saveGraph="$_saveGraph" />
     <div class="diagram-main">
@@ -9,9 +11,6 @@
           <div class="lf-diagram" ref="diagram"></div>
         </div>
       </div>
-    </div>
-    <div>
-      <Navbar />
     </div>
     <div>
       <AIPanel class="diagram-ai-panel" />
@@ -106,8 +105,10 @@ export default {
           this.activeNodes = nodes
           this.activeEdges = edges
           this.$_getProperty()
+          
         })
       })
+      this.$refs.navbar.setLogicFlowInstance(this.lf);
     },
     // 获取可以进行设置的属性
     $_getProperty() {
