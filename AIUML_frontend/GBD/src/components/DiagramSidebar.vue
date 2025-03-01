@@ -136,7 +136,22 @@ export default {
   methods: {
     dragInNode (type) {
       this.$emit('dragInNode', type)
-    }
+    },
+    handleFileUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+
+    reader.onload = () => {
+      console.log("上传的文件:", file.name);
+      console.log("Base64 数据:", reader.result);
+
+      // ✅ 可选：把 Base64 数据作为 LogicFlow 图片节点
+      // this.$emit("imageUploaded", reader.result);
+    };
+  }
   },
   components: {
     IconCircle,

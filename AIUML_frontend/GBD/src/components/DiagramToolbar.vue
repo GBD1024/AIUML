@@ -1,8 +1,11 @@
 <template>
   <div>
-    <div class="toolbar-item" :class="{'selection-active': selectionOpened}" @click="$_selectionSelect()">
+    <div class="toolbar-item" :class="{ 'selection-active': selectionOpened }" @click="$_selectionSelect()">
       <area-select size="18" />
     </div>
+    <!-- <div>
+      <button @click="$_saveGraph">保存</button>
+    </div> -->
     <!-- <div class="toolbar-item toolbar-color-picker">
       <el-popover
         placement="top-start"
@@ -32,31 +35,16 @@
     <div class="toolbar-item" @click="$_zoomOut()">
       <zoom-out size="18" />
     </div>
-    <div
-      class="toolbar-item"
-      :class="{'disabled': !undoAble}"
-      @click="$_undo()"
-    >
+    <div class="toolbar-item" :class="{ 'disabled': !undoAble }" @click="$_undo()">
       <step-back size="18" />
     </div>
-    <div
-      class="toolbar-item"
-      :class="{'disabled': !redoAble}"
-      @click="$_redo()"
-    >
+    <div class="toolbar-item" :class="{ 'disabled': !redoAble }" @click="$_redo()">
       <step-foward size="18" />
     </div>
-    <!-- <div>
-      <button @click="$_saveGraph">保存</button>
-    </div> -->
+
     <div style="margin-left: 30px">
       <el-select v-model="linetype" size="mini" @change="$_changeLineType">
-        <el-option
-          v-for="item in lineOptions"
-          :key="item.value"
-          :value="item.value"
-          :label="item.label"
-        ></el-option>
+        <el-option v-for="item in lineOptions" :key="item.value" :value="item.value" :label="item.label"></el-option>
       </el-select>
     </div>
   </div>
@@ -69,7 +57,7 @@
 // import IconFont from './icon/Font.vue'
 // import IconBlod from './icon/Blod.vue'
 // import IconLine from './icon/Line.vue'
-import  ZoomIn from './icon/ZoomIn.vue'
+import ZoomIn from './icon/ZoomIn.vue'
 import ZoomOut from './icon/ZoomOut.vue'
 import StepBack from './icon/StepBack.vue'
 import StepFoward from './icon/StepFoward.vue'
@@ -84,7 +72,7 @@ export default {
       default: ''
     }
   },
-  data () {
+  data() {
     return {
       selectionOpened: false,
       undoAble: false,
@@ -103,40 +91,65 @@ export default {
         {
           value: 'pro-bezier',
           label: '曲线'
+        },
+        {
+          value: 'pro-associationline',
+          label: '关联'
+        },
+        {
+          value: 'pro-generalizationline',
+          label: '泛化'
+        },
+        {
+          value: 'pro-realizationline',
+          label: '实现'
+        },
+        {
+          value: 'pro-aggregationline',
+          label: '聚合'
+        },
+        {
+          value: 'pro-compositionline',
+          label: '组合'
+        },
+        {
+          value: 'pro-dependencyline',
+          label: '依赖'
         }
+
       ]
     }
   },
-  mounted () {
+  mounted() {
     this.$props.lf.on('history:change', ({ data: { undoAble, redoAble } }) => {
       this.$data.redoAble = redoAble
       this.$data.undoAble = undoAble
     })
   },
   methods: {
-    $_changeFillColor (val) {
+    $_changeFillColor(val) {
       this.$emit('changeNodeFillColor', val.hex)
     },
-    $_saveGraph () {
+    $_saveGraph() {
       this.$emit('saveGraph')
     },
-    $_zoomIn () {
+    $_zoomIn() {
       this.$props.lf.zoom(true)
     },
-    $_zoomOut () {
+    $_zoomOut() {
       this.$props.lf.zoom(false)
     },
-    $_undo () {
+    $_undo() {
       if (this.$data.undoAble) {
         this.$props.lf.undo()
       }
     },
-    $_redo () {
+    $_redo() {
       if (this.$data.redoAble) {
         this.$props.lf.redo()
       }
     },
-    $_selectionSelect () {
+    $_selectionSelect() {
       this.selectionOpened = !this.selectionOpened
       if (this.selectionOpened) {
         this.lf.extension.selectionSelect.openSelectionSelect()
@@ -145,10 +158,10 @@ export default {
       }
     },
     $_changeLineType(value) {
-      const {lf, activeEdges} = this.$props
-      const {graphModel} = lf
+      const { lf, activeEdges } = this.$props
+      const { graphModel } = lf
       lf.setDefaultEdgeType(value)
-      if(activeEdges && activeEdges.length > 0) {
+      if (activeEdges && activeEdges.length > 0) {
         activeEdges.forEach(edge => {
           graphModel.changeEdgeType(edge.id, value)
         })
@@ -180,11 +193,13 @@ export default {
   cursor: pointer;
   margin-left: 30px;
 }
+
 .toolbar-color-picker {
   width: 24px;
   height: 24px;
   margin: 8px 4px;
 }
+
 .selection-active {
   background: #6a6a6a;
 }

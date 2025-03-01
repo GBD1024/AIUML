@@ -96,6 +96,7 @@ export default {
       // 注册自定义元素
       registerCustomElement(lf)
       lf.setDefaultEdgeType('pro-polyline')
+
       lf.render(data)
       this.lf = lf
       this.lf.on('selection:selected,node:contextmenu,blank:click,edge:click', () => {
@@ -105,10 +106,11 @@ export default {
           this.activeNodes = nodes
           this.activeEdges = edges
           this.$_getProperty()
-          
+
         })
       })
       this.$refs.navbar.setLogicFlowInstance(this.lf);
+      
     },
     // 获取可以进行设置的属性
     $_getProperty() {
@@ -190,7 +192,8 @@ export default {
 
 .diagram-toolbar {
   position: absolute;
-  top: 50px; /* 向下调整，避开新增的导航栏 */
+  top: 50px;
+  /* 向下调整，避开新增的导航栏 */
   left: 0px;
   height: 40px;
   width: 100%;
@@ -199,9 +202,11 @@ export default {
   border-bottom: 1px solid #e5e5e5;
   z-index: 10;
   background: #e5e5e5;
-  padding-top:2px;
-  background-color: #f0f0f0; /* 添加背景色 */
+  padding-top: 2px;
+  background-color: #f0f0f0;
+  /* 添加背景色 */
 }
+
 .diagram-main {
   display: flex;
   width: 100%;

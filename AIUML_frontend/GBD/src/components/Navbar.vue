@@ -36,7 +36,7 @@ export default {
     // ✅ 由 `Diagram.vue` 传入 LogicFlow 实例
     setLogicFlowInstance(lf) {
       this.lfInstance = lf;
-      console.log("got it", lf);
+
     },
 
     // ✅ 保存到浏览器缓存
@@ -76,6 +76,7 @@ export default {
     $_loadGraphFromBrowser() {
       if (this.lfInstance) {
         const savedData = localStorage.getItem("diagramData");
+        console.log(savedData);
         if (savedData) {
           this.lfInstance.render(JSON.parse(savedData));
           alert("🔄 已恢复浏览器保存的绘图！");

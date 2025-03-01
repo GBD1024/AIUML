@@ -37,6 +37,12 @@ import IconMessage from './icon/Message'
 import Ployline from './edge/Polyline'
 import Line from './edge/Line'
 import Bezier from './edge/Bezier'
+import Generalizationline from './edge/Generalizationline'
+import Realizationline from './edge/Realizationline'
+import Aggregationline from './edge/Aggregationline'
+import Compositionline from './edge/Compositionline'
+import Dependencyline from './edge/Dependencyline'
+import Associationline from './edge/Associationline'
 
 export const registerCustomElement = (lf) => {
   // 注册基础图形
@@ -78,5 +84,11 @@ export const registerCustomElement = (lf) => {
   lf.register(Ployline)
   lf.register(Line)
   lf.register(Bezier)
+  lf.register(Generalizationline)
+  lf.register(Realizationline)
+  lf.register(Aggregationline)
+  lf.register(Compositionline)
+  lf.register(Dependencyline)
+  lf.register(Associationline)
 }
 
