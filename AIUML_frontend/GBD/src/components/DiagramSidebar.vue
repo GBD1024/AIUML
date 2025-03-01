@@ -72,6 +72,9 @@
         <div class="node-item" @mousedown="dragInNode('trapezoid')">
           <icon-trapezoid class="svg-node" />
         </div>
+        <div class="node-item" @mousedown="dragInNode('cube')">
+          <icon-cube class="svg-node" />
+        </div>
         <!-- <div class="node-item" @mousedown="dragInNode('cross')">
           <icon-cross class="svg-node" />
         </div>
@@ -126,6 +129,7 @@ import IconSeptagon from './icon/Septagon.vue'
 import IconHeptagon from './icon/Heptagon.vue'
 import IconTrapezoid from './icon/Trapezoid.vue'
 import IconClass from './icon/Class.vue'
+import IconCube from './icon/Cube.vue'
 // import IconCross from './icon/Cross.vue'
 // import IconMinus from './icon/Minus.vue'
 // import IconTimes from './icon/Times.vue'
@@ -176,6 +180,7 @@ export default {
     IconHeptagon,
     IconTrapezoid,
     IconClass,
+    IconCube
     // IconCross,
     // IconMinus,
     // IconTimes,

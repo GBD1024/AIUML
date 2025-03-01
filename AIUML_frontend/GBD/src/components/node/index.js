@@ -20,6 +20,7 @@ import CrossNode from './path/CrossNode'
 import MinusNode from './path/MinusNode'
 import TimesNode from './path/TimesNode'
 import DivideNode from './path/DivideNode'
+import CubeNode from './path/CubeNode'
 // 多边形绘制的箭头
 import LeftArrow from './arrow/LeftArrow'
 import RightArrow from './arrow/RightArrow'
@@ -67,6 +68,7 @@ export const registerCustomElement = (lf) => {
   lf.register(MinusNode)
   lf.register(TimesNode)
   lf.register(DivideNode)
+  lf.register(CubeNode)
   // 注册多边形绘制的箭头
   lf.register(LeftArrow)
   lf.register(RightArrow)

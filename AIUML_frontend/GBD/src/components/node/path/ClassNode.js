@@ -8,8 +8,8 @@ class ClassModel extends RectResize.model {
     this.height = 160
     this.properties = {
       className: 'NewClass',
-      attributes: ['+ name: String', '- age: int'],
-      methods: ['+ getName(): String', '+ setAge(age: int): void']
+      attributes: ['+ attributes'],
+      methods: ['+ methods']
     }
   }
 
