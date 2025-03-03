@@ -79,10 +79,11 @@ class ClassView extends RectResize.view {
     };
 
     const createEditableText = (text, yPosition, isBold, editHandler, index, isAttribute) => {
+      let lastSelection = null; // 存储光标位置
+
       return h('g', {}, [
-        // 先渲染可编辑文本
         h('foreignObject', {
-          x: x - width / 2 + 20, // 向右偏移，避免挡住 `-`
+          x: x - width / 2 + 20,
           y: yPosition - 14,
           width: width - 40,
           height: 24,
@@ -101,14 +102,42 @@ class ClassView extends RectResize.view {
             },
             contentEditable: true,
             innerHTML: text,
-            onInput: (e) => editHandler(e.target.innerText)
+
+            // ✅ 记录光标位置，避免跳动
+            onFocus: () => {
+              const selection = window.getSelection();
+              if (selection.rangeCount > 0) {
+                lastSelection = selection.getRangeAt(0);
+              }
+            },
+
+            onInput: () => {
+              // 记录当前光标位置
+              const selection = window.getSelection();
+              if (selection.rangeCount > 0) {
+                lastSelection = selection.getRangeAt(0);
+              }
+            },
+
+            onBlur: (e) => {
+              editHandler(e.target.innerText); // 失去焦点时更新数据
+
+              // 恢复光标
+              setTimeout(() => {
+                if (lastSelection) {
+                  const selection = window.getSelection();
+                  selection.removeAllRanges();
+                  selection.addRange(lastSelection);
+                }
+              }, 0);
+            }
           })
         ]),
 
         // ✅ 只有属性和方法才有 `-` 按钮，类名不会有
         index !== undefined &&
         h('text', {
-          x: x - width / 2 + 5, // **靠左放置**
+          x: x - width / 2 + 5,
           y: yPosition,
           fontSize: '14px',
           fontWeight: 'bold',
@@ -122,7 +151,7 @@ class ClassView extends RectResize.view {
     };
 
     return h('g', {}, [
-      // ✅ 类名区域（无 `-` 按钮）
+      // ✅ 类名区域
       h('rect', {
         ...sectionStyle,
         x: x - width / 2,
