@@ -97,6 +97,10 @@ export default {
           label: '关联'
         },
         {
+          value: 'pro-bidirectionalassociationline',
+          label: '双向关联（无箭头实线）'
+        },
+        {
           value: 'pro-generalizationline',
           label: '泛化'
         },

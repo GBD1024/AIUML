@@ -44,6 +44,7 @@ import Aggregationline from './edge/Aggregationline'
 import Compositionline from './edge/Compositionline'
 import Dependencyline from './edge/Dependencyline'
 import Associationline from './edge/Associationline'
+import BidirectionalAssociationline from './edge/BidirectionalAssociationline'
 
 export const registerCustomElement = (lf) => {
   // 注册基础图形
@@ -92,5 +93,6 @@ export const registerCustomElement = (lf) => {
   lf.register(Compositionline)
   lf.register(Dependencyline)
   lf.register(Associationline)
+  lf.register(BidirectionalAssociationline)
 }
 
