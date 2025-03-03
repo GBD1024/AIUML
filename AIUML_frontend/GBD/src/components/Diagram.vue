@@ -126,6 +126,7 @@ export default {
       return properties
     },
     $_dragInNode(type) {
+      console.log("尝试拖入节点类型:", type); // ✅ 调试信息
       this.lf.dnd.startDrag({
         type
       })

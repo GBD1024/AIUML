@@ -33,7 +33,7 @@ class DependencyLine extends PolylineEdge {
             h("path", {
                 stroke: "black",
                 strokeWidth: 1,
-                fill: "none", // ✅ 确保箭头为空心
+                fill: "none",
                 d: "M -10 -5 L 0 0 L -10 5", // ✅ UML 依赖关系"屋顶"箭头（左右打开）
             })
         ]);
