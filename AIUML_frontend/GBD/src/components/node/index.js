@@ -44,14 +44,11 @@ import Aggregationline from './edge/Aggregationline'
 import Compositionline from './edge/Compositionline'
 import Dependencyline from './edge/Dependencyline'
 import Associationline from './edge/Associationline'
-<<<<<<< HEAD
 import BlackNode from './path/BlackNode'
 import WrappedBlackCircleNode from './path/WrappedBlackCircleNode'
 import BlackrectNode from './path/BlackrectNode'
 import Swimlane from './path/Swimlane'
-=======
 import BidirectionalAssociationline from './edge/BidirectionalAssociationline'
->>>>>>> c65618745cf03680c13773f18f115da4d1707d21
 
 export const registerCustomElement = (lf) => {
   // 注册基础图形
@@ -100,13 +97,10 @@ export const registerCustomElement = (lf) => {
   lf.register(Compositionline)
   lf.register(Dependencyline)
   lf.register(Associationline)
-<<<<<<< HEAD
   lf.register(BlackNode)
   lf.register(WrappedBlackCircleNode)
   lf.register(BlackrectNode)
   lf.register(Swimlane)
-=======
   lf.register(BidirectionalAssociationline)
->>>>>>> c65618745cf03680c13773f18f115da4d1707d21
 }
 
