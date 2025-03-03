@@ -7,7 +7,7 @@
     "lint": "vue-cli-service lint"
   },
 ```
-* 在vue.config.js中添加下列代码，使得只有本机可以访问服务器
+* 在vue.config.js中添加下列代码，使得只有本机可以访问服务器  
 ```
   devServer: {
     host: '127.0.0.1', // 仅监听本地回环地址
