@@ -1,4 +1,4 @@
-import { PolylineEdge, PolylineEdgeModel ,h} from '@logicflow/core';
+import { PolylineEdge, PolylineEdgeModel } from '@logicflow/core';
 import { getShapeStyleFuction, getTextStyleFunction } from '../getShapeStyleUtil';
 
 // ✅ 双向关联线模型
