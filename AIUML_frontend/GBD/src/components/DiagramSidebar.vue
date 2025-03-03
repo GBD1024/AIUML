@@ -1,61 +1,117 @@
 <template>
   <div class="diagram-sidebar">
+    <!-- 文件上传 -->
     <div>
-      <!-- 使用label和隐藏的input[file]来创建自定义上传按钮 -->
-      <label style="border-radius:15px " for="upload" class="custom-upload-button">上传图片</label>
+      <label class="custom-upload-button" for="upload">上传图片</label>
       <input id="upload" type="file" style="display:none;" @change="handleFileUpload">
-      <h1 class="node-category-title">流程图</h1>
+    </div>
+
+    <!-- UML九种图 -->
+    <div>
       <div class="node-category">
-        <div class="node-item" @mousedown="dragInNode('pro-circle')">
-          <icon-circle class="svg-node" />
+        <h1 class="node-category-title">类图</h1>
+        <div class="node-item" @mousedown="dragInNode('class')">
+          <icon-class class="svg-node" />
+        </div>
+      </div>
+      <div class="node-category">
+        <h1 class="node-category-title">对象图</h1>
+        <div class="node-item" @mousedown="dragInNode('pro-ellipse')">
+          <icon-ellipse class="svg-node" />
+        </div>
+      </div>
+      <div class="node-category">
+        <h1 class="node-category-title">用例图</h1>
+        <div class="node-item" @mousedown="dragInNode('actor')">
+          <icon-actor class="svg-node" />
         </div>
         <div class="node-item" @mousedown="dragInNode('pro-rect')">
           <icon-rect class="svg-node"/>
         </div>
-        <div class="node-item" @mousedown="dragInNode('rect-radius')">
-          <icon-rect-radius class="svg-node"/>
-        </div>
-        <div class="node-item" @mousedown="dragInNode('triangle')">
-          <icon-triangle class="svg-node" />
-        </div>
         <div class="node-item" @mousedown="dragInNode('pro-ellipse')">
           <icon-ellipse class="svg-node" />
         </div>
-        <div class="node-item" @mousedown="dragInNode('pro-diamond')">
-          <icon-diamond class="svg-node" />
-        </div>
-        <div class="node-item" @mousedown="dragInNode('cylinde')">
-          <icon-cylinde class="svg-node" />
-        </div>
-        <div class="node-item" @mousedown="dragInNode('actor')">
-          <icon-actor class="svg-node" />
-        </div>
-        <div class="node-item" @mousedown="dragInNode('parallelogram')">
-          <icon-parallelogram class="svg-node" />
-        </div>
-        <div class="node-item" @mousedown="dragInNode('pro-text')">
-          <icon-text class="svg-node" />
-        </div>
-        <div class="node-item" @mousedown="dragInNode('left-arrow')">
-          <icon-left-arrow class="svg-node"/>
-        </div>
-        <div class="node-item" @mousedown="dragInNode('right-arrow')">
-          <icon-right-arrow class="svg-node" />
-        </div>
-        <div class="node-item" @mousedown="dragInNode('horizontal-arrow')">
-          <icon-horizontal-arrow class="svg-node" />
-        </div>
+      </div>
+      <div class="node-category">
+        <h1 class="node-category-title">顺序图</h1>
         <div class="node-item" @mousedown="dragInNode('up-arrow')">
           <icon-up-arrow class="svg-node" />
         </div>
         <div class="node-item" @mousedown="dragInNode('down-arrow')">
           <icon-down-arrow class="svg-node" />
         </div>
+        <div class="node-item" @mousedown="dragInNode('rectangle')">
+          <icon-rect class="svg-node" />
+        </div>
+      </div>
+      <div class="node-category">
+        <h1 class="node-category-title">状态图</h1>
+        <div class="node-item" @mousedown="dragInNode('rect-radius')">
+          <icon-rect-radius class="svg-node"/>
+        </div>
+        <div class="node-item" @mousedown="dragInNode('black')">
+          <icon-black class="svg-node" />
+        </div>
+        <div class="node-item" @mousedown="dragInNode('wrapped')">
+          <icon-wrapped-black-circle class="svg-node" />
+        </div>
+      </div>
+      <div class="node-category">
+        <h1 class="node-category-title">活动图</h1>
+        <div class="node-item" @mousedown="dragInNode('diamond')">
+          <icon-diamond class="svg-node" />
+        </div>
+        <div class="node-item" @mousedown="dragInNode('black')">
+          <icon-black class="svg-node" />
+        </div>
+        <div class="node-item" @mousedown="dragInNode('wrapped')">
+          <icon-wrapped-black-circle class="svg-node" />
+        </div>
+        <div class="node-item" @mousedown="dragInNode('black-rectangle')">
+          <icon-blackrect class="svg-node" />
+        </div>
+      </div>
+      <div class="node-category">
+        <h1 class="node-category-title">通信图</h1>
+        <div class="node-item" @mousedown="dragInNode('actor')">
+          <icon-actor class="svg-node" />
+        </div>
+      </div>
+      <div class="node-category">
+        <h1 class="node-category-title">组件图</h1>
+        <div class="node-item" @mousedown="dragInNode('parallelogram')">
+          <icon-parallelogram class="svg-node" />
+        </div>
+      </div>
+      <div class="node-category">
+        <h1 class="node-category-title">部署图</h1>
+
+        <div class="node-item" @mousedown="dragInNode('cube')">
+          <icon-cube class="svg-node" />
+        </div>
+      </div>
+      <div class="node-category">
+        <h1 class="node-category-title">其他</h1>
+        <div class="node-item" @mousedown="dragInNode('cylinde')">
+          <icon-cylinde class="svg-node" />
+        </div>
+        <div class="node-item" @mousedown="dragInNode('text')">
+          <icon-text class="svg-node" />
+        </div>
+        <div class="node-item" @mousedown="dragInNode('triangle')">
+          <icon-triangle class="svg-node" />
+        </div>
+        <div class="node-item" @mousedown="dragInNode('right-arrow')">
+          <icon-right-arrow class="svg-node" />
+        </div>
+        <div class="node-item" @mousedown="dragInNode('left-arrow')">
+          <icon-left-arrow class="svg-node" />
+        </div>
+        <div class="node-item" @mousedown="dragInNode('horizontal-arrow')">
+          <icon-horizontal-arrow class="svg-node" />
+        </div>
         <div class="node-item" @mousedown="dragInNode('vertical-arrow')">
           <icon-vertical-arrow class="svg-node" />
-        </div>
-        <div class="node-item" @mousedown="dragInNode('class')">
-          <icon-class class="svg-node" />
         </div>
         <div class="node-item" @mousedown="dragInNode('pentagon')">
           <icon-pentagon class="svg-node" />
@@ -72,43 +128,18 @@
         <div class="node-item" @mousedown="dragInNode('trapezoid')">
           <icon-trapezoid class="svg-node" />
         </div>
-        <div class="node-item" @mousedown="dragInNode('cube')">
-          <icon-cube class="svg-node" />
+
+        <div class="node-item" @mousedown="dragInNode('pro-circle')">
+          <icon-circle class="svg-node" />
         </div>
-        <div class="node-item" @mousedown="dragInNode('black')">
-          <icon-black class="svg-node" />
+        <div class="node-item" @mousedown="dragInNode('parallelogram')">
+          <icon-parallelogram class="svg-node" />
         </div>
-        <div class="node-item" @mousedown="dragInNode('wrapped')">
-          <icon-wrapped-black-circle class="svg-node" />
+        <div class="node-item" @mousedown="dragInNode('swimlane')">
+          <icon-swimlane class="svg-node" />
         </div>
-        <!-- <div class="node-item" @mousedown="dragInNode('cross')">
-          <icon-cross class="svg-node" />
-        </div>
-        <div class="node-item" @mousedown="dragInNode('minus')">
-          <icon-minus class="svg-node" />
-        </div>
-        <div class="node-item" @mousedown="dragInNode('times')">
-          <icon-times class="svg-node" />
-        </div>
-        <div class="node-item" @mousedown="dragInNode('divide')">
-          <icon-divide class="svg-node" />
-        </div> -->
       </div>
     </div>
-    <!-- <div>
-      <h1 class="node-category-title">图片</h1>
-      <div class="image-node image-setting" @mousedown="dragInNode('image-setting')">
-      </div>
-      <div class="image-node image-user" @mousedown="dragInNode('image-user')">
-      </div>
-      <div class="image-node image-cloud" @mousedown="dragInNode('image-cloud')">
-      </div>
-    </div>
-    <div>
-      <h1 class="node-category-title">ICON</h1>
-      <div class="icon-node icon-message" @mousedown="dragInNode('icon-message')">
-      </div>
-    </div> -->
   </div>
 </template>
 
@@ -138,10 +169,8 @@ import IconClass from './icon/Class.vue'
 import IconCube from './icon/Cube.vue'
 import IconBlack from './icon/Black.vue'
 import IconWrappedBlackCircle from './icon/WrappedBlackCircleIcon.vue'
-// import IconCross from './icon/Cross.vue'
-// import IconMinus from './icon/Minus.vue'
-// import IconTimes from './icon/Times.vue'
-// import IconDivide from './icon/Divide.vue'
+import IconBlackrect from './icon/Blackrect.vue'
+import IconSwimlane from './icon/Swimlane.vue'
 
 export default {
   name: 'DiagramSidebar',
@@ -150,20 +179,17 @@ export default {
       this.$emit('dragInNode', type)
     },
     handleFileUpload(event) {
-    const file = event.target.files[0];
-    if (!file) return;
+      const file = event.target.files[0];
+      if (!file) return;
 
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
 
-    reader.onload = () => {
-      console.log("上传的文件:", file.name);
-      console.log("Base64 数据:", reader.result);
-
-      // ✅ 可选：把 Base64 数据作为 LogicFlow 图片节点
-      // this.$emit("imageUploaded", reader.result);
-    };
-  }
+      reader.onload = () => {
+        console.log("上传的文件:", file.name);
+        console.log("Base64 数据:", reader.result);
+      };
+    }
   },
   components: {
     IconCircle,
@@ -190,11 +216,9 @@ export default {
     IconClass,
     IconCube,
     IconBlack,
-    IconWrappedBlackCircle
-    // IconCross,
-    // IconMinus,
-    // IconTimes,
-    // IconDivide
+    IconWrappedBlackCircle,
+    IconBlackrect,
+    IconSwimlane
   }
 }
 </script>
@@ -219,6 +243,7 @@ export default {
 }
 .node-category {
   border-bottom: 1px solid #e5e5e5;
+  margin-bottom: 15px;
 }
 .svg-node {
   left: 1px;
@@ -228,32 +253,6 @@ export default {
   display: block;
   position: relative;
   overflow: hidden;
-}
-.image-node, .icon-node {
-  display: inline-block;
-  width: 30px;
-  height: 30px;
-  margin: 10px;
-  cursor: pointer;
-}
-.image-setting {
-  background: url('https://dpubstatic.udache.com/static/dpubimg/UzI4AFUcfO/setting.png');
-  background-size: cover;
-}
-.image-user {
-  width: 40px;
-  background: url('https://dpubstatic.udache.com/static/dpubimg/-6Fd2uIoJ-/user.png');
-  background-size: cover;
-}
-.image-cloud {
-  width: 40px;
-  background: url('https://dpubstatic.udache.com/static/dpubimg/0oqFX1nvbD/cloud.png');
-  background-size: cover;
-}
-.icon-message {
-  height: 20px;
-  background: url('https://dpubstatic.udache.com/static/dpubimg/1TZgBoaq8G/message.png');
-  background-size: cover;
 }
 .custom-upload-button {
   display: block;

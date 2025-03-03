@@ -46,6 +46,8 @@ import Dependencyline from './edge/Dependencyline'
 import Associationline from './edge/Associationline'
 import BlackNode from './path/BlackNode'
 import WrappedBlackCircleNode from './path/WrappedBlackCircleNode'
+import BlackrectNode from './path/BlackrectNode'
+import Swimlane from './path/Swimlane'
 
 export const registerCustomElement = (lf) => {
   // 注册基础图形
@@ -96,5 +98,7 @@ export const registerCustomElement = (lf) => {
   lf.register(Associationline)
   lf.register(BlackNode)
   lf.register(WrappedBlackCircleNode)
+  lf.register(BlackrectNode)
+  lf.register(Swimlane)
 }
 
