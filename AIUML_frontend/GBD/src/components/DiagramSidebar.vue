@@ -75,6 +75,12 @@
         <div class="node-item" @mousedown="dragInNode('cube')">
           <icon-cube class="svg-node" />
         </div>
+        <div class="node-item" @mousedown="dragInNode('black')">
+          <icon-black class="svg-node" />
+        </div>
+        <div class="node-item" @mousedown="dragInNode('wrapped')">
+          <icon-wrapped-black-circle class="svg-node" />
+        </div>
         <!-- <div class="node-item" @mousedown="dragInNode('cross')">
           <icon-cross class="svg-node" />
         </div>
@@ -130,6 +136,8 @@ import IconHeptagon from './icon/Heptagon.vue'
 import IconTrapezoid from './icon/Trapezoid.vue'
 import IconClass from './icon/Class.vue'
 import IconCube from './icon/Cube.vue'
+import IconBlack from './icon/Black.vue'
+import IconWrappedBlackCircle from './icon/WrappedBlackCircleIcon.vue'
 // import IconCross from './icon/Cross.vue'
 // import IconMinus from './icon/Minus.vue'
 // import IconTimes from './icon/Times.vue'
@@ -180,7 +188,9 @@ export default {
     IconHeptagon,
     IconTrapezoid,
     IconClass,
-    IconCube
+    IconCube,
+    IconBlack,
+    IconWrappedBlackCircle
     // IconCross,
     // IconMinus,
     // IconTimes,
