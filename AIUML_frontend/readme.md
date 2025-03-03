@@ -1,5 +1,5 @@
 * 使用旧版OpenSSL提供程序  
-在package.json中修改服务脚本，以包含OpenSSL遗留提供程序
+在package.json中修改服务脚本，以包含OpenSSL遗留提供程序 
 ```
   "scripts": {
     "serve": "set NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service serve",
