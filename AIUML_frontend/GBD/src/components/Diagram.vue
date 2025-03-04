@@ -217,9 +217,10 @@ export default {
 .diagram-sidebar {
   margin-top: 100px;
   width: 350px;
-  height: calc(100% - 40px);
+  height: calc(100vh - 100px); /* 减去顶部的 margin */
   border-right: 1px solid #dadce0;
   padding: 10px;
+  overflow-y: auto; /* 如果内容超出，添加滚动条 */
 }
 
 .diagram-panel {

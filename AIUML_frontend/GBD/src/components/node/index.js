@@ -44,6 +44,10 @@ import Aggregationline from './edge/Aggregationline'
 import Compositionline from './edge/Compositionline'
 import Dependencyline from './edge/Dependencyline'
 import Associationline from './edge/Associationline'
+import BlackNode from './path/BlackNode'
+import WrappedBlackCircleNode from './path/WrappedBlackCircleNode'
+import BlackrectNode from './path/BlackrectNode'
+import Swimlane from './path/Swimlane'
 import BidirectionalAssociationline from './edge/BidirectionalAssociationline'
 
 export const registerCustomElement = (lf) => {
@@ -93,6 +97,10 @@ export const registerCustomElement = (lf) => {
   lf.register(Compositionline)
   lf.register(Dependencyline)
   lf.register(Associationline)
+  lf.register(BlackNode)
+  lf.register(WrappedBlackCircleNode)
+  lf.register(BlackrectNode)
+  lf.register(Swimlane)
   lf.register(BidirectionalAssociationline)
 }
 
