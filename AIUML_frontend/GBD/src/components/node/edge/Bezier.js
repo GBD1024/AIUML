@@ -3,24 +3,32 @@ import { getShapeStyleFuction, getTextStyleFunction } from '../getShapeStyleUtil
 
 class BezierModel extends BezierEdgeModel {
   constructor(data, graphModel) {
-    super(data, graphModel)
-    this.strokeWidth = 1
-  }
+    super(data, graphModel);
+    this.strokeWidth = 1;
+    this.isUserDragged = false; // ✅ 记录用户是否拖动过连线
+}
 
-  setAttributes() {
+setAttributes() {
     super.setAttributes();
 
-    // ✅ 计算 `startPoint` 和 `endPoint`，让贝塞尔曲线连接到类的锚点
-    this.adjustEdgePoints();
+    // ✅ 如果 `startPoint` 和 `endPoint` 为空，则自动计算
+    if (!this.startPoint || !this.endPoint) {
+        this.adjustEdgePoints();
+    }
 
-    // ✅ 自动计算控制点，确保曲线顺滑
-    this.controlPoints = this.calculateControlPoints();
-  }
+    // ✅ 只在导入 JSON 时计算 `pointsList`
+    if (!this.pointsList || this.pointsList.length === 0) {
+        this.pointsList = this.calculatePoints();
+    }
+}
 
-  /**
-   * 🚀 计算 `startPoint` 和 `endPoint`，让贝塞尔曲线连接到类的锚点
-   */
-  adjustEdgePoints() {
+/**
+ * 🚀 计算 `startPoint` 和 `endPoint`，让箭头连接到类的锚点
+ * 但仅在首次创建时计算，防止拖动时重置锚点
+ */
+adjustEdgePoints() {
+    if (this.isUserDragged) return; // ✅ 如果用户已拖动过，则不重新计算锚点
+
     const { sourceNodeId, targetNodeId } = this;
     const sourceNode = this.graphModel.getNodeModelById(sourceNodeId);
     const targetNode = this.graphModel.getNodeModelById(targetNodeId);
@@ -36,19 +44,31 @@ class BezierModel extends BezierEdgeModel {
 
     // ✅ 找到最近的两个锚点
     sourceAnchors.forEach(sourceAnchor => {
-      targetAnchors.forEach(targetAnchor => {
-        const distance = Math.hypot(sourceAnchor.x - targetAnchor.x, sourceAnchor.y - targetAnchor.y);
-        if (distance < minDistance) {
-          minDistance = distance;
-          bestStart = sourceAnchor;
-          bestEnd = targetAnchor;
-        }
-      });
+        targetAnchors.forEach(targetAnchor => {
+            const distance = Math.hypot(sourceAnchor.x - targetAnchor.x, sourceAnchor.y - targetAnchor.y);
+            if (distance < minDistance) {
+                minDistance = distance;
+                bestStart = sourceAnchor;
+                bestEnd = targetAnchor;
+            }
+        });
     });
 
     this.startPoint = bestStart;
     this.endPoint = bestEnd;
-  }
+}
+
+/**
+ * 🚀 监听用户拖动连线，防止自动计算覆盖用户手动选择的锚点
+ */
+updateAttributes(attributes) {
+    super.updateAttributes(attributes);
+
+    // ✅ 如果用户拖动了连线，标记为 `isUserDragged = true`
+    if (attributes.startPoint || attributes.endPoint) {
+        this.isUserDragged = true;
+    }
+}
 
   /**
    * 🚀 获取类的 4 个锚点（上下左右）
