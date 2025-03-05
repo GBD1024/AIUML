@@ -8,6 +8,8 @@
         <button @click="$_loadGraphFromBrowser"> 恢复缓存</button>
         <button @click="$_clearGraphBrowser"> 清空缓存</button>
         <button @click="$_saveGraphToLocal"> 保存至本地</button>
+        <button @click="$_importGraphFromFile"> 导入本地文件</button>
+        <input type="file" ref="fileInput" @change="$_handleFileUpload" accept=".json,.txt" style="display: none;" />
       </div>
     </div>
 
@@ -23,27 +25,22 @@ export default {
   name: 'Navbar',
   data() {
     return {
-      dropdownVisible: false, // 控制下拉菜单显示
-      lfInstance: null, // 用于存储 LogicFlow 实例
+      dropdownVisible: false,
+      lfInstance: null,
     };
   },
   methods: {
-    // ✅ 切换下拉菜单
     toggleDropdown() {
       this.dropdownVisible = !this.dropdownVisible;
     },
 
-    // ✅ 由 `Diagram.vue` 传入 LogicFlow 实例
     setLogicFlowInstance(lf) {
       this.lfInstance = lf;
-
     },
 
-    // ✅ 保存到浏览器缓存
     $_saveGraphToBrowser() {
       if (this.lfInstance) {
         const data = this.lfInstance.getGraphData();
-        console.log(data);
         localStorage.setItem("diagramData", JSON.stringify(data));
         alert("💾 图形已保存到浏览器缓存！");
       } else {
@@ -51,7 +48,6 @@ export default {
       }
     },
 
-    // ✅ 保存到本地文件
     $_saveGraphToLocal() {
       if (this.lfInstance) {
         const data = this.lfInstance.getGraphData();
@@ -72,11 +68,9 @@ export default {
       }
     },
 
-    // ✅ 恢复浏览器缓存
     $_loadGraphFromBrowser() {
       if (this.lfInstance) {
         const savedData = localStorage.getItem("diagramData");
-        console.log(savedData);
         if (savedData) {
           this.lfInstance.render(JSON.parse(savedData));
           alert("🔄 已恢复浏览器保存的绘图！");
@@ -88,12 +82,38 @@ export default {
       }
     },
 
-    // ✅ 清空浏览器缓存
     $_clearGraphBrowser() {
       if (confirm("确定要清空浏览器缓存的绘图吗？")) {
         localStorage.removeItem("diagramData");
         alert("🗑 本地存储的绘图已清空！");
       }
+    },
+
+    // ✅ 触发文件选择
+    $_importGraphFromFile() {
+      this.$refs.fileInput.click();
+    },
+
+    // ✅ 处理文件上传并读取内容
+    $_handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const jsonData = JSON.parse(e.target.result);
+          if (this.lfInstance) {
+            this.lfInstance.render(jsonData);
+            alert("📥 已成功导入文件并更新画布！");
+          } else {
+            alert("⚠ 画布未初始化！");
+          }
+        } catch (error) {
+          alert("❌ 解析文件失败，请确保是正确的 JSON 格式！");
+        }
+      };
+      reader.readAsText(file);
     }
   }
 };
@@ -127,7 +147,6 @@ export default {
   background-color: #efefef;
 }
 
-/* ✅ 下拉菜单样式 */
 .navbar-dropdown {
   position: relative;
 }
