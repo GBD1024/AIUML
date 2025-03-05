@@ -16,7 +16,8 @@
       <AIPanel class="diagram-ai-panel" />
     </div>
     <!-- 属性面板 -->
-    <PropertyPanel class="diagram-panel"
+    <PropertyPanel
+      class="diagram-panel"
       v-if="activeNodes.length > 0 || activeEdges.length > 0"
       :style="{ left: panelPosition.left + 'px', top: panelPosition.top + 'px' }"
       :onlyEdge="activeNodes.length === 0"
@@ -184,13 +185,15 @@ export default {
       if (this.activeNodes.length > 0) {
         const node = this.activeNodes[0];
         // 假设 node 有 x 和 y 属性
-        this.panelPosition.left = node.x; // 50 是偏移量，确保不遮盖
+        this.panelPosition.left = node.x + 0; // 50 是偏移量，确保不遮盖
         this.panelPosition.top = 50;
       } else if (this.activeEdges.length > 0) {
         const edge = this.activeEdges[0];
-        // 假设 edge 有 start 和 end 属性
-        this.panelPosition.left = (edge.start.x + edge.end.x) / 2 + 50;
-        this.panelPosition.top = (edge.start.y + edge.end.y) / 2;
+        // 假设 edge 有 startPoint 和 endPoint 属性
+        const middleX = (edge.startPoint.x + edge.endPoint.x) / 2;
+        const middleY = (edge.startPoint.y + edge.endPoint.y) / 2;
+        this.panelPosition.left = middleX + 50; // 50 是偏移量，确保不遮盖
+        this.panelPosition.top = middleY;
       }
     }
   },
