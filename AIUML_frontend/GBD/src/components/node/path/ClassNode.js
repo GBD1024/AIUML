@@ -6,12 +6,15 @@ class ClassModel extends RectResize.model {
     super.initNodeData(data);
     this.width = 200;
     this.height = 160;
+  
+    // ✅ 仅在 properties 不存在时才设置默认值
     this.properties = {
-      className: 'NewClass',
-      attributes: ['+ attribute'],
-      methods: ['+ method']
+      className: data.properties?.className || 'NewClass',
+      attributes: data.properties?.attributes || ['+ attribute'],
+      methods: data.properties?.methods || ['+ method']
     };
   }
+  
 
   setClassName(name) {
     this.setProperty('className', name);

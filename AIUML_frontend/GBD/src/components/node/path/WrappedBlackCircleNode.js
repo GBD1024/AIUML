@@ -1,10 +1,12 @@
 import { h } from '@logicflow/core';
-import { CircleNode, CircleNodeModel } from '@logicflow/core'; // 更新导入路径
+import { EllipseResize } from '@logicflow/extension';
+// ... existing code ...
 
-class WrappedBlackCircleModel extends CircleNodeModel {
+class WrappedBlackCircleModel extends EllipseResize.model {
   initNodeData(data) {
     super.initNodeData(data);
-    this.radius = 15; // 设置内圆的半径
+    this.rx = 15; // 设置内圆的水平半径
+    this.ry = 15; // 设置内圆的垂直半径
   }
 
   getNodeStyle() {
@@ -16,9 +18,9 @@ class WrappedBlackCircleModel extends CircleNodeModel {
   }
 }
 
-class WrappedBlackCircleView extends CircleNode {
-  getShape() {
-    const { x, y, radius } = this.props.model;
+class WrappedBlackCircleView extends EllipseResize.view {
+  getResizeShape() {
+    const { x, y, rx, ry } = this.props.model;
     const innerStyle = this.props.model.getNodeStyle();
     const outerStyle = {
       ...innerStyle,
@@ -28,17 +30,19 @@ class WrappedBlackCircleView extends CircleNode {
     };
 
     return h('g', {}, [
-      h('circle', {
+      h('ellipse', {
         ...outerStyle,
         cx: x,
         cy: y,
-        r: radius + 5, // 外圆半径比内圆大
+        rx: rx + 5, // 外圆水平半径比内圆大
+        ry: ry + 5, // 外圆垂直半径比内圆大
       }),
-      h('circle', {
+      h('ellipse', {
         ...innerStyle,
         cx: x,
         cy: y,
-        r: radius,
+        rx,
+        ry,
       }),
     ]);
   }
@@ -46,6 +50,6 @@ class WrappedBlackCircleView extends CircleNode {
 
 export default {
   type: 'wrapped',
-  view: WrappedBlackCircleView,
   model: WrappedBlackCircleModel,
+  view: WrappedBlackCircleView,
 };

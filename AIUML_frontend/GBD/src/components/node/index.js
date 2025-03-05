@@ -21,6 +21,8 @@ import MinusNode from './path/MinusNode'
 import TimesNode from './path/TimesNode'
 import DivideNode from './path/DivideNode'
 import CubeNode from './path/CubeNode'
+import DecisionNode from './path/DecisionNode'
+import ExecutionSpecification from './path/ExecutionSpecification'
 // 多边形绘制的箭头
 import LeftArrow from './arrow/LeftArrow'
 import RightArrow from './arrow/RightArrow'
@@ -102,5 +104,7 @@ export const registerCustomElement = (lf) => {
   lf.register(BlackrectNode)
   lf.register(Swimlane)
   lf.register(BidirectionalAssociationline)
+  lf.register(DecisionNode)
+  lf.register(ExecutionSpecification)
 }
 

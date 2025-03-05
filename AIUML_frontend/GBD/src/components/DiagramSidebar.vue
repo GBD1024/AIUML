@@ -26,7 +26,7 @@
           <icon-actor class="svg-node" />
         </div>
         <div class="node-item" @mousedown="dragInNode('pro-rect')">
-          <icon-rect class="svg-node"/>
+          <icon-rect class="svg-node" />
         </div>
         <div class="node-item" @mousedown="dragInNode('pro-ellipse')">
           <icon-ellipse class="svg-node" />
@@ -40,14 +40,14 @@
         <div class="node-item" @mousedown="dragInNode('down-arrow')">
           <icon-down-arrow class="svg-node" />
         </div>
-        <div class="node-item" @mousedown="dragInNode('rectangle')">
-          <icon-rect class="svg-node" />
+        <div class="node-item" @mousedown="dragInNode('pro-rect')">
+          <icon-rect class="svg-node"/>
         </div>
       </div>
       <div class="node-category">
         <h1 class="node-category-title">状态图</h1>
         <div class="node-item" @mousedown="dragInNode('rect-radius')">
-          <icon-rect-radius class="svg-node"/>
+          <icon-rect-radius class="svg-node" />
         </div>
         <div class="node-item" @mousedown="dragInNode('black')">
           <icon-black class="svg-node" />
@@ -58,7 +58,7 @@
       </div>
       <div class="node-category">
         <h1 class="node-category-title">活动图</h1>
-        <div class="node-item" @mousedown="dragInNode('diamond')">
+        <div class="node-item" @mousedown="dragInNode('pro-decisionnode')">
           <icon-diamond class="svg-node" />
         </div>
         <div class="node-item" @mousedown="dragInNode('black')">
@@ -175,7 +175,7 @@ import IconSwimlane from './icon/Swimlane.vue'
 export default {
   name: 'DiagramSidebar',
   methods: {
-    dragInNode (type) {
+    dragInNode(type) {
       this.$emit('dragInNode', type)
     },
     handleFileUpload(event) {
@@ -227,6 +227,7 @@ export default {
 .diagram-sidebar {
   user-select: none;
 }
+
 .node-category-title {
   margin: 0;
   font-size: 14px;
@@ -235,16 +236,19 @@ export default {
   line-height: 30px;
   margin-bottom: 10px;
 }
+
 .node-item {
   width: 35px;
   height: 35px;
   margin-right: 5px;
   display: inline-block;
 }
+
 .node-category {
   border-bottom: 1px solid #e5e5e5;
   margin-bottom: 15px;
 }
+
 .svg-node {
   left: 1px;
   top: 1px;
@@ -254,29 +258,39 @@ export default {
   position: relative;
   overflow: hidden;
 }
+
 .custom-upload-button {
   display: block;
-  width: 100%; /* 宽度占满容器 */
-  padding: 10px 0; /* 上下内边距 */
+  width: 100%;
+  /* 宽度占满容器 */
+  padding: 10px 0;
+  /* 上下内边距 */
   font-size: 16px;
   cursor: pointer;
   text-align: center;
-  color: #000000; /* 黑色文字 */
-  background-color: #ffffff; /* 白色背景 */
-  border: 1px solid #000000; /* 黑色边框 */
+  color: #000000;
+  /* 黑色文字 */
+  background-color: #ffffff;
+  /* 白色背景 */
+  border: 1px solid #000000;
+  /* 黑色边框 */
   box-shadow: none;
   transition: all 0.3s ease;
-  margin-bottom: 20px; /* 与下面的流程图保持一定距离 */
+  margin-bottom: 20px;
+  /* 与下面的流程图保持一定距离 */
 }
 
 .custom-upload-button:hover {
-  background-color: #f2f2f2; /* 悬停时更浅的背景 */
-  border-color: #333333; /* 更深的边框颜色 */
+  background-color: #f2f2f2;
+  /* 悬停时更浅的背景 */
+  border-color: #333333;
+  /* 更深的边框颜色 */
 }
 
 .custom-upload-button:active {
   background-color: #e6e6e6;
   border-color: #333333;
-  transform: translateY(1px); /* 轻微按下效果 */
+  transform: translateY(1px);
+  /* 轻微按下效果 */
 }
 </style>
