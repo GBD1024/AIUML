@@ -10,6 +10,7 @@ class DiamondModel extends DiamondResize.model {
     super.initNodeData(data)
     this.rx = 35
     this.ry = 35
+    this.isResizing = true; 
   }
   getNodeStyle () {
     const style = super.getNodeStyle()
