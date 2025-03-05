@@ -16,9 +16,14 @@
       <AIPanel class="diagram-ai-panel" />
     </div>
     <!-- 属性面板 -->
-    <PropertyPanel class="diagram-panel diagram-panel-center" v-if="activeNodes.length > 0 || activeEdges.length > 0"
-      :onlyEdge="activeNodes.length === 0" :elementsStyle="properties" @setStyle="$_setStyle"
-      @setZIndex="$_setZIndex" />
+    <PropertyPanel class="diagram-panel"
+      v-if="activeNodes.length > 0 || activeEdges.length > 0"
+      :style="{ left: panelPosition.left + 'px', top: panelPosition.top + 'px' }"
+      :onlyEdge="activeNodes.length === 0"
+      :elementsStyle="properties"
+      @setStyle="$_setStyle"
+      @setZIndex="$_setZIndex"
+    />
   </div>
 </template>
 
@@ -45,8 +50,13 @@ export default {
       filename: '',
       activeNodes: [],
       activeEdges: [],
-      properties: {}
+      properties: {},
+      panelPosition: { left: 0, top: 0 }
     }
+  },
+  watch: {
+    activeNodes: 'updatePanelPosition',
+    activeEdges: 'updatePanelPosition',
   },
   mounted() {
     let data = ''
@@ -115,7 +125,7 @@ export default {
     // 获取可以进行设置的属性
     $_getProperty() {
       let properties = {}
-      const { nodes, edges } = this.lf.getSelectElements()
+      const { nodes, edges } = this.lf.graphModel.getSelectElements()
       nodes.forEach(node => {
         properties = { ...properties, ...node.properties }
       })
@@ -169,6 +179,19 @@ export default {
       document.body.appendChild(element)
       element.click()
       document.body.removeChild(element)
+    },
+    updatePanelPosition() {
+      if (this.activeNodes.length > 0) {
+        const node = this.activeNodes[0];
+        // 假设 node 有 x 和 y 属性
+        this.panelPosition.left = node.x; // 50 是偏移量，确保不遮盖
+        this.panelPosition.top = 50;
+      } else if (this.activeEdges.length > 0) {
+        const edge = this.activeEdges[0];
+        // 假设 edge 有 start 和 end 属性
+        this.panelPosition.left = (edge.start.x + edge.end.x) / 2 + 50;
+        this.panelPosition.top = (edge.start.y + edge.end.y) / 2;
+      }
     }
   },
   components: {
@@ -224,13 +247,12 @@ export default {
 }
 
 .diagram-panel {
-  width: 300px;
-  background: #fff;
-  height: calc(100% - 40px);
   position: absolute;
-  right: 0px;
-  top: 40px;
-  border-left: 1px solid #dadce0;
+  z-index: 10;
+  width: 300px;
+  height: 550px;
+  background: #ffffff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .diagram-container {
