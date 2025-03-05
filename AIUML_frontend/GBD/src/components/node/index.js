@@ -106,5 +106,6 @@ export const registerCustomElement = (lf) => {
   lf.register(BidirectionalAssociationline)
   lf.register(DecisionNode)
   lf.register(ExecutionSpecification)
+
 }
 

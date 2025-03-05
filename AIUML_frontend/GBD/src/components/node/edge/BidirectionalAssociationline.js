@@ -5,24 +5,30 @@ class BidirectionalAssociationLineModel extends PolylineEdgeModel {
     constructor(data, graphModel) {
         super(data, graphModel);
         this.strokeWidth = 1;
+        this.isUserDragged = false; // ✅ 记录用户是否拖动过连线
     }
 
     setAttributes() {
         super.setAttributes();
 
-        // ✅ 计算 `startPoint` 和 `endPoint`，让线条连接到类的锚点
-        this.adjustEdgePoints();
+        // ✅ 如果 `startPoint` 和 `endPoint` 为空，则自动计算
+        if (!this.startPoint || !this.endPoint) {
+            this.adjustEdgePoints();
+        }
 
-        // ✅ 如果 `pointsList` 为空，自动计算拐点
+        // ✅ 只在导入 JSON 时计算 `pointsList`
         if (!this.pointsList || this.pointsList.length === 0) {
             this.pointsList = this.calculatePoints();
         }
     }
 
     /**
-     * 🚀 计算 `startPoint` 和 `endPoint`，让线条连接到类的锚点
+     * 🚀 计算 `startPoint` 和 `endPoint`，让箭头连接到类的锚点
+     * 但仅在首次创建时计算，防止拖动时重置锚点
      */
     adjustEdgePoints() {
+        if (this.isUserDragged) return; // ✅ 如果用户已拖动过，则不重新计算锚点
+
         const { sourceNodeId, targetNodeId } = this;
         const sourceNode = this.graphModel.getNodeModelById(sourceNodeId);
         const targetNode = this.graphModel.getNodeModelById(targetNodeId);
@@ -53,16 +59,15 @@ class BidirectionalAssociationLineModel extends PolylineEdgeModel {
     }
 
     /**
-     * 🚀 获取类的 4 个锚点（上下左右）
+     * 🚀 监听用户拖动连线，防止自动计算覆盖用户手动选择的锚点
      */
-    getNodeAnchors(node) {
-        const { x, y, width, height } = node;
-        return [
-            { x, y: y - height / 2 }, // 上锚点
-            { x: x + width / 2, y }, // 右锚点
-            { x, y: y + height / 2 }, // 下锚点
-            { x: x - width / 2, y }  // 左锚点
-        ];
+    updateAttributes(attributes) {
+        super.updateAttributes(attributes);
+
+        // ✅ 如果用户拖动了连线，标记为 `isUserDragged = true`
+        if (attributes.startPoint || attributes.endPoint) {
+            this.isUserDragged = true;
+        }
     }
 
     /**
