@@ -40,8 +40,8 @@
         <div class="node-item" @mousedown="dragInNode('down-arrow')">
           <icon-down-arrow class="svg-node" />
         </div>
-        <div class="node-item" @mousedown="dragInNode('pro-executionspecification')">
-          <icon-rect class="svg-node" />
+        <div class="node-item" @mousedown="dragInNode('pro-rect')">
+          <icon-rect class="svg-node"/>
         </div>
       </div>
       <div class="node-category">

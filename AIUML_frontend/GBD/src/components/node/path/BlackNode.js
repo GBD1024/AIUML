@@ -1,26 +1,37 @@
-import { CircleNode, CircleNodeModel, h } from '@logicflow/core';
+import { h } from '@logicflow/core';
+import { EllipseResize } from '@logicflow/extension';
+// ... existing code ...
 
-class BlackCircleNodeModel extends CircleNodeModel {
+class BlackCircleNodeModel extends EllipseResize.model {
   initNodeData(data) {
     super.initNodeData(data);
-    this.radius = 20; // 设置圆的半径
-    this.properties.fill = '#000000'; // 设置圆的填充颜色为黑色，使用properties保存样式信息
+    this.rx = 20; // 设置椭圆的水平半径
+    this.ry = 20; // 设置椭圆的垂直半径
+  }
+
+  getNodeStyle() {
+    const style = super.getNodeStyle();
+    return {
+      ...style,
+      fill: '#000000', // 确保填充颜色为黑色
+    };
   }
 }
 
-class BlackCircleNode extends CircleNode {
-  getShape() {
-    const { x, y, properties: { fill } } = this.props.model;
-    const radius = this.props.model.radius;
+class BlackCircleNode extends EllipseResize.view {
+  getResizeShape() {
+    const { x, y, rx, ry } = this.props.model;
+    const style = this.props.model.getNodeStyle();
 
     return h('g', {}, [
-      h('circle', {
+      h('ellipse', {
         cx: x,
         cy: y,
-        r: radius,
-        fill: fill, // 使用设置的填充颜色
-        stroke: '#000', // 圆的边框颜色
-        'stroke-width': 1
+        rx,
+        ry,
+        ...style, // 应用样式，包括填充颜色
+        stroke: '#000', // 边框颜色
+        'stroke-width': 1,
       })
     ]);
   }
