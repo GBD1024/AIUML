@@ -1,39 +1,166 @@
 <template>
   <div class="navbar">
-    <!-- ✅ “文件”按钮（支持下拉菜单） -->
-    <div class="navbar-dropdown">
-      <button class="navbar-btn" @click="toggleDropdown">文件</button>
-      <div v-if="dropdownVisible" class="dropdown-menu">
-        <button @click="$_saveGraphToBrowser"> 保存至缓存</button>
-        <button @click="$_loadGraphFromBrowser"> 恢复缓存</button>
-        <button @click="$_clearGraphBrowser"> 清空缓存</button>
-        <button @click="$_saveGraphToLocal"> 保存至本地</button>
-        <button @click="$_importGraphFromFile"> 导入本地文件</button>
-        <input type="file" ref="fileInput" @change="$_handleFileUpload" accept=".json,.txt" style="display: none;" />
+    <!-- 文件按钮 -->
+    <div 
+      class="navbar-dropdown" 
+      v-for="(button, index) in buttons" 
+      :key="index"
+      @click.stop
+    >
+      <button 
+        class="navbar-btn" 
+        @click="toggleDropdown(index)"
+      >
+        {{ button.label }}
+      </button>
+      <div 
+        v-if="activeDropdownIndex === index" 
+        class="dropdown-menu"
+      >
+        <button 
+          v-for="(item, idx) in button.menuItems" 
+          :key="idx" 
+          @click="handleMenuItemClick(item.action)"
+        >
+          {{ item.label }}
+        </button>
       </div>
     </div>
-
-    <button class="navbar-btn">编辑</button>
-    <button class="navbar-btn">查看</button>
-    <button class="navbar-btn">帮助</button>
-    <button class="navbar-btn">分享</button>
   </div>
 </template>
+
 
 <script>
 export default {
   name: 'Navbar',
   data() {
     return {
-      dropdownVisible: false,
+      // 当前展开的下拉菜单索引
+      activeDropdownIndex: null,
       lfInstance: null,
+      // 定义按钮及其对应的菜单项
+      buttons: [
+        {
+          label: "文件",
+          menuItems: [
+            { label: "保存至缓存", action: "$_saveGraphToBrowser" },
+            { label: "恢复缓存", action: "$_loadGraphFromBrowser" },
+            { label: "清空缓存", action: "$_clearGraphBrowser" },
+            { label: "保存至本地", action: "$_saveGraphToLocal" },
+            { label: "导入本地文件", action: "$_importGraphFromFile" },
+          ],
+        },
+        {
+          label: "编辑",
+          menuItems: [
+            { label: "撤销", action: "$_undo" },
+            { label: "重做", action: "$_redo" },
+            { label: "复制", action: "$_copy" },
+            { label: "粘贴", action: "$_paste" },
+          ],
+        },
+        {
+          label: "查看",
+          menuItems: [
+            { label: "放大", action: "$_zoomIn" },
+            { label: "缩小", action: "$_zoomOut" },
+            { label: "重置视图", action: "$_resetView" },
+          ],
+        },
+        {
+          label: "帮助",
+          menuItems: [
+            { label: "使用说明", action: "$_showHelp" },
+            { label: "反馈问题", action: "$_reportIssue" },
+          ],
+        },
+        {
+          label: "分享",
+          menuItems: [
+            { label: "生成链接", action: "$_generateLink" },
+            { label: "导出图片", action: "$_exportImage" },
+          ],
+        },
+      ],
     };
   },
   methods: {
-    toggleDropdown() {
-      this.dropdownVisible = !this.dropdownVisible;
+    // 切换指定按钮的下拉菜单状态
+    toggleDropdown(index) {
+      if (this.activeDropdownIndex === index) {
+        // 如果当前按钮的下拉菜单已经展开，则收起
+        this.activeDropdownIndex = null;
+      } else {
+        // 否则，收起其他按钮的下拉菜单，并展开当前按钮的下拉菜单
+        this.activeDropdownIndex = index;
+      }
     },
 
+    // 处理菜单项点击事件
+    handleMenuItemClick(action) {
+      if (this[action]) {
+        this[action]();
+      } else {
+        alert(`⚠ 方法 ${action} 未定义！`);
+      }
+    },
+
+    // 示例方法：撤销
+    $_undo() {
+      alert("↩️ 撤销操作");
+    },
+
+    // 示例方法：重做
+    $_redo() {
+      alert("↪️ 重做操作");
+    },
+
+    // 示例方法：复制
+    $_copy() {
+      alert("📋 复制操作");
+    },
+
+    // 示例方法：粘贴
+    $_paste() {
+      alert("📋 粘贴操作");
+    },
+
+    // 示例方法：放大
+    $_zoomIn() {
+      alert("🔍 放大视图");
+    },
+
+    // 示例方法：缩小
+    $_zoomOut() {
+      alert("🔍 缩小视图");
+    },
+
+    // 示例方法：重置视图
+    $_resetView() {
+      alert("🔄 重置视图");
+    },
+
+    // 示例方法：使用说明
+    $_showHelp() {
+      alert("📖 显示使用说明");
+    },
+
+    // 示例方法：反馈问题
+    $_reportIssue() {
+      alert("⚠ 提交反馈问题");
+    },
+
+    // 示例方法：生成链接
+    $_generateLink() {
+      alert("🔗 生成分享链接");
+    },
+
+    // 示例方法：导出图片
+    $_exportImage() {
+      alert("🖼 导出图片");
+    },
+
+    // 原有方法保持不变...
     setLogicFlowInstance(lf) {
       this.lfInstance = lf;
     },
@@ -89,12 +216,10 @@ export default {
       }
     },
 
-    // ✅ 触发文件选择
     $_importGraphFromFile() {
       this.$refs.fileInput.click();
     },
 
-    // ✅ 处理文件上传并读取内容
     $_handleFileUpload(event) {
       const file = event.target.files[0];
       if (!file) return;
@@ -114,8 +239,21 @@ export default {
         }
       };
       reader.readAsText(file);
-    }
-  }
+    },
+
+    // 关闭所有下拉菜单
+    closeDropdowns() {
+      this.activeDropdownIndex = null;
+    },
+  },
+  mounted() {
+    // 监听全局点击事件
+    window.addEventListener('click', this.closeDropdowns);
+  },
+  beforeDestroy() {
+    // 移除全局点击事件监听
+    window.removeEventListener('click', this.closeDropdowns);
+  },
 };
 </script>
 
@@ -162,6 +300,7 @@ export default {
   display: flex;
   flex-direction: column;
   z-index: 30;
+  min-width: 100px; /* 固定宽度 */
 }
 
 .dropdown-menu button {
