@@ -29,8 +29,16 @@
   </div>
 </template>
 
-
 <script>
+import LogicFlow from '@logicflow/core';
+import { Snapshot } from '@logicflow/extension';
+import { MiniMap } from '@logicflow/extension';
+import '@logicflow/extension/lib/style/index.css';
+
+// 注册插件
+LogicFlow.use(Snapshot);
+LogicFlow.use(MiniMap);
+
 export default {
   name: 'Navbar',
   data() {
@@ -38,6 +46,9 @@ export default {
       // 当前展开的下拉菜单索引
       activeDropdownIndex: null,
       lfInstance: null,
+      undoAble: false, // 撤销是否可用
+      redoAble: false, // 重做是否可用
+      isMiniMapVisible: false, // MiniMap 是否可见
       // 定义按钮及其对应的菜单项
       buttons: [
         {
@@ -55,8 +66,6 @@ export default {
           menuItems: [
             { label: "撤销", action: "$_undo" },
             { label: "重做", action: "$_redo" },
-            { label: "复制", action: "$_copy" },
-            { label: "粘贴", action: "$_paste" },
           ],
         },
         {
@@ -64,7 +73,7 @@ export default {
           menuItems: [
             { label: "放大", action: "$_zoomIn" },
             { label: "缩小", action: "$_zoomOut" },
-            { label: "重置视图", action: "$_resetView" },
+            { label: "显示略缩图", action: "$_toggleMiniMap" }, // 修改为显示/隐藏 MiniMap
           ],
         },
         {
@@ -77,7 +86,6 @@ export default {
         {
           label: "分享",
           menuItems: [
-            { label: "生成链接", action: "$_generateLink" },
             { label: "导出图片", action: "$_exportImage" },
           ],
         },
@@ -88,10 +96,8 @@ export default {
     // 切换指定按钮的下拉菜单状态
     toggleDropdown(index) {
       if (this.activeDropdownIndex === index) {
-        // 如果当前按钮的下拉菜单已经展开，则收起
         this.activeDropdownIndex = null;
       } else {
-        // 否则，收起其他按钮的下拉菜单，并展开当前按钮的下拉菜单
         this.activeDropdownIndex = index;
       }
     },
@@ -107,62 +113,89 @@ export default {
 
     // 示例方法：撤销
     $_undo() {
-      alert("↩️ 撤销操作");
+      if (this.lfInstance) {
+        this.lfInstance.undo();
+      } else {
+        alert("⚠ 画布未初始化！");
+      }
     },
 
     // 示例方法：重做
     $_redo() {
-      alert("↪️ 重做操作");
-    },
-
-    // 示例方法：复制
-    $_copy() {
-      alert("📋 复制操作");
-    },
-
-    // 示例方法：粘贴
-    $_paste() {
-      alert("📋 粘贴操作");
+      if (this.lfInstance) {
+        this.lfInstance.redo();
+      } else {
+        alert("⚠ 画布未初始化！");
+      }
     },
 
     // 示例方法：放大
     $_zoomIn() {
-      alert("🔍 放大视图");
+      if (this.lfInstance) {
+        this.lfInstance.zoom(true);
+      } else {
+        alert("⚠ 画布未初始化！");
+      }
     },
 
     // 示例方法：缩小
     $_zoomOut() {
-      alert("🔍 缩小视图");
+      if (this.lfInstance) {
+        this.lfInstance.zoom(false);
+      } else {
+        alert("⚠ 画布未初始化！");
+      }
     },
 
-    // 示例方法：重置视图
-    $_resetView() {
-      alert("🔄 重置视图");
+    // 示例方法：显示/隐藏 MiniMap
+    $_toggleMiniMap() {
+      if (!this.lfInstance) {
+        alert("⚠ 画布未初始化！");
+        return;
+      }
+
+      if (this.isMiniMapVisible) {
+        // 隐藏 MiniMap
+        this.lfInstance.extension.miniMap.hide();
+        this.buttons[2].menuItems[2].label = "显示略缩图"; // 修改按钮文字
+      } else {
+        // 显示 MiniMap
+        this.lfInstance.extension.miniMap.show(10, 100); // 设置位置
+        this.buttons[2].menuItems[2].label = "隐藏略缩图"; // 修改按钮文字
+      }
+
+      // 切换 MiniMap 状态
+      this.isMiniMapVisible = !this.isMiniMapVisible;
     },
 
     // 示例方法：使用说明
     $_showHelp() {
-      alert("📖 显示使用说明");
+      alert("📖 这个软件通俗易懂，感觉不需要写使用说明");
     },
 
     // 示例方法：反馈问题
     $_reportIssue() {
-      alert("⚠ 提交反馈问题");
-    },
-
-    // 示例方法：生成链接
-    $_generateLink() {
-      alert("🔗 生成分享链接");
+      alert("⚠ 请前往github主页提交反馈问题");
     },
 
     // 示例方法：导出图片
     $_exportImage() {
-      alert("🖼 导出图片");
+      if (this.lfInstance) {
+        this.lfInstance.getSnapshot();
+        alert("🖼 图片已成功导出！");
+      } else {
+        alert("⚠ 画布未初始化！");
+      }
     },
 
-    // 原有方法保持不变...
+    // 设置 LogicFlow 实例
     setLogicFlowInstance(lf) {
       this.lfInstance = lf;
+
+      // 初始化 MiniMap 插件
+      this.lfInstance.extension.miniMap.init({
+        disabledPlugins: [], // 可禁用某些插件
+      });
     },
 
     $_saveGraphToBrowser() {
@@ -249,6 +282,14 @@ export default {
   mounted() {
     // 监听全局点击事件
     window.addEventListener('click', this.closeDropdowns);
+
+    // 监听 LogicFlow 历史记录变化
+    if (this.lfInstance) {
+      this.lfInstance.on('history:change', ({ data: { undoAble, redoAble } }) => {
+        this.undoAble = undoAble;
+        this.redoAble = redoAble;
+      });
+    }
   },
   beforeDestroy() {
     // 移除全局点击事件监听
@@ -283,6 +324,11 @@ export default {
 
 .navbar-btn:hover {
   background-color: #efefef;
+}
+
+.navbar-btn.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .navbar-dropdown {
