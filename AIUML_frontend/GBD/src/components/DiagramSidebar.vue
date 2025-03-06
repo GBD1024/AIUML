@@ -83,6 +83,9 @@
         <div class="node-item" @mousedown="dragInNode('parallelogram')">
           <icon-parallelogram class="svg-node" />
         </div>
+        <div class="node-item" @mousedown="dragInNode('pro-componentnode')">
+          <icon-componentnode class="svg-node" />
+        </div>
       </div>
       <div class="node-category">
         <h1 class="node-category-title">部署图</h1>
@@ -172,6 +175,7 @@ import IconBlack from './icon/Black.vue'
 import IconWrappedBlackCircle from './icon/WrappedBlackCircleIcon.vue'
 import IconBlackrect from './icon/Blackrect.vue'
 import IconSwimlane from './icon/Swimlane.vue'
+import IconComponentnode from './icon/ComponentNode.vue'
 
 export default {
   name: 'DiagramSidebar',
@@ -219,7 +223,8 @@ export default {
     IconBlack,
     IconWrappedBlackCircle,
     IconBlackrect,
-    IconSwimlane
+    IconSwimlane,
+    IconComponentnode
   }
 }
 </script>
