@@ -1,17 +1,3 @@
-<script setup>
-/* eslint-disable no-unused-vars */
-import { ref } from 'vue'
-
-// 控制侧边栏显示状态的响应式变量
-const isSidebarVisible = ref(false)
-
-// 模拟AI对话内容
-const aiMessage = ref('你好！我可以帮助你生成UML、代码或解释代码。请选择以下功能：')
-
-// 模拟用户输入
-const userInput = ref('')
-</script>
-
 <template>
   <div class="ai-panel-container">
     <!-- 添加一个圆形按钮用于切换侧边栏 -->
@@ -32,9 +18,9 @@ const userInput = ref('')
 
       <!-- 中间部分：三个功能按钮 -->
       <div class="button-group">
-        <button class="func-btn" @click="aiMessage = '请输入文本...'">生成UML</button>
-        <button class="func-btn" @click="aiMessage = '正在生成代码...'">生成代码</button>
-        <button class="func-btn" @click="aiMessage = '正在解释代码...'">代码解释</button>
+        <button class="func-btn" @click="selectedAction = 'generateUML'">生成UML</button>
+        <button class="func-btn" @click="selectedAction = 'generateCode'">生成代码</button>
+        <button class="func-btn" @click="selectedAction = 'explainCode'">代码解释</button>
       </div>
 
       <!-- 下半部分：用户对话框 -->
@@ -44,28 +30,134 @@ const userInput = ref('')
           placeholder="请输入你的问题或代码..."
           class="user-input"
         ></textarea>
-        <button class="submit-btn" @click="aiMessage = '提交成功！正在生成UML图！'">提交</button>
-        </div>
+        <button class="submit-btn" @click="handleSubmit">提交</button>
+      </div>
     </aside>
   </div>
 </template>
 
+<script>
+export default {
+  props: {
+    // 父组件传递的获取UML数据方法
+    getUMLData: Function
+  },
+
+  data() {
+    return {
+      // 侧边栏可见状态
+      isSidebarVisible: false,
+
+      // AI对话内容
+      aiMessage: '你好！我可以帮助你生成 UML、代码或解释代码。请选择以下功能：',
+
+      // 用户输入内容
+      userInput: '',
+
+      // 当前选中的操作类型
+      selectedAction: ''
+    };
+  },
+
+  methods: {
+    // 切换侧边栏显示状态
+    toggleSidebar() {
+      this.isSidebarVisible = !this.isSidebarVisible;
+    },
+
+    // 选择功能类型
+    selectAction(action) {
+      this.selectedAction = action;
+    },
+
+    // 处理表单提交
+    handleSubmit() {
+      if (!this.userInput.trim()) {
+        this.aiMessage = '请输入有效的内容！';
+        return;
+      }
+
+      let url = '';
+      let dataToSend = {};
+
+      switch (this.selectedAction) {
+        case 'generateUML':
+          this.aiMessage = `正在生成 UML 图...\n用户输入：${this.userInput}`;
+          url = 'http://localhost:8081/aiuml/generateUML';
+          dataToSend = {
+            type: 'generateUML',
+            content: this.userInput
+          };
+          break;
+        case 'generateCode':
+          this.aiMessage = `正在生成代码...\n用户输入：${this.userInput}`;
+          url = 'http://localhost:8081/aiuml/generateCode';
+          dataToSend = {
+            type: 'generateCode',
+            content: this.userInput,
+            umlData: this.getUMLData()
+          };
+          break;
+        case 'explainCode':
+          this.aiMessage = `正在解释代码...\n用户输入：${this.userInput}`;
+          url = 'http://localhost:8081/aiuml/explainCode';
+          dataToSend = {
+            type: 'explainCode',
+            content: this.userInput
+          };
+          break;
+        default:
+          this.aiMessage = '请选择一个功能后再提交！';
+          return;
+      }
+
+      this.userInput = ''; // 清空输入框
+
+      this.submitRequest(url, dataToSend);
+    },
+
+    // 发送网络请求
+    submitRequest(url, data) {
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+        .then(response => response.json())
+        .then(this.handleResponse)
+        .catch(this.handleError);
+    },
+
+    // 处理成功响应
+    handleResponse(responseData) {
+      this.aiMessage = `后端返回的数据：\n${JSON.stringify(responseData, null, 2)}`;
+    },
+
+    // 处理错误响应
+    handleError(error) {
+      this.aiMessage = '提交失败！请检查网络连接或后端服务。';
+      console.error('提交失败:', error);
+    }
+  }
+};
+</script>
+
 <style scoped>
 .ai-panel-container {
   display: flex;
-  align-items: flex-start; /* 确保子元素垂直对齐 */
+  align-items: flex-start;
 }
-
-/* 圆形按钮样式 */
 .toggle-sidebar-btn {
   position: fixed;
   top: 100px;
   right: 20px;
-  z-index: 2; /* 确保按钮在其他内容之上 */
+  z-index: 2;
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background: linear-gradient(45deg, #f5f2f2, #f2f5f6); /* 渐变色背景 */
+  background: linear-gradient(45deg, #f5f2f2, #f2f5f6);
   color: #070000;
   border: none;
   outline: none;
@@ -73,43 +165,35 @@ const userInput = ref('')
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease-in-out; /* 平滑过渡 */
-  font-size: 20px; /* 调整字体大小 */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* 添加阴影 */
+  transition: all 0.3s ease-in-out;
+  font-size: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
-
-/* 按钮悬停效果 */
 .toggle-sidebar-btn:hover {
-  transform: scale(1.1); /* 悬停时放大 */
-  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3); /* 悬停时阴影加深 */
+  transform: scale(1.1);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
 }
-
-/* 按钮点击旋转效果 */
 .rotate-btn {
-  transform: rotate(90deg); /* 点击时旋转 */
+  transform: rotate(90deg);
 }
-
 .sidebar {
-  width: 350px; /* 更宽的侧边栏 */
+  width: 350px;
   height: 100%;
   position: fixed;
   top: 0;
-  right: -400px; /* 默认隐藏 */
+  right: -400px;
   background-color: #f4f4f4;
   transition: right 0.3s ease-in-out;
   overflow-x: hidden;
   padding: 20px;
   box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
-  z-index: 1; /* 确保侧边栏在其他内容之上 */
+  z-index: 1;
   display: flex;
   flex-direction: column;
 }
-
 .sidebar.sidebar-show {
-  right: 0; /* 显示时的位置 */
+  right: 0;
 }
-
-/* AI对话框样式 */
 .ai-dialog {
   background-color: #ffffff;
   padding: 15px;
@@ -117,27 +201,23 @@ const userInput = ref('')
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
   margin-top: 100px;
-  flex: 3; /* 占侧边栏的四分之三 */
+  flex: 3;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-
 .ai-dialog p {
   margin: 0;
   font-size: 16px;
   color: #333;
   text-align: center;
 }
-
-/* 功能按钮组样式 */
 .button-group {
   display: flex;
   justify-content: space-between;
   gap: 10px;
   margin-bottom: 20px;
 }
-
 .func-btn {
   background-color: #e5e5e5;
   color: #000000;
@@ -146,18 +226,14 @@ const userInput = ref('')
   padding: 10px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  flex: 1; /* 按钮平均分配宽度 */
+  flex: 1;
 }
-
 .func-btn:hover {
   background-color: #c8c8c8;
 }
-
-/* 用户对话框样式 */
 .user-dialog {
-  margin-top: auto; /* 将用户对话框推到最下面 */
+  margin-top: auto;
 }
-
 .user-input {
   width: 100%;
   height: 80px;
@@ -168,7 +244,6 @@ const userInput = ref('')
   font-size: 14px;
   margin-bottom: 10px;
 }
-
 .submit-btn {
   width: 100%;
   background-color: #e5e5e5;
@@ -180,7 +255,6 @@ const userInput = ref('')
   transition: background-color 0.3s ease;
   margin-bottom: 50px;
 }
-
 .submit-btn:hover {
   background-color: #c8c8c8;
 }

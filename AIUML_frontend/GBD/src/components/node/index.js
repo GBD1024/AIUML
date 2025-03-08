@@ -23,6 +23,7 @@ import DivideNode from './path/DivideNode'
 import CubeNode from './path/CubeNode'
 import DecisionNode from './path/DecisionNode'
 import ExecutionSpecification from './path/ExecutionSpecification'
+import ComponentNode from './path/ComponentNode'
 // 多边形绘制的箭头
 import LeftArrow from './arrow/LeftArrow'
 import RightArrow from './arrow/RightArrow'
@@ -108,8 +109,12 @@ export const registerCustomElement = (lf) => {
   lf.register(BidirectionalAssociationline)
   lf.register(DecisionNode)
   lf.register(ExecutionSpecification)
+<<<<<<< HEAD
   lf.register(ObjectNode)
   lf.register(SequenceObjectNode)
   lf.register(Verticalblackrect)
+=======
+  lf.register(ComponentNode)
+>>>>>>> a3c96b94c8486960f63f9f1a5e48cfa8c61ea86a
 }
 
