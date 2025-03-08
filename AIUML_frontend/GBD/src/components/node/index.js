@@ -51,7 +51,9 @@ import WrappedBlackCircleNode from './path/WrappedBlackCircleNode'
 import BlackrectNode from './path/BlackrectNode'
 import Swimlane from './path/Swimlane'
 import BidirectionalAssociationline from './edge/BidirectionalAssociationline'
-
+import ObjectNode from './path/ObjectNode'
+import SequenceObjectNode from './path/SequenceObjectNode'
+import Verticalblackrect from './path/Verticalblackrect'
 export const registerCustomElement = (lf) => {
   // 注册基础图形
   lf.register(CircleNode)
@@ -106,5 +108,8 @@ export const registerCustomElement = (lf) => {
   lf.register(BidirectionalAssociationline)
   lf.register(DecisionNode)
   lf.register(ExecutionSpecification)
+  lf.register(ObjectNode)
+  lf.register(SequenceObjectNode)
+  lf.register(Verticalblackrect)
 }
 

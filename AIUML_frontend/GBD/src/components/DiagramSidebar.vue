@@ -16,8 +16,9 @@
       </div>
       <div class="node-category">
         <h1 class="node-category-title">对象图</h1>
-        <div class="node-item" @mousedown="dragInNode('pro-ellipse')">
-          <icon-ellipse class="svg-node" />
+
+        <div class="node-item" @mousedown="dragInNode('object')">
+          <icon-object class="svg-node" />
         </div>
       </div>
       <div class="node-category">
@@ -33,15 +34,18 @@
         </div>
       </div>
       <div class="node-category">
-        <h1 class="node-category-title">顺序图</h1>
-        <div class="node-item" @mousedown="dragInNode('up-arrow')">
-          <icon-up-arrow class="svg-node" />
-        </div>
-        <div class="node-item" @mousedown="dragInNode('down-arrow')">
-          <icon-down-arrow class="svg-node" />
+        <h1 class="node-category-title">时序图</h1>
+        <div class="node-item" @mousedown="dragInNode('actor')">
+          <icon-actor class="svg-node" />
         </div>
         <div class="node-item" @mousedown="dragInNode('pro-rect')">
           <icon-rect class="svg-node"/>
+        </div>
+        <div class="node-item" @mousedown="dragInNode('sequence-object')">
+          <icon-sequence-object class="svg-node" />
+        </div>  
+        <div class="node-item" @mousedown="dragInNode('vertical-black-rectangle')">
+          <IconVerticalblackrect class="svg-node" />
         </div>
       </div>
       <div class="node-category">
@@ -138,6 +142,12 @@
         <div class="node-item" @mousedown="dragInNode('swimlane')">
           <icon-swimlane class="svg-node" />
         </div>
+        <div class="node-item" @mousedown="dragInNode('up-arrow')">
+          <icon-up-arrow class="svg-node" />
+        </div>
+        <div class="node-item" @mousedown="dragInNode('down-arrow')">
+          <icon-down-arrow class="svg-node" />
+        </div>
       </div>
     </div>
   </div>
@@ -171,7 +181,9 @@ import IconBlack from './icon/Black.vue'
 import IconWrappedBlackCircle from './icon/WrappedBlackCircleIcon.vue'
 import IconBlackrect from './icon/Blackrect.vue'
 import IconSwimlane from './icon/Swimlane.vue'
-
+import IconObject from './icon/Object.vue'
+import IconSequenceObject from './icon/SequenceObjectNode.vue'
+import IconVerticalblackrect from './icon/Verticalblackrect.vue'
 export default {
   name: 'DiagramSidebar',
   methods: {
@@ -218,7 +230,10 @@ export default {
     IconBlack,
     IconWrappedBlackCircle,
     IconBlackrect,
-    IconSwimlane
+    IconSwimlane,
+    IconObject,
+    IconSequenceObject,
+    IconVerticalblackrect
   }
 }
 </script>
