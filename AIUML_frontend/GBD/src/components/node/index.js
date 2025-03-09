@@ -109,12 +109,9 @@ export const registerCustomElement = (lf) => {
   lf.register(BidirectionalAssociationline)
   lf.register(DecisionNode)
   lf.register(ExecutionSpecification)
-<<<<<<< HEAD
   lf.register(ObjectNode)
   lf.register(SequenceObjectNode)
   lf.register(Verticalblackrect)
-=======
   lf.register(ComponentNode)
->>>>>>> a3c96b94c8486960f63f9f1a5e48cfa8c61ea86a
 }
 

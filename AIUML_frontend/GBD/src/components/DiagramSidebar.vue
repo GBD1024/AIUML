@@ -80,6 +80,9 @@
         <div class="node-item" @mousedown="dragInNode('actor')">
           <icon-actor class="svg-node" />
         </div>
+        <div class="node-item" @mousedown="dragInNode('object')">
+          <icon-object class="svg-node" />
+        </div>
         
       </div>
       <div class="node-category">
@@ -185,14 +188,11 @@ import IconBlack from './icon/Black.vue'
 import IconWrappedBlackCircle from './icon/WrappedBlackCircleIcon.vue'
 import IconBlackrect from './icon/Blackrect.vue'
 import IconSwimlane from './icon/Swimlane.vue'
-<<<<<<< HEAD
 import IconObject from './icon/Object.vue'
 import IconSequenceObject from './icon/SequenceObjectNode.vue'
 import IconVerticalblackrect from './icon/Verticalblackrect.vue'
-=======
 import IconComponentnode from './icon/ComponentNode.vue'
 
->>>>>>> a3c96b94c8486960f63f9f1a5e48cfa8c61ea86a
 export default {
   name: 'DiagramSidebar',
   methods: {
@@ -240,13 +240,10 @@ export default {
     IconWrappedBlackCircle,
     IconBlackrect,
     IconSwimlane,
-<<<<<<< HEAD
     IconObject,
     IconSequenceObject,
-    IconVerticalblackrect
-=======
+    IconVerticalblackrect,
     IconComponentnode
->>>>>>> a3c96b94c8486960f63f9f1a5e48cfa8c61ea86a
   }
 }
 </script>
