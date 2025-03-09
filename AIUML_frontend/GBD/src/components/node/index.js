@@ -55,6 +55,7 @@ import BidirectionalAssociationline from './edge/BidirectionalAssociationline'
 import ObjectNode from './path/ObjectNode'
 import SequenceObjectNode from './path/SequenceObjectNode'
 import Verticalblackrect from './path/Verticalblackrect'
+import MessageFlowline from './edge/MessageFlowline'
 export const registerCustomElement = (lf) => {
   // 注册基础图形
   lf.register(CircleNode)
@@ -113,5 +114,6 @@ export const registerCustomElement = (lf) => {
   lf.register(SequenceObjectNode)
   lf.register(Verticalblackrect)
   lf.register(ComponentNode)
+  lf.register(MessageFlowline)
 }
 

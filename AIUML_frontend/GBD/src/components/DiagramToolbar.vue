@@ -119,6 +119,10 @@ export default {
         {
           value: 'pro-dependencyline',
           label: '依赖'
+        },
+        {
+          value: 'pro-messageflowline',
+          label: '消息传递（通信图）'
         }
 
       ]
