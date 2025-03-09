@@ -3,16 +3,17 @@ import { getShapeStyleFuction, getTextStyleFunction } from '../getShapeStyleUtil
 
 // 直线
 class Model extends LineEdgeModel {
-  constructor (data, graphModel) {
+  constructor(data, graphModel) {
     super(data, graphModel)
     this.strokeWidth = 1
+    this.zIndex = -1; // 保证线在节点下面
   }
-  getTextStyle () {
+  getTextStyle() {
     const style = super.getTextStyle()
     return getTextStyleFunction(style, this.properties)
   }
 
-  getEdgeStyle () {
+  getEdgeStyle() {
     const attributes = super.getEdgeStyle()
     const properties = this.properties;
     const style = getShapeStyleFuction(attributes, properties)

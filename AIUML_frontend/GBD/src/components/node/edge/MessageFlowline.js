@@ -6,6 +6,7 @@ class MessageFlowLineModel extends LineEdgeModel {
         super(data, graphModel);
         this.strokeWidth = 1;
         this.isUserDragged = false;
+        this.zIndex = -1; // 保证线在节点下面
     }
 
     setAttributes() {
@@ -13,6 +14,7 @@ class MessageFlowLineModel extends LineEdgeModel {
         if (!this.startPoint || !this.endPoint) {
             this.adjustEdgePoints();
         }
+
     }
 
     adjustEdgePoints() {
