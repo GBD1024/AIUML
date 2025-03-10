@@ -1,17 +1,15 @@
 <template>
   <div class="container">
-    <Diagram />
+    <router-view />
   </div>
 </template>
 
 <script>
-import Diagram from './components/Diagram.vue'
+
 
 export default {
   name: 'App',
-  components: {
-    Diagram
-  }
+
 }
 </script>
 
@@ -26,7 +24,7 @@ body {
 </style>
 <style scoped>
 .container {
-  background-color: #f8f9fa;
+  background-color: #ffffff;
   height: 100%;
 }
 </style>

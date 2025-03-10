@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "set NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service serve",
+    "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
@@ -14,7 +14,8 @@
     "element-ui": "^2.15.6",
     "interactjs": "^1.10.27",
     "vue": "^2.7.16",
-    "vue-color": "^2.8.1"
+    "vue-color": "^2.8.1",
+    "vue-router": "^3.6.5"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.13",

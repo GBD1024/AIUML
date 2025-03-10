@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import { Popover, Select, Option, Input, Button, InputNumber, RadioGroup, RadioButton } from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-
 import App from './App.vue'
+import router from './router'
 
 Vue.component(Popover.name, Popover)
 Vue.component(Select.name, Select)
@@ -16,5 +16,6 @@ Vue.component(RadioButton.name, RadioButton)
 Vue.config.productionTip = false
 
 new Vue({
+  router,
   render: h => h(App)
 }).$mount('#app')

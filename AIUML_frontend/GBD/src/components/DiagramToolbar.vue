@@ -123,6 +123,10 @@ export default {
         {
           value: 'pro-messageflowline',
           label: '消息传递（通信图）'
+        },
+        {
+          value: 'pro-dashedline',
+          label: '虚线'
         }
 
       ]
