@@ -1,20 +1,18 @@
-import Vue from 'vue'
-import { Popover, Select, Option, Input, Button, InputNumber, RadioGroup, RadioButton } from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
+import Vue from 'vue';
+import App from './App.vue';
+import router from './router';
+import axios from "axios";
+import store from './stores/tokenstore'; // 这里要确保路径正确
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
 
-import App from './App.vue'
+Vue.use(ElementUI);
+Vue.prototype.$axios = axios; // 全局注册 axios
 
-Vue.component(Popover.name, Popover)
-Vue.component(Select.name, Select)
-Vue.component(Option.name, Option)
-Vue.component(Input.name, Input)
-Vue.component(Button.name, Button)
-Vue.component(InputNumber.name, InputNumber)
-Vue.component(RadioGroup.name, RadioGroup)
-Vue.component(RadioButton.name, RadioButton)
-
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 
 new Vue({
+  router,
+  store, // 确保 Vuex 加载
   render: h => h(App)
-}).$mount('#app')
+}).$mount('#app');

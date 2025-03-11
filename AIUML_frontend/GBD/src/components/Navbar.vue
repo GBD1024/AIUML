@@ -1,32 +1,19 @@
 <template>
   <div class="navbar">
     <!-- 文件按钮 -->
-    <div 
-      class="navbar-dropdown" 
-      v-for="(button, index) in buttons" 
-      :key="index"
-      @click.stop
-    >
-      <button 
-        class="navbar-btn" 
-        @click="toggleDropdown(index)"
-      >
+    <div class="navbar-dropdown" v-for="(button, index) in buttons" :key="index" @click.stop>
+      <button class="navbar-btn" @click="toggleDropdown(index)">
         {{ button.label }}
       </button>
-      <div 
-        v-if="activeDropdownIndex === index" 
-        class="dropdown-menu"
-      >
-        <button 
-          v-for="(item, idx) in button.menuItems" 
-          :key="idx" 
-          @click="handleMenuItemClick(item.action)"
-        >
+      <div v-if="activeDropdownIndex === index" class="dropdown-menu">
+        <button v-for="(item, idx) in button.menuItems" :key="idx" @click="handleMenuItemClick(item.action)">
           {{ item.label }}
         </button>
       </div>
     </div>
+    <input type="file" ref="fileInput" hidden @change="$_handleFileUpload" />
   </div>
+
 </template>
 
 <script>
@@ -346,7 +333,8 @@ export default {
   display: flex;
   flex-direction: column;
   z-index: 30;
-  min-width: 100px; /* 固定宽度 */
+  min-width: 100px;
+  /* 固定宽度 */
 }
 
 .dropdown-menu button {

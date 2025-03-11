@@ -1,17 +1,12 @@
 <template>
   <div class="container">
-    <Diagram />
+    <router-view />  <!-- 🚀 这里决定渲染哪个页面 -->
   </div>
 </template>
 
 <script>
-import Diagram from './components/Diagram.vue'
-
 export default {
-  name: 'App',
-  components: {
-    Diagram
-  }
+  name: 'App'
 }
 </script>
 
