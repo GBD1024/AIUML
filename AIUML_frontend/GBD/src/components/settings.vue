@@ -1,12 +1,13 @@
 <template>
   <div class="settings-container">
-    <el-button type="primary" icon="el-icon-arrow-left" @click="handleBack" class="back-btn">返回</el-button>
-
-    <h2 class="title">账户信息</h2>
-    <el-divider />
+    <div class="header-section">
+      <el-button type="text" icon="el-icon-arrow-left" @click="handleBack" class="back-btn">返回</el-button>
+      <h2 class="title">账户信息</h2>
+    </div>
+    <el-divider class="custom-divider" />
 
     <!-- 头像修改 -->
-    <el-card shadow="always" class="card">
+    <el-card shadow="hover" class="settings-card">
       <div slot="header" class="card-header">头像修改</div>
       <el-upload class="avatar-uploader" action="/api/user/uploadPic" :headers="{ Authorization: token }"
         :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
@@ -249,31 +250,153 @@ export default {
 
 <style scoped>
 .settings-container {
-  width: 800px;
-  margin: 20px auto;
+  max-width: 600px;
+  margin: 30px auto;
+  padding: 0 20px;
+  position: relative;
+}
+
+.header-section {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  position: relative;
+  justify-content: center;
 }
 
 .title {
-  margin-bottom: 20px;
-  font-size: 24px;
-  font-weight: bold;
+  margin: 0;
+  font-size: 22px;
+  font-weight: 500;
+  color: #303133;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
-.card {
-  margin-bottom: 20px;
+.settings-card {
+  margin-bottom: 24px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  border: 1px solid #ebeef5;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.05);
+}
+
+.settings-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.08);
 }
 
 .card-header {
-  font-size: 18px;
-  font-weight: bold;
+  font-size: 16px;
+  font-weight: 500;
+  color: #303133;
+  border-bottom: 1px solid #ebeef5;
+  padding-bottom: 12px;
 }
 
 .avatar {
-  width: 125px;
-  height: 125px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 2px solid #f5f5f5;
+  transition: all 0.3s ease;
+}
+
+.avatar:hover {
+  border-color: #303133;
 }
 
 .back-btn {
-  margin-bottom: 20px;
+  position: absolute;
+  left: 0;
+  padding: 8px 12px;
+  font-size: 15px;
+  color: #606266;
+  background-color: transparent;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  border: none;
+  z-index: 1;
+}
+
+.back-btn:hover {
+  color: #303133;
+  background-color: #f2f3f5;
+}
+
+.custom-divider {
+  margin: 0 0 24px 0;
+  background-color: #ebeef5;
+}
+
+:deep(.el-input__inner) {
+  height: 40px;
+  line-height: 40px;
+  border-radius: 4px;
+  border-color: #dcdfe6;
+  transition: all 0.3s ease;
+}
+
+:deep(.el-input__inner:hover) {
+  border-color: #303133;
+}
+
+:deep(.el-input__inner:focus) {
+  border-color: #303133;
+}
+
+:deep(.el-form-item) {
+  margin-bottom: 22px;
+}
+
+:deep(.el-form-item__label) {
+  color: #606266;
+  font-weight: 500;
+}
+
+:deep(.el-button--primary) {
+  height: 40px;
+  padding: 0 24px;
+  font-size: 14px;
+  background-color: #303133;
+  border-color: #303133;
+  transition: all 0.3s ease;
+}
+
+:deep(.el-button--primary:hover) {
+  background-color: #000000;
+  border-color: #000000;
+  transform: translateY(-1px);
+}
+
+:deep(.el-button--primary:active) {
+  background-color: #000000;
+  border-color: #000000;
+  transform: translateY(0);
+}
+
+:deep(.avatar-uploader) {
+  text-align: center;
+  padding: 24px 0;
+}
+
+:deep(.el-input-group__append) {
+  background-color: #f5f5f5;
+  border-color: #dcdfe6;
+  color: #303133;
+  transition: all 0.3s ease;
+}
+
+:deep(.el-input-group__append:hover) {
+  background-color: #303133;
+  border-color: #303133;
+  color: #ffffff;
+}
+
+:deep(.el-input.is-disabled .el-input__inner) {
+  background-color: #f8f9fa;
+  border-color: #e9ecef;
+  color: #909399;
 }
 </style>

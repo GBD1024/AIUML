@@ -35,7 +35,7 @@ import LogicFlow from '@logicflow/core';
 import { Snapshot } from '@logicflow/extension';
 import { MiniMap } from '@logicflow/extension';
 import '@logicflow/extension/lib/style/index.css';
-import  getUserInfo  from '@/api/getUserInfo';
+import getUserInfo from '@/api/getUserInfo';
 
 
 // 注册插件
@@ -413,5 +413,19 @@ export default {
 .el-icon-loading {
   font-size: 20px;
   color: #909399;
+}
+
+::v-deep .el-dropdown-menu__item:focus,
+::v-deep .el-dropdown-menu__item:not(.is-disabled):hover {
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+::v-deep .el-popper[x-placement^="bottom"] .popper__arrow::after {
+  border-bottom-color: #fff;
+}
+
+::v-deep .el-popper[x-placement^="bottom"] .popper__arrow {
+  border-bottom-color: #ebeef5;
 }
 </style>

@@ -43,7 +43,7 @@
     </div>
 
     <div style="margin-left: 30px">
-      <el-select v-model="linetype" size="mini" @change="$_changeLineType">
+      <el-select v-model="linetype" size="mini" @change="$_changeLineType" popper-class="custom-select-dropdown">
         <el-option v-for="item in lineOptions" :key="item.value" :value="item.value" :label="item.label"></el-option>
       </el-select>
     </div>
@@ -214,5 +214,55 @@ export default {
 
 .selection-active {
   background: #6a6a6a;
+}
+
+::v-deep .el-select .el-input__inner:focus {
+  border-color: #606266;
+}
+
+::v-deep .el-select .el-input.is-focus .el-input__inner {
+  border-color: #606266;
+}
+
+::v-deep .el-select:hover .el-input__inner {
+  border-color: #606266;
+}
+
+::v-deep .el-select-dropdown__item.selected,
+::v-deep .el-select-dropdown__item.selected.hover {
+  color: #333 !important;
+  font-weight: bold;
+}
+
+::v-deep .el-select-dropdown__item.hover,
+::v-deep .el-select-dropdown__item:hover {
+  background-color: #f5f5f5;
+}
+
+.toolbar-item.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.toolbar-item.disabled:hover {
+  cursor: not-allowed;
+  background-color: transparent;
+}
+
+::v-deep .custom-select-dropdown {
+  .el-select-dropdown__item {
+    color: #606266;
+
+    &.selected {
+      color: #333 !important;
+      background-color: #f5f5f5 !important;
+      font-weight: bold;
+    }
+
+    &:hover {
+      background-color: #f5f5f5;
+      color: #606266;
+    }
+  }
 }
 </style>
