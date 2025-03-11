@@ -221,8 +221,8 @@ export default {
 
 .diagram-sidebar {
   margin-top: 100px;
-  width: 350px;
-  height: calc(100vh - 100px);
+  width: 25%;
+  height: calc(100vh - 130px);
   border-right: 1px solid #dadce0;
   padding: 10px;
   overflow-y: auto;

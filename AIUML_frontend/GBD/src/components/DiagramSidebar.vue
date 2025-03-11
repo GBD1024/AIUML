@@ -146,9 +146,6 @@
         <div class="node-item" @mousedown="dragInNode('parallelogram')">
           <icon-parallelogram class="svg-node" />
         </div>
-        <div class="node-item" @mousedown="dragInNode('swimlane')">
-          <icon-swimlane class="svg-node" />
-        </div>
         <div class="node-item" @mousedown="dragInNode('up-arrow')">
           <icon-up-arrow class="svg-node" />
         </div>
@@ -187,7 +184,6 @@ import IconCube from './icon/Cube.vue'
 import IconBlack from './icon/Black.vue'
 import IconWrappedBlackCircle from './icon/WrappedBlackCircleIcon.vue'
 import IconBlackrect from './icon/Blackrect.vue'
-import IconSwimlane from './icon/Swimlane.vue'
 import IconObject from './icon/Object.vue'
 import IconSequenceObject from './icon/SequenceObjectNode.vue'
 import IconVerticalblackrect from './icon/Verticalblackrect.vue'
@@ -239,7 +235,6 @@ export default {
     IconBlack,
     IconWrappedBlackCircle,
     IconBlackrect,
-    IconSwimlane,
     IconObject,
     IconSequenceObject,
     IconVerticalblackrect,
