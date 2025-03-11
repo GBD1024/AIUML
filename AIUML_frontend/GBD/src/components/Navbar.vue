@@ -11,6 +11,20 @@
         </button>
       </div>
     </div>
+    <div style="flex-grow: 1;"></div>
+
+    <!-- 用户头像放到顶栏的最右侧 -->
+    <el-dropdown class="navbar-avatar" @command="handleAvatarCommand">
+      <span class="el-dropdown-link">
+        <el-avatar :src="avatar" icon="el-icon-user-solid" :title="avatar ? '用户头像' : '正在加载头像...'">
+          <i v-if="!avatar" class="el-icon-loading"></i>
+        </el-avatar>
+      </span>
+      <el-dropdown-menu slot="dropdown">
+        <el-dropdown-item command="settings">设置</el-dropdown-item>
+        <el-dropdown-item command="logout">登出</el-dropdown-item>
+      </el-dropdown-menu>
+    </el-dropdown>
     <input type="file" ref="fileInput" hidden @change="$_handleFileUpload" />
   </div>
 
@@ -21,6 +35,8 @@ import LogicFlow from '@logicflow/core';
 import { Snapshot } from '@logicflow/extension';
 import { MiniMap } from '@logicflow/extension';
 import '@logicflow/extension/lib/style/index.css';
+import  getUserInfo  from '@/api/getUserInfo';
+
 
 // 注册插件
 LogicFlow.use(Snapshot);
@@ -30,6 +46,7 @@ export default {
   name: 'Navbar',
   data() {
     return {
+      avatar: '',
       // 当前展开的下拉菜单索引
       activeDropdownIndex: null,
       lfInstance: null,
@@ -97,7 +114,36 @@ export default {
         alert(`⚠ 方法 ${action} 未定义！`);
       }
     },
+    handleAvatarCommand(command) {
+      if (command === 'logout') {
+        this.logout();
+      } else if (command === 'settings') {
+        this.$router.push('/settings'); // 跳转到设置界面
+      }
+    },
 
+    logout() {
+      localStorage.removeItem('token');
+      sessionStorage.removeItem('token');
+      this.$message.success('已退出登录');
+      this.$router.push('/login');
+    },
+    async fetchUserInfo() {
+      try {
+        // 确保传递正确的token参数
+        const info = await getUserInfo(localStorage.getItem('token'));
+
+        // 添加字段验证和默认值
+        this.avatar = info.user_pic || 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png';
+
+        // 调试输出
+        console.log('用户头像URL:', this.avatar);
+      } catch (error) {
+        console.error('获取用户信息失败:', error);
+        // 设置默认头像
+        this.avatar = 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png';
+      }
+    },
     // 示例方法：撤销
     $_undo() {
       if (this.lfInstance) {
@@ -267,10 +313,9 @@ export default {
     },
   },
   mounted() {
-    // 监听全局点击事件
+    this.fetchUserInfo(); // 新增此行
     window.addEventListener('click', this.closeDropdowns);
 
-    // 监听 LogicFlow 历史记录变化
     if (this.lfInstance) {
       this.lfInstance.on('history:change', ({ data: { undoAble, redoAble } }) => {
         this.undoAble = undoAble;
@@ -348,5 +393,25 @@ export default {
 
 .dropdown-menu button:hover {
   background: #f0f0f0;
+}
+
+.navbar-avatar {
+  margin-right: 20px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.navbar-avatar:hover {
+  transform: scale(1.1);
+}
+
+.el-avatar {
+  border: 2px solid #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.el-icon-loading {
+  font-size: 20px;
+  color: #909399;
 }
 </style>

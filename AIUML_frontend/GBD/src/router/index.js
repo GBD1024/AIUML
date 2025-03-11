@@ -5,6 +5,7 @@ import store from '../stores/tokenstore'; // 确保 Vuex 2 版本
 import Login from '../components/login.vue';
 import Register from '../components/register.vue';
 import Diagram from '../components/Diagram.vue';
+import Setting from '../components/settings.vue';
 
 Vue.use(VueRouter);
 
@@ -13,10 +14,15 @@ const routes = [
   { path: '/login', component: Login },
   { path: '/register', component: Register },
   {
+    path: '/settings',component: Setting
+  },
+  
+  {
     path: '/diagram',
     component: Diagram,
     meta: { requiresAuth: true } // 🚀 需要登录才能进入
   }
+
 ];
 
 const router = new VueRouter({
