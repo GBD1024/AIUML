@@ -1,14 +1,16 @@
 <template>
   <div class="login-container">
+    <!-- 气泡背景容器 -->
+    <ul class="square-bg-bubbles">
+      <li v-for="n in 10" :key="n"></li>
+    </ul>
+
     <el-row class="login-wrapper">
       <!-- 左侧介绍区域 -->
       <el-col :lg="12" :md="12" class="left-section">
         <div class="intro">
           <h1 class="title">图灵智绘</h1>
           <p class="description">轻量级、智能化 UML 绘制系统</p>
-          <ul class="bg-bubbles">
-            <li v-for="n in 10" :key="n"></li>
-          </ul>
         </div>
       </el-col>
 
@@ -94,25 +96,156 @@ export default {
 </script>
 
 <style scoped>
-/* 整体布局 */
+/* 容器 & 背景 */
 .login-container {
+  position: relative;
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #2c3e50, #4b6584);
+  background: linear-gradient(27deg, #000000, #121212, #1a1a1a);
+  background-size: 600% 600%;
+  animation: GradientBackground 7.5s ease infinite;
+  overflow: hidden;
+  z-index: 1;
 }
 
-/* 登录框区域 */
+/* 气泡动画层 */
+.square-bg-bubbles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  z-index: 1;
+}
+
+.square-bg-bubbles li {
+  position: absolute;
+  display: block;
+  width: 40px;
+  height: 40px;
+  background-color: hsla(0, 0%, 100%, .15);
+  bottom: -160px;
+  animation: square 25s infinite;
+  transition-timing-function: linear;
+  will-change: transform;
+  /* 硬件加速 */
+}
+
+/* 气泡个性配置 */
+.square-bg-bubbles li:nth-child(1) {
+  left: 10%
+}
+
+.square-bg-bubbles li:nth-child(2) {
+  left: 20%;
+  width: 80px;
+  height: 80px;
+  animation-delay: 2s;
+  animation-duration: 17s;
+}
+
+.square-bg-bubbles li:nth-child(3) {
+  left: 25%;
+  animation-delay: 4s
+}
+
+.square-bg-bubbles li:nth-child(4) {
+  left: 40%;
+  width: 60px;
+  height: 60px;
+  animation-duration: 22s;
+  background-color: hsla(0, 0%, 100%, .25)
+}
+
+.square-bg-bubbles li:nth-child(5) {
+  left: 70%
+}
+
+.square-bg-bubbles li:nth-child(6) {
+  left: 80%;
+  width: 120px;
+  height: 120px;
+  animation-delay: 3s;
+  background-color: hsla(0, 0%, 100%, .2)
+}
+
+.square-bg-bubbles li:nth-child(7) {
+  left: 32%;
+  width: 160px;
+  height: 160px;
+  animation-delay: 5s
+}
+
+.square-bg-bubbles li:nth-child(8) {
+  left: 55%;
+  width: 40px;
+  height: 40px;
+  animation-delay: 15s;
+  animation-duration: 40s
+}
+
+.square-bg-bubbles li:nth-child(9) {
+  left: 25%;
+  width: 30px;
+  height: 30px;
+  animation-delay: 2s;
+  animation-duration: 40s;
+  background-color: hsla(0, 0%, 100%, .3)
+}
+
+.square-bg-bubbles li:nth-child(10) {
+  left: 90%;
+  width: 160px;
+  height: 160px;
+  animation-delay: 11s
+}
+
+/* 关键帧动画 */
+@keyframes GradientBackground {
+  0% {
+    background-position: 0% 50%
+  }
+
+  50% {
+    background-position: 100% 50%
+  }
+
+  100% {
+    background-position: 0% 50%
+  }
+}
+
+@keyframes square {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  80% {
+    transform: translateY(-560px) rotate(480deg);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(-700px) rotate(600deg);
+    opacity: 0;
+  }
+}
+
+/* 内容层 (需在气泡上层) */
 .login-wrapper {
+  position: relative;
+  z-index: 2;
   width: 85%;
   max-width: 960px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-/* 左侧介绍 */
+/* 左侧介绍区域 */
 .left-section {
   display: flex;
   align-items: center;
@@ -120,17 +253,20 @@ export default {
   text-align: center;
   color: white;
   padding: 40px;
+  margin-top: 100px;
 }
 
 .intro .title {
   font-size: 36px;
   font-weight: bold;
   margin-bottom: 10px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .intro .description {
   font-size: 18px;
-  opacity: 0.8;
+  opacity: 0.9;
+  letter-spacing: 1px;
 }
 
 /* 右侧登录框 */
@@ -144,68 +280,78 @@ export default {
   width: 100%;
   max-width: 400px;
   padding: 30px;
-  border-radius: 10px;
-  text-align: center;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.95);
 }
 
-/* 标题 */
 .login-title {
   font-size: 24px;
-  font-weight: bold;
+  font-weight: 600;
   margin-bottom: 5px;
+  color: #2c3e50;
 }
 
 .login-subtitle {
   font-size: 14px;
   color: #7b7b7b;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
 
-/* 表单 */
-.login-form {
-  display: flex;
-  flex-direction: column;
+/* 表单元素 */
+.login-form :deep(.el-input__inner) {
+  height: 44px;
+  border-radius: 6px;
+  background-color: rgba(255, 255, 255, 0.95);
 }
 
-/* 登录按钮 */
 .login-btn {
   width: 100%;
-  background-color: #2c3e50;
+  height: 44px;
+  background: linear-gradient(45deg, #1a1a1a, #333333);
   border: none;
-  color: white;
-  padding: 12px;
-  border-radius: 5px;
-  font-size: 16px;
-  cursor: pointer;
+  transition: all 0.3s;
+  color: #ffffff;
 }
 
 .login-btn:hover {
-  background-color: #1f2c3a;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(45deg, #2c2c2c, #454545);
 }
 
 /* 注册链接 */
 .register-link {
+  margin-top: 15px;
   font-size: 14px;
-  margin-top: 10px;
+  color: #666666;
 }
 
 .register-link a {
-  color: #3498db;
-  text-decoration: none;
+  color: #333333 !important;
+  font-weight: 500;
+  transition: all 0.3s;
 }
 
 .register-link a:hover {
-  text-decoration: underline;
+  color: #000000 !important;
+  letter-spacing: 0.5px;
 }
 
 /* 响应式布局 */
 @media (max-width: 768px) {
   .login-wrapper {
     flex-direction: column;
+    width: 90%;
   }
 
   .left-section {
     display: none;
+  }
+
+  .login-box {
+    padding: 25px;
+    margin-top: 20px;
   }
 }
 </style>
