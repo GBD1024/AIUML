@@ -12,9 +12,9 @@ const routes = [
   { path: '/', redirect: '/login' }, // 🚀 进入 "/" 时，默认跳转到登录页
   { path: '/login', component: Login },
   { path: '/register', component: Register },
-  { 
-    path: '/diagram', 
-    component: Diagram, 
+  {
+    path: '/diagram',
+    component: Diagram,
     meta: { requiresAuth: true } // 🚀 需要登录才能进入
   }
 ];
