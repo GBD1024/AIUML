@@ -1,0 +1,146 @@
+.leftframework .wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(27deg, #6366f1, #0575E6, #000000);
+  background-size: 600% 600%;
+  animation: GradientBackground 7.5s ease infinite;
+  z-index: 1;
+}
+
+.bg-bubbles,
+.wrapper {
+  position: fixed;
+  left: 0;
+  width: 66.7%;
+  height: 100%;
+}
+
+.bg-bubbles,
+.wrapper {
+  overflow: visible;
+  position: fixed;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.bg-bubbles {
+  top: 0;
+  z-index: 1
+}
+
+.bg-bubbles li {
+  position: absolute;
+  list-style: none;
+  display: block;
+  width: 40px;
+  height: 40px;
+  background-color: hsla(0, 0%, 100%, .15);
+  bottom: -160px;
+  left: -260px;
+  animation: triangle 25s infinite;
+  transition-timing-function: linear;
+  clip-path: polygon(0% 0%,
+      100% 21.45%,
+      21.45% 100%);
+}
+
+
+.bg-bubbles li:nth-child(1) {
+  left: 10%
+}
+
+.bg-bubbles li:nth-child(2) {
+  left: 20%;
+  width: 80px;
+  height: 80px;
+  animation-delay: 2s;
+  animation-duration: 17s
+}
+
+.bg-bubbles li:nth-child(3) {
+  left: 25%;
+  animation-delay: 4s
+}
+
+.bg-bubbles li:nth-child(4) {
+  left: 40%;
+  width: 60px;
+  height: 60px;
+  animation-duration: 22s;
+  background-color: hsla(0, 0%, 100%, .25)
+}
+
+.bg-bubbles li:nth-child(5) {
+  left: 60%
+}
+
+.bg-bubbles li:nth-child(6) {
+  left: 80%;
+  width: 120px;
+  height: 120px;
+  animation-delay: 3s;
+  background-color: hsla(0, 0%, 100%, .2)
+}
+
+.bg-bubbles li:nth-child(7) {
+  left: 32%;
+  width: 160px;
+  height: 160px;
+  animation-delay: 5s
+}
+
+.bg-bubbles li:nth-child(8) {
+  left: 10%;
+  width: 70px;
+  height: 70px;
+  animation-delay: 15s;
+  animation-duration: 40s
+}
+
+.bg-bubbles li:nth-child(9) {
+  left: 25%;
+  width: 90px;
+  height: 90px;
+  animation-delay: 2s;
+  animation-duration: 40s;
+  background-color: hsla(0, 0%, 100%, .3)
+}
+
+.bg-bubbles li:nth-child(10) {
+  left: 90%;
+  width: 160px;
+  height: 160px;
+  animation-delay: 11s
+}
+
+@keyframes GradientBackground {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes triangle {
+  0% {
+    transform: translateX(-50px) translateY(0);
+    opacity: 1;
+  }
+  85% {
+    transform: translateX(300px) translateY(-765px) rotate(480deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(350px) translateY(-900px) rotate(600deg);
+    opacity: 0;
+  }
+}

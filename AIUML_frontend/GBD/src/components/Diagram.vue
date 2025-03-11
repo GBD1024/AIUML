@@ -2,19 +2,10 @@
   <div class="diagram">
     <!-- 传递 `lf` 实例给 Navbar -->
     <Navbar ref="navbar" />
-    <diagram-toolbar
-      class="diagram-toolbar"
-      v-if="lf"
-      :lf="lf"
-      :activeEdges="activeEdges"
-      @changeNodeFillColor="$_changeNodeFill"
-      @saveGraph="$_saveGraph"
-    />
+    <diagram-toolbar class="diagram-toolbar" v-if="lf" :lf="lf" :activeEdges="activeEdges"
+      @changeNodeFillColor="$_changeNodeFill" @saveGraph="$_saveGraph" />
     <div class="diagram-main">
-      <diagram-sidebar
-        class="diagram-sidebar"
-        @dragInNode="$_dragInNode"
-      />
+      <diagram-sidebar class="diagram-sidebar" @dragInNode="$_dragInNode" />
       <div class="diagram-container" ref="container">
         <div class="diagram-wrapper">
           <div class="lf-diagram" ref="diagram"></div>
@@ -26,15 +17,9 @@
       <AIPanel class="diagram-ai-panel" :getUMLData="getUMLData" />
     </div>
     <!-- 属性面板 -->
-    <PropertyPanel
-      class="diagram-panel"
-      v-if="activeNodes.length > 0 || activeEdges.length > 0"
-      :style="{ left: panelPosition.left + 'px', top: panelPosition.top + 'px' }"
-      :onlyEdge="activeNodes.length === 0"
-      :elementsStyle="properties"
-      @setStyle="$_setStyle"
-      @setZIndex="$_setZIndex"
-    />
+    <PropertyPanel class="diagram-panel" v-if="activeNodes.length > 0 || activeEdges.length > 0"
+      :style="{ left: panelPosition.left + 'px', top: panelPosition.top + 'px' }" :onlyEdge="activeNodes.length === 0"
+      :elementsStyle="properties" @setStyle="$_setStyle" @setZIndex="$_setZIndex" />
   </div>
 </template>
 
@@ -121,12 +106,16 @@ export default {
       lf.setDefaultEdgeType('pro-polyline');
       lf.render(data);
       this.lf = lf; // 将 LogicFlow 实例赋值给 this.lf
-      this.lf.on('selection:selected,node:contextmenu,blank:click,edge:click', () => {
+      // 修改事件监听以实现节点与边均通过右键打开属性栏
+      this.lf.on('selection:selected,node:contextmenu,edge:contextmenu,blank:click', () => {
         this.$nextTick(() => {
           const { nodes, edges } = this.lf.getSelectElements();
           this.activeNodes = nodes;
           this.activeEdges = edges;
           this.$_getProperty();
+          if (edges.length > 0) {
+            this.updatePanelPosition();
+          }
         });
       });
       this.$refs.navbar.setLogicFlowInstance(this.lf);
@@ -192,8 +181,8 @@ export default {
         const edge = this.activeEdges[0];
         const middleX = (edge.startPoint.x + edge.endPoint.x) / 2;
         const middleY = (edge.startPoint.y + edge.endPoint.y) / 2;
-        this.panelPosition.left = middleX + 50; // 偏移量
-        this.panelPosition.top = middleY;
+        this.panelPosition.left = middleX + 50; // 调整偏移量以适应你的布局
+        this.panelPosition.top = middleY - 100; // 根据需要调整垂直位置
       }
     },
     getUMLData() {
@@ -208,6 +197,7 @@ export default {
   width: 100%;
   height: 100%;
 }
+
 .diagram-toolbar {
   position: absolute;
   top: 50px;
@@ -222,11 +212,13 @@ export default {
   padding-top: 2px;
   background-color: #f0f0f0;
 }
+
 .diagram-main {
   display: flex;
   width: 100%;
   height: 100%;
 }
+
 .diagram-sidebar {
   margin-top: 100px;
   width: 350px;
@@ -235,6 +227,7 @@ export default {
   padding: 10px;
   overflow-y: auto;
 }
+
 .diagram-panel {
   position: absolute;
   z-index: 10;
@@ -243,28 +236,34 @@ export default {
   background: #ffffff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
+
 .diagram-container {
   flex: 1;
 }
+
 .diagram /deep/ .lf-background {
   left: -9px;
 }
+
 .diagram-wrapper {
   box-sizing: border-box;
   width: 100%;
   height: 100%;
 }
+
 .lf-diagram {
   box-shadow: 0px 0px 4px #838284;
   width: 100%;
   height: 100%;
 }
+
 ::-webkit-scrollbar {
   width: 9px;
   height: 9px;
   background: white;
   border-left: 1px solid #e8e8e8;
 }
+
 ::-webkit-scrollbar-thumb {
   border-width: 1px;
   border-style: solid;
@@ -272,6 +271,7 @@ export default {
   border-radius: 6px;
   background: #c9c9c9;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: #b5b5b5;
 }
