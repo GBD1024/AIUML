@@ -10,7 +10,7 @@ import Setting from '../components/settings.vue';
 Vue.use(VueRouter);
 
 const routes = [
-  { path: '/', redirect: '/login' }, // 🚀 进入 "/" 时，默认跳转到登录页
+  { path: '/', redirect: '/login' }, //  进入 "/" 时，默认跳转到登录页
   { path: '/login', component: Login },
   { path: '/register', component: Register },
   {
@@ -20,7 +20,7 @@ const routes = [
   {
     path: '/diagram',
     component: Diagram,
-    meta: { requiresAuth: true } // 🚀 需要登录才能进入
+    meta: { requiresAuth: true } //  需要登录才能进入
   }
 
 ];

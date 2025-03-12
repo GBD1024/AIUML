@@ -6,6 +6,9 @@
     </div>
     <el-divider class="custom-divider" />
 
+
+    <div class="card-container">
+
     <!-- 头像修改 -->
     <el-card shadow="hover" class="settings-card">
       <div slot="header" class="card-header">头像修改</div>
@@ -16,8 +19,8 @@
       </el-upload>
     </el-card>
 
-    <!-- 基本信息修改 -->
-    <el-card shadow="always" class="card">
+        <!-- 基本信息修改 -->
+      <el-card shadow="always" class="card2">
       <div slot="header" class="card-header">基本信息</div>
       <el-form :model="basicInfoForm" ref="basicInfoForm" label-width="80px">
         <el-form-item label="账户">
@@ -32,8 +35,10 @@
       </el-form>
     </el-card>
 
+    </div>
+    
     <!-- 修改密码部分 -->
-    <el-card shadow="always" class="card">
+    <el-card shadow="always" class="card1">
       <div slot="header" class="card-header">修改密码</div>
       <el-form :model="passForm" ref="passForm" label-width="100px" :rules="rules">
         <el-form-item label="当前账户" prop="userId">
@@ -57,6 +62,10 @@
         </el-form-item>
       </el-form>
     </el-card>
+
+
+
+
 
 
   </div>
@@ -250,13 +259,36 @@ export default {
 
 <style scoped>
 .settings-container {
-  max-width: 600px;
-  margin: 30px auto;
+  max-width: 100%;
+  margin: 0px auto;
   padding: 0 20px;
-  position: relative;
+  position:relative;
+}
+
+.card1 {
+  border-radius: 8px;
+  margin-top: 10px;
+  display: inline-block;
+  margin-left: 30px;
+  width: 48%;
+  position: absolute;
+  margin-top:0px;
+  right: 20px;
+  height: 88%;
+}
+
+.card2 {
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+.card-container {
+  display: inline-block;
+  width: 48%;
 }
 
 .header-section {
+  padding-top: 20px;
   display: flex;
   align-items: center;
   margin-bottom: 20px;
@@ -275,7 +307,9 @@ export default {
 }
 
 .settings-card {
-  margin-bottom: 24px;
+  display: inline-block;
+  width: 100%;
+  margin-bottom: 0px;
   border-radius: 8px;
   transition: all 0.3s ease;
   border: 1px solid #ebeef5;
@@ -359,8 +393,8 @@ export default {
   height: 40px;
   padding: 0 24px;
   font-size: 14px;
-  background-color: #303133;
-  border-color: #303133;
+  background-color: #303133!important;
+  border-color: #303133!important;
   transition: all 0.3s ease;
 }
 
