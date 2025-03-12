@@ -83,7 +83,7 @@ export default {
       switch (this.selectedAction) {
         case 'generateUML':
           this.aiMessage = `正在生成 UML 图...\n用户输入：${this.userInput}`;
-          url = 'http://localhost:8081/aiuml/generateUML';
+          url = 'api/aiuml/generateUML';
           dataToSend = {
             type: 'generateUML',
             content: this.userInput
@@ -91,7 +91,7 @@ export default {
           break;
         case 'generateCode':
           this.aiMessage = `正在生成代码...\n用户输入：${this.userInput}`;
-          url = 'http://localhost:8081/aiuml/generateCode';
+          url = 'api/aiuml/generateCode';
           dataToSend = {
             type: 'generateCode',
             content: this.userInput,
@@ -100,7 +100,7 @@ export default {
           break;
         case 'explainCode':
           this.aiMessage = `正在解释代码...\n用户输入：${this.userInput}`;
-          url = 'http://localhost:8081/aiuml/explainCode';
+          url = 'api/aiuml/explainCode';
           dataToSend = {
             type: 'explainCode',
             content: this.userInput
