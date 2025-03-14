@@ -6,6 +6,7 @@ import Login from '../components/login.vue';
 import Register from '../components/register.vue';
 import Diagram from '../components/Diagram.vue';
 import Setting from '../components/settings.vue';
+import Index from '../components/index.vue';
 
 Vue.use(VueRouter);
 
@@ -16,11 +17,13 @@ const routes = [
   {
     path: '/settings',component: Setting
   },
-  
+  {
+    path: '/index',component: Index,
+  },
   {
     path: '/diagram',
     component: Diagram,
-    meta: { requiresAuth: true } //  需要登录才能进入
+    meta: { requiresAuth: false } //  需要登录才能进入
   }
 
 ];

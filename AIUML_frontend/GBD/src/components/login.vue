@@ -72,6 +72,7 @@ export default {
       }
     },
     login() {
+      // this.$router.push("/index");
       this.$refs.loginFormRef.validate((valid) => {
         if (valid) {
           this.$axios
@@ -80,7 +81,7 @@ export default {
               if (!response.data.code) {
                 this.$message.success("登录成功");
                 this.$store.commit("setToken", response.data.info);
-                this.$router.push("/diagram");
+                this.$router.push("/index");
               } else {
                 this.$message.error("登录失败，请检查您的账户信息！");
               }

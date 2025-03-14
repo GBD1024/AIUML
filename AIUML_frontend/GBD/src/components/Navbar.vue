@@ -27,7 +27,6 @@
     </el-dropdown>
     <input type="file" ref="fileInput" hidden @change="$_handleFileUpload" />
   </div>
-
 </template>
 
 <script>
@@ -36,7 +35,7 @@ import { Snapshot } from '@logicflow/extension';
 import { MiniMap } from '@logicflow/extension';
 import '@logicflow/extension/lib/style/index.css';
 import getUserInfo from '@/api/getUserInfo';
-
+import axios from 'axios';
 
 // 注册插件
 LogicFlow.use(Snapshot);
@@ -44,9 +43,15 @@ LogicFlow.use(MiniMap);
 
 export default {
   name: 'Navbar',
+  props: {
+    diagramId: {
+      type: String,
+    }
+  },
   data() {
     return {
       avatar: '',
+
       // 当前展开的下拉菜单索引
       activeDropdownIndex: null,
       lfInstance: null,
@@ -58,6 +63,7 @@ export default {
         {
           label: "文件",
           menuItems: [
+            { label: "保存至我的", action: "$_saveGraph" },
             { label: "保存至缓存", action: "$_saveGraphToBrowser" },
             { label: "恢复缓存", action: "$_loadGraphFromBrowser" },
             { label: "清空缓存", action: "$_clearGraphBrowser" },
@@ -131,17 +137,20 @@ export default {
     async fetchUserInfo() {
       try {
         // 确保传递正确的token参数
-        const info = await getUserInfo(localStorage.getItem('token'));
+        const info = await getUserInfo(localStorage.getItem('token'), axios);
 
         // 添加字段验证和默认值
         this.avatar = info.user_pic || 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png';
+        this.userId = info.id || ''; // 获取并存储 userId
 
         // 调试输出
         console.log('用户头像URL:', this.avatar);
+        console.log('用户ID:', this.userId);
       } catch (error) {
         console.error('获取用户信息失败:', error);
         // 设置默认头像
         this.avatar = 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png';
+        this.userId = ''; // 清空 userId
       }
     },
     // 示例方法：撤销
@@ -229,6 +238,49 @@ export default {
       this.lfInstance.extension.miniMap.init({
         disabledPlugins: [], // 可禁用某些插件
       });
+    },
+    async $_saveGraph() {
+      if (this.lfInstance) {
+        const data = this.lfInstance.getGraphData();
+
+        // 弹出输入框让用户输入绘图名称
+        const graphName = prompt('请输入绘图名称:');
+        if (!graphName) {
+          this.$message.error('绘图名称不能为空');
+          return;
+        }
+
+        // 生成图片数据
+        const { data: imageBlob } = await this.lfInstance.getSnapshotBlob();
+
+        // 创建 FormData 对象
+        const formData = new FormData();
+        formData.append('graphName', graphName);
+        formData.append('graphData', JSON.stringify(data));
+        formData.append('image', imageBlob, 'diagram.png');
+        if (this.diagramId) {
+          formData.append('id', this.diagramId);
+        }
+        console.log(this.diagramId);
+        this.$axios
+          .post('/api/graph/save', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          })
+          .then((response) => {
+            if (response.data.code === 0) {
+              this.$message.success('图形和图片已成功保存！');
+            } else {
+              this.$message.error('保存失败: ' + response.data.message);
+            }
+          })
+          .catch((error) => {
+            this.$message.error('保存失败: ' + error.message);
+          });
+      } else {
+        this.$message.error('⚠ 画布未初始化！');
+      }
     },
 
     $_saveGraphToBrowser() {

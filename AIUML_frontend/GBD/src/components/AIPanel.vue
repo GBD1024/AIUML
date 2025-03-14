@@ -1,26 +1,35 @@
 <template>
   <div class="ai-panel-container">
-    <!-- 添加一个圆形按钮用于切换侧边栏 -->
+    <!-- 圆形切换按钮（保持原样） -->
     <button
       @click="isSidebarVisible = !isSidebarVisible"
       :class="['toggle-sidebar-btn', { 'rotate-btn': isSidebarVisible }]"
     >
-      <span v-if="isSidebarVisible">X</span> <!-- 侧边栏显示时显示 "X" -->
-      <span v-else>AI</span> <!-- 默认状态下显示 "AI" -->
+      <span v-if="isSidebarVisible">X</span>
+      <span v-else>AI</span>
     </button>
 
-    <!-- 弹出的边框(侧边栏) -->
+    <!-- 侧边栏内容 -->
     <aside :class="{ sidebar: true, 'sidebar-show': isSidebarVisible }">
-      <!-- 上半部分：与AI的对话框 -->
+      <!-- 上半部分：与AI的对话框（保持原样） -->
       <div class="ai-dialog">
         <p>{{ aiMessage }}</p>
       </div>
 
       <!-- 中间部分：三个功能按钮 -->
       <div class="button-group">
-        <button class="func-btn" @click="selectedAction = 'generateUML'">生成UML</button>
-        <button class="func-btn" @click="selectedAction = 'generateCode'">生成代码</button>
-        <button class="func-btn" @click="selectedAction = 'explainCode'">代码解释</button>
+        <button 
+          :class="['func-btn', { 'active': selectedAction === 'generateUML' }]"
+          @click="selectedAction = 'generateUML'"
+        >生成UML</button>
+        <button 
+          :class="['func-btn', { 'active': selectedAction === 'generateCode' }]"
+          @click="selectedAction = 'generateCode'"
+        >生成代码</button>
+        <button 
+          :class="['func-btn', { 'active': selectedAction === 'explainCode' }]"
+          @click="selectedAction = 'explainCode'"
+        >代码解释</button>
       </div>
 
       <!-- 下半部分：用户对话框 -->
@@ -39,38 +48,20 @@
 <script>
 export default {
   props: {
-    // 父组件传递的获取UML数据方法
     getUMLData: Function
   },
-
   data() {
     return {
-      // 侧边栏可见状态
       isSidebarVisible: false,
-
-      // AI对话内容
       aiMessage: '你好！我可以帮助你生成 UML、代码或解释代码。请选择以下功能：',
-
-      // 用户输入内容
       userInput: '',
-
-      // 当前选中的操作类型
       selectedAction: ''
     };
   },
-
   methods: {
-    // 切换侧边栏显示状态
     toggleSidebar() {
       this.isSidebarVisible = !this.isSidebarVisible;
     },
-
-    // 选择功能类型
-    selectAction(action) {
-      this.selectedAction = action;
-    },
-
-    // 处理表单提交
     handleSubmit() {
       if (!this.userInput.trim()) {
         this.aiMessage = '请输入有效的内容！';
@@ -84,10 +75,7 @@ export default {
         case 'generateUML':
           this.aiMessage = `正在生成 UML 图...\n用户输入：${this.userInput}`;
           url = 'api/aiuml/generateUML';
-          dataToSend = {
-            type: 'generateUML',
-            content: this.userInput
-          };
+          dataToSend = { type: 'generateUML', content: this.userInput };
           break;
         case 'generateCode':
           this.aiMessage = `正在生成代码...\n用户输入：${this.userInput}`;
@@ -101,41 +89,29 @@ export default {
         case 'explainCode':
           this.aiMessage = `正在解释代码...\n用户输入：${this.userInput}`;
           url = 'api/aiuml/explainCode';
-          dataToSend = {
-            type: 'explainCode',
-            content: this.userInput
-          };
+          dataToSend = { type: 'explainCode', content: this.userInput };
           break;
         default:
           this.aiMessage = '请选择一个功能后再提交！';
           return;
       }
 
-      this.userInput = ''; // 清空输入框
-
+      this.userInput = '';
       this.submitRequest(url, dataToSend);
     },
-
-    // 发送网络请求
     submitRequest(url, data) {
       fetch(url, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       })
         .then(response => response.json())
         .then(this.handleResponse)
         .catch(this.handleError);
     },
-
-    // 处理成功响应
     handleResponse(responseData) {
       this.aiMessage = `后端返回的数据：\n${JSON.stringify(responseData, null, 2)}`;
     },
-
-    // 处理错误响应
     handleError(error) {
       this.aiMessage = '提交失败！请检查网络连接或后端服务。';
       console.error('提交失败:', error);
@@ -145,10 +121,7 @@ export default {
 </script>
 
 <style scoped>
-.ai-panel-container {
-  display: flex;
-  align-items: flex-start;
-}
+/* 保持圆形按钮原有样式 */
 .toggle-sidebar-btn {
   position: fixed;
   top: 100px;
@@ -176,6 +149,56 @@ export default {
 .rotate-btn {
   transform: rotate(90deg);
 }
+
+/* 功能按钮样式修改 */
+.func-btn {
+  background-color: #e5e5e5;
+  color: #000000;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex: 1;
+}
+
+/* 选中状态保持黑色 */
+.func-btn.active {
+  background-color: #000 !important;
+  color: white !important;
+}
+
+/* 点击瞬间效果 */
+.func-btn:active {
+  background-color: #333 !important;
+}
+
+/* 提交按钮样式 */
+.submit-btn {
+  width: 100%;
+  background-color: #e5e5e5;
+  color: #000000;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 50px;
+}
+
+/* 提交按钮点击效果 */
+.submit-btn:active {
+  background-color: #000 !important;
+  color: white !important;
+}
+
+/* 保持原有hover效果 */
+.func-btn:hover,
+.submit-btn:hover {
+  background-color: #c8c8c8;
+}
+
+/* 其他原有样式保持不变 */
 .sidebar {
   width: 350px;
   height: 100%;
@@ -218,19 +241,6 @@ export default {
   gap: 10px;
   margin-bottom: 20px;
 }
-.func-btn {
-  background-color: #e5e5e5;
-  color: #000000;
-  border: none;
-  border-radius: 5px;
-  padding: 10px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  flex: 1;
-}
-.func-btn:hover {
-  background-color: #c8c8c8;
-}
 .user-dialog {
   margin-top: auto;
 }
@@ -243,19 +253,5 @@ export default {
   resize: none;
   font-size: 14px;
   margin-bottom: 10px;
-}
-.submit-btn {
-  width: 100%;
-  background-color: #e5e5e5;
-  color: #000000;
-  border: none;
-  border-radius: 5px;
-  padding: 10px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin-bottom: 50px;
-}
-.submit-btn:hover {
-  background-color: #c8c8c8;
 }
 </style>
