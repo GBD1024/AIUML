@@ -14,7 +14,7 @@
     <div style="flex-grow: 1;"></div>
 
     <!-- 用户头像放到顶栏的最右侧 -->
-    <el-dropdown class="navbar-avatar" @command="handleAvatarCommand">
+    <!-- <el-dropdown class="navbar-avatar" @command="handleAvatarCommand">
       <span class="el-dropdown-link">
         <el-avatar :src="avatar" icon="el-icon-user-solid" :title="avatar ? '用户头像' : '正在加载头像...'">
           <i v-if="!avatar" class="el-icon-loading"></i>
@@ -24,7 +24,11 @@
         <el-dropdown-item command="settings">设置</el-dropdown-item>
         <el-dropdown-item command="logout">登出</el-dropdown-item>
       </el-dropdown-menu>
-    </el-dropdown>
+    </el-dropdown> -->
+    <!-- 返回按钮 -->
+    <button class="navbar-btn return-btn" @click="goToIndexPage">
+      ⬅ 返回索引页
+    </button>
     <input type="file" ref="fileInput" hidden @change="$_handleFileUpload" />
   </div>
 </template>
@@ -395,6 +399,9 @@ export default {
     closeDropdowns() {
       this.activeDropdownIndex = null;
     },
+    goToIndexPage() {
+      this.$router.push('/index');
+    }
   },
   mounted() {
     this.fetchUserInfo(); // 新增此行
@@ -434,12 +441,24 @@ export default {
   font-size: 16px;
   padding: 10px 15px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin-right: 50px;
+  transition: all 0.3s ease;
+  margin-right: 30px;
 }
 
 .navbar-btn:hover {
   background-color: #efefef;
+}
+
+.return-btn {
+  margin-right: 20px;
+  font-weight: 500;
+  padding: 8px 15px;
+  border-radius: 4px;
+}
+
+.return-btn:hover {
+  background-color: #dcdcdc !important;
+  transform: translateX(-3px);
 }
 
 .navbar-btn.disabled {
