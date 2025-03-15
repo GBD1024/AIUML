@@ -298,7 +298,7 @@ export default {
   top: 10px;
   right: 10px;
   padding: 5px 10px;
-  background: #ff4d4f;
+  background: #646464;
   color: white;
   border: none;
   border-radius: 4px;
@@ -324,14 +324,15 @@ export default {
 .action-button {
   width: 25%;
   height: 200px;
-  border: 2px dashed #8c939d;
   border-radius: 8px;
+  border: 1px solid #ebeef5;
   background: #fafafa;
   cursor: pointer;
   transition: border-color 0.3s;
 }
 
 .action-button:hover {
-  border-color: #409eff;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
 }
+
 </style>
