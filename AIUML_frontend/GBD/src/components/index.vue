@@ -75,7 +75,7 @@ export default {
   data() {
     return {
       avatar: '',
-      defaultImage: "https://q6.itc.cn/images01/20241118/be9dc17ed99a459cb363a337f3069ec2.png",
+      defaultImage: "https://img0.baidu.com/it/u=1479232965,1336077163&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500",
       searchQuery: "",
       historyList: [],
       loading: true,
@@ -281,8 +281,9 @@ export default {
 .history-image {
   width: 100%;
   height: 160px;
-  object-fit: cover;
+  object-fit: contain; /* 确保图片完整展示 */
   border-bottom: 1px solid #ebeef5;
+  background-color: #fafafa; /* 可选：填充空白区域的背景色 */
 }
 
 .history-name {
