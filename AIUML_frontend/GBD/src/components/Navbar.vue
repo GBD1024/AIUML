@@ -43,11 +43,6 @@ LogicFlow.use(MiniMap);
 
 export default {
   name: 'Navbar',
-  props: {
-    diagramId: {
-      type: String,
-    }
-  },
   data() {
     return {
       avatar: '',
@@ -101,6 +96,17 @@ export default {
         },
       ],
     };
+  },
+  props: {
+    diagramId: {
+      type: String,
+      default: "-1"
+    }
+  },
+  computed: {
+    isNewGraph() {
+      return this.diagramId === "-1";
+    }
   },
   methods: {
     // 切换指定按钮的下拉菜单状态
@@ -240,52 +246,78 @@ export default {
       });
     },
     async $_saveGraph() {
-      if (this.lfInstance) {
-        const data = this.lfInstance.getGraphData();
+      if (!this.lfInstance) {
+        this.$message.error("⚠ 画布未初始化！");
+        return;
+      }
 
-        // 弹出输入框让用户输入绘图名称
-        const graphName = prompt('请输入绘图名称:');
+      const data = this.lfInstance.getGraphData();
+      const isNewGraph = this.diagramId === "-1";
+
+      let graphName = "";
+
+      if (isNewGraph) {
+        graphName = prompt("请输入绘图名称:");
         if (!graphName) {
-          this.$message.error('绘图名称不能为空');
+          this.$message.error("绘图名称不能为空");
           return;
         }
+      }
 
-        // 生成图片数据
+      try {
         const { data: imageBlob } = await this.lfInstance.getSnapshotBlob();
 
-        // 创建 FormData 对象
         const formData = new FormData();
-        formData.append('graphName', graphName);
-        formData.append('graphData', JSON.stringify(data));
-        formData.append('image', imageBlob, 'diagram.png');
-        if (this.diagramId) {
-          formData.append('id', this.diagramId);
+        formData.append("graphData", JSON.stringify(data));
+        formData.append("image", imageBlob, "diagram.png");
+        formData.append("id", this.diagramId);
+
+        if (isNewGraph) {
+          formData.append("name", graphName);
         }
-        console.log(this.diagramId);
-        this.$axios
-          .post('/api/graph/save', formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }
-          })
-          .then((response) => {
-            if (response.data.code === 0) {
-              this.$message.success('图形和图片已成功保存！');
-            } else {
-              this.$message.error('保存失败: ' + response.data.message);
-            }
-          })
-          .catch((error) => {
-            this.$message.error('保存失败: ' + error.message);
-          });
-      } else {
-        this.$message.error('⚠ 画布未初始化！');
+
+        const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+
+        const response = await this.$axios.post("/api/graph/save", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            "Authorization": token
+          }
+        });
+
+        if (response.data.code === 0) {
+          if (isNewGraph) {
+            const newId = String(response.data.info);
+
+            // ✅ 这里同步 diagramId
+            this.diagramId = newId;
+
+            // ✅ 也跳转 URL（可选 replace）
+            this.$router.push({
+              path: "/diagram",
+              query: { id: newId }
+            });
+            // ✅ 存储新数据到 sessionStorage
+            sessionStorage.setItem("graphData", JSON.stringify(data));
+            this.$message.success("🎉 新建图保存成功！");
+          } else {
+            // ✅ 存储新数据到 sessionStorage
+            sessionStorage.setItem("graphData", JSON.stringify(data));
+            this.$message.success("✅ 图形更新成功！");
+          }
+        } else {
+          this.$message.error("❌ 保存失败：" + response.data.message);
+        }
+      } catch (error) {
+        this.$message.error("❌ 保存失败：" + error.message);
       }
-    },
+    }
+    ,
 
     $_saveGraphToBrowser() {
       if (this.lfInstance) {
         const data = this.lfInstance.getGraphData();
+        console.log(data);
         localStorage.setItem("diagramData", JSON.stringify(data));
         alert("💾 图形已保存到浏览器缓存！");
       } else {

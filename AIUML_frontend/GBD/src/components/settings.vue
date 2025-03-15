@@ -9,34 +9,34 @@
 
     <div class="card-container">
 
-    <!-- 头像修改 -->
-    <el-card shadow="hover" class="settings-card">
-      <div slot="header" class="card-header">头像修改</div>
-      <el-upload class="avatar-uploader" action="/api/user/uploadPic" :headers="{ Authorization: token }"
-        :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-        <img v-if="imageUrl" :src="imageUrl" class="avatar">
-        <el-avatar v-else :src="avatar" icon="el-icon-user-solid" class="avatar"></el-avatar>
-      </el-upload>
-    </el-card>
+      <!-- 头像修改 -->
+      <el-card shadow="hover" class="settings-card">
+        <div slot="header" class="card-header">头像修改</div>
+        <el-upload class="avatar-uploader" action="/api/user/uploadPic" :headers="{ Authorization: token }"
+          :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+          <img v-if="imageUrl" :src="imageUrl" class="avatar">
+          <el-avatar v-else :src="avatar" icon="el-icon-user-solid" class="avatar"></el-avatar>
+        </el-upload>
+      </el-card>
 
-        <!-- 基本信息修改 -->
+      <!-- 基本信息修改 -->
       <el-card shadow="always" class="card2">
-      <div slot="header" class="card-header">基本信息</div>
-      <el-form :model="basicInfoForm" ref="basicInfoForm" label-width="80px">
-        <el-form-item label="账户">
-          <el-input v-model="passForm.userId" disabled></el-input>
-        </el-form-item>
-        <el-form-item label="昵称">
-          <el-input v-model="basicInfoForm.nickname"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="submitNickname">确认修改</el-button>
-        </el-form-item>
-      </el-form>
-    </el-card>
+        <div slot="header" class="card-header">基本信息</div>
+        <el-form :model="basicInfoForm" ref="basicInfoForm" label-width="80px">
+          <el-form-item label="账户">
+            <el-input v-model="passForm.userId" disabled></el-input>
+          </el-form-item>
+          <el-form-item label="昵称">
+            <el-input v-model="basicInfoForm.nickname"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="submitNickname">确认修改</el-button>
+          </el-form-item>
+        </el-form>
+      </el-card>
 
     </div>
-    
+
     <!-- 修改密码部分 -->
     <el-card shadow="always" class="card1">
       <div slot="header" class="card-header">修改密码</div>
@@ -242,7 +242,7 @@ export default {
     },
     handleBack() {
       // 直接返回主页，不再检查passwordChanged状态
-      this.$router.push('/diagram');
+      this.$router.push('/index');
     }
   },
   mounted() {
@@ -256,7 +256,7 @@ export default {
   max-width: 100%;
   margin: 0px auto;
   padding: 0 20px;
-  position:relative;
+  position: relative;
 }
 
 .card1 {
@@ -266,7 +266,7 @@ export default {
   margin-left: 30px;
   width: 48%;
   position: absolute;
-  margin-top:0px;
+  margin-top: 0px;
   right: 20px;
   height: 88%;
 }
@@ -387,8 +387,8 @@ export default {
   height: 40px;
   padding: 0 24px;
   font-size: 14px;
-  background-color: #303133!important;
-  border-color: #303133!important;
+  background-color: #303133 !important;
+  border-color: #303133 !important;
   transition: all 0.3s ease;
 }
 

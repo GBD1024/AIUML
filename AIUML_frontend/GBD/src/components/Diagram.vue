@@ -1,7 +1,7 @@
 <template>
   <div class="diagram">
     <!-- 传递 `lf` 实例和 `id` 给 Navbar -->
-    <Navbar ref="navbar" :diagramId="diagramId" />
+    <Navbar ref="navbar" :diagramId="diagramId" @updateDiagramId="diagramId = $event" />
     <diagram-toolbar class="diagram-toolbar" v-if="lf" :lf="lf" :activeEdges="activeEdges"
       @changeNodeFillColor="$_changeNodeFill" @saveGraph="$_saveGraph" />
     <div class="diagram-main">
@@ -55,132 +55,46 @@ export default {
       activeEdges: [],
       properties: {},
       panelPosition: { left: 0, top: 0 },
-      diagramId: null // 新增 diagramId 字段
+      diagramId: null, // 新增 diagramId 字段
+      graphData: {}
     };
   },
   watch: {
     activeNodes: 'updatePanelPosition',
-    activeEdges: 'updatePanelPosition'
+    activeEdges: 'updatePanelPosition',
+    '$route.query.id': {
+      handler(newId) {
+        console.log("Diagram.vue 监听 URL id:", newId);
+        this.diagramId = newId;
+        this.$refs.navbar.setDiagramId(newId); // 同步 Navbar
+      },
+      immediate: true
+    }
   },
   mounted() {
-    let data = '';
-    if (window.location.search) {
-      const query = window.location.search
-        .substring(1)
-        .split('&')
-        .reduce((map, kv) => {
-          const [key, value] = kv.split('=');
-          map[key] = value;
-          return map;
-        }, {});
-      this.filename = query.filename;
-      const d = window.sessionStorage.getItem(this.filename);
-      if (d) {
-        data = JSON.parse(d);
-      }
-    }
-    this.initLogicFlow(data);
     const query = this.$route.query;
+    console.log(query);
+
     if (query.id) {
-      // 根据 id 调用后端接口获取数据
-      this.fetchDiagramData(query.id);
-      this.diagramId = query.id; // 设置 diagramId
+      this.diagramId = query.id; // ✅ 存储传来的 id
+
+      // ✅ 读取 sessionStorage 中存储的绘图数据
+      const storedData = sessionStorage.getItem("graphData");
+      console.log(storedData)
+      if (storedData && query.id !== "-1") {
+        // 如果有数据，且 id 不是 -1，说明是打开已有绘图
+        this.initLogicFlow(JSON.parse(storedData));
+      } else {
+        // 如果 id 是 -1，则初始化空白画布
+        this.initLogicFlow();
+      }
     } else {
-      // 初始化为空画布
+      // 万一没有 id，兜底逻辑，初始化空画布
       this.initLogicFlow();
-      this.diagramId = 'new'; // 设置为 'new' 表示新建绘图
+      this.diagramId = "new";
     }
   },
   methods: {
-    fetchDiagramData(id) {
-      if (id == 1) {
-        const data = {
-          "nodes": [
-            {
-              "id": "b20e9fdb-06ef-4a0b-a827-5a3cad2ed2df",
-              "type": "pro-rect",
-              "x": 305,
-              "y": 305,
-              "properties": {},
-              "zIndex": 1002
-            },
-            {
-              "id": "abc16428-6ca8-40d9-9109-8cab100c1c99",
-              "type": "pro-rect",
-              "x": 305,
-              "y": 455,
-              "properties": {},
-              "zIndex": 1004
-            }
-          ],
-          "edges": [
-            {
-              "id": "2a5f0cf5-4e1e-48b3-8214-72bcae71fe99",
-              "type": "pro-polyline",
-              "sourceNodeId": "b20e9fdb-06ef-4a0b-a827-5a3cad2ed2df",
-              "targetNodeId": "abc16428-6ca8-40d9-9109-8cab100c1c99",
-              "startPoint": {
-                "x": 305,
-                "y": 345
-              },
-              "endPoint": {
-                "x": 305,
-                "y": 415
-              },
-              "properties": {},
-              "zIndex": 1005,
-              "pointsList": [
-                {
-                  "x": 305,
-                  "y": 345
-                },
-                {
-                  "x": 305,
-                  "y": 415
-                }
-              ]
-            }
-          ]
-        };
-        this.initLogicFlow(data);
-      } else if (id == 2) {
-        const data = {
-          "nodes": [
-            {
-              "id": "b20e9fdb-06ef-4a0b-a827-5a3cad2ed2df",
-              "type": "pro-rect",
-              "x": 305,
-              "y": 305,
-              "properties": {},
-              "zIndex": 1002
-            },
-            {
-              "id": "abc16428-6ca8-40d9-9109-8cab100c1c99",
-              "type": "pro-rect",
-              "x": 305,
-              "y": 455,
-              "properties": {},
-              "zIndex": 1004
-            }
-          ],
-        };
-        this.initLogicFlow(data);
-      } else if (id == 3) {
-        const data = {
-          "nodes": [
-            {
-              "id": "b20e9fdb-06ef-4a0b-a827-5a3cad2ed2df",
-              "type": "pro-rect",
-              "x": 305,
-              "y": 305,
-              "properties": {},
-              "zIndex": 1002
-            }
-          ]
-        };
-        this.initLogicFlow(data);
-      }
-    },
     initLogicFlow(data) {
       LogicFlow.use(SelectionSelect);
       const lf = new LogicFlow({
@@ -219,7 +133,6 @@ export default {
         });
       });
       this.$refs.navbar.setLogicFlowInstance(this.lf);
-      this.$refs.navbar.setDiagramId(this.diagramId); // 传递 diagramId 给 Navbar
     },
     $_getProperty() {
       let properties = {};
