@@ -2,7 +2,7 @@
   <div class="home-page">
     <!-- 导航栏 -->
     <div class="nav">
-      <div class="nav-title">AI UML 绘图系统</div>
+      <div class="nav-title">AIUML 绘图系统</div>
       
       <!-- 用户头像 -->
       <el-dropdown class="user-avatar" @command="handleAvatarCommand">
