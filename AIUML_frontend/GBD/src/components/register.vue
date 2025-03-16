@@ -158,19 +158,20 @@ export default {
             });
         },
         openTerms() {
-            this.$confirm('<div class="terms-content">具体条款内容...</div>', '服务条款', {
+            this.$confirm('请阅读并同意服务条款', '服务条款', {
                 confirmButtonText: '同意条款',
-                cancelButtonText: '暂不同意',
-                dangerouslyUseHTMLString: true,
+                cancelButtonText: '暂不接受',
+                type: 'info',
                 customClass: 'terms-dialog',
-                beforeClose(action, instance, done) {
+                beforeClose: (action, instance, done) => {
                     if (action === 'confirm') {
                         this.agreed = true;
                     }
                     done();
-                }
+                },
             });
-        }
+        },
+
     },
 };
 </script>
@@ -273,6 +274,16 @@ export default {
 .bg-bubbles li:nth-child(10) {
     left: 65%;
     animation-delay: 12s;
+}
+
+/* 表单错误提示位置优化，不影响整体布局宽度 */
+:deep(.el-form-item__error) {
+    position: relative !important;
+    padding-top: 2px;
+    line-height: 1.2;
+    font-size: 12px;
+    color: #f56c6c;
+    margin-top: 2px;
 }
 
 /* 关键帧动画 */

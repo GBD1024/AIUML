@@ -3,7 +3,7 @@
     <!-- 导航栏 -->
     <div class="nav">
       <div class="nav-title">AIUML 绘图系统</div>
-      
+
       <!-- 用户头像 -->
       <el-dropdown class="user-avatar" @command="handleAvatarCommand">
         <span class="el-dropdown-link">
@@ -190,14 +190,15 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 0 20px;
-  background: #eaeaea;
-  height: 80px;
+  background: #0d0d0d;
+  height: 70px;
   position: relative;
 }
 
 .nav-title {
   font-size: 24px;
   font-weight: bold;
+  color: #ffffff;
 }
 
 .user-avatar {
@@ -231,17 +232,22 @@ export default {
 
 .search button {
   padding: 10px 20px;
-  background-color: #4c4c4c; /* 改为白色背景 */
-  color: #ffffff; /* 黑色文字 */
-  border: 1px solid #cccccc; /* 灰色边框 */
+  background-color: #4c4c4c;
+  /* 改为白色背景 */
+  color: #ffffff;
+  /* 黑色文字 */
+  border: 1px solid #cccccc;
+  /* 灰色边框 */
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .search button:hover {
-  background-color: #302222; /* 悬停浅灰色 */
-  border-color: #999999; /* 深灰色边框 */
+  background-color: #302222;
+  /* 悬停浅灰色 */
+  border-color: #999999;
+  /* 深灰色边框 */
 }
 
 
@@ -281,9 +287,11 @@ export default {
 .history-image {
   width: 100%;
   height: 160px;
-  object-fit: contain; /* 确保图片完整展示 */
+  object-fit: contain;
+  /* 确保图片完整展示 */
   border-bottom: 1px solid #ebeef5;
-  background-color: #fafafa; /* 可选：填充空白区域的背景色 */
+  background-color: #fafafa;
+  /* 可选：填充空白区域的背景色 */
 }
 
 .history-name {
@@ -334,5 +342,4 @@ export default {
 .action-button:hover {
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
 }
-
 </style>
