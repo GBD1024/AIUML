@@ -20,15 +20,24 @@
 
     <!-- 搜索框 -->
     <div class="search">
-    <div class="search-keyword">
-      <input type="text" v-model="searchQuery" placeholder="输入关键字搜索历史绘图" @keyup.enter="handleSearch" />
-      <button @click="handleSearch">搜索</button>
+      <div class="search-keyword">
+        <input type="text" v-model="searchQuery" placeholder="输入关键字搜索历史绘图" @keyup.enter="handleSearch" />
+        <button @click="handleSearch">搜索</button>
+      </div>
+      <div class="search-collaboration">
+        <input style="width: 150px;" type="text" v-model="collaborationQuery" placeholder="输入密钥与他人协作绘图"
+          @keyup.enter="addDiagram" />
+        <button @click="addDiagram">添加</button>
+      </div>
     </div>
-    <div class="search-collaboration">
-      <input style="width: 150px;" type="text" v-model="collaborationQuery" placeholder="输入密钥与他人协作绘图" @keyup.enter="addDiagram" />
-      <button @click="addDiagram">添加</button>
-    </div>
-  </div>
+    <el-dialog title="重命名绘图" :visible.sync="renameDialogVisible">
+      <el-input v-model="renameInput" placeholder="请输入新的名称"></el-input>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="renameDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="confirmRename">确定</el-button>
+      </span>
+    </el-dialog>
+
 
     <!-- 新建绘图 -->
     <h3 style="padding: 0 20px;">新建绘图</h3>
@@ -57,6 +66,8 @@
             <span class="history-name">{{ item.name }}</span>
           </button>
           <button class="delete-button" @click="handleDelete(item.id)">删除</button>
+          <button class="rename-button" @click="openRenameDialog(item.id, item.name)">重命名</button>
+
         </div>
       </div>
 
@@ -80,6 +91,9 @@ export default {
   },
   data() {
     return {
+      renameDialogVisible: false,
+      renameId: null,
+      renameInput: "",
       avatar: '',
       defaultImage: "https://img0.baidu.com/it/u=1479232965,1336077163&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500",
       searchQuery: "",
@@ -178,11 +192,45 @@ export default {
         this.$message.error("删除请求失败！");
       }
     },
+    openRenameDialog(id, currentName) {
+      this.renameId = id;
+      this.renameInput = currentName;
+      this.renameDialogVisible = true;
+    },
+
+    confirmRename() {
+      if (!this.renameInput.trim()) {
+        this.$message.warning("名称不能为空！");
+        return;
+      }
+      this.handleRename(this.renameId, this.renameInput);
+      this.renameDialogVisible = false;
+    },
+    async handleRename(id, name) {
+
+      try {
+        const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+        const response = await axios.post(
+          `/api/graph/rename?id=${id}&name=${name}`, null,
+          { headers: { "Authorization": token } }
+        );
+
+        if (response.data.code === 0) {
+          this.$message.success("重命名成功！");
+          this.fetchHistoryList();
+        } else {
+          this.$message.error(`重命名失败：${response.data.message}`);
+        }
+      } catch (error) {
+        console.error("重命名请求异常:", error);
+        this.$message.error("重命名请求失败！");
+      }
+    },
 
     handleSearch() {
       alert(`搜索功能开发中，关键词：${this.searchQuery}`);
     },
-    addDiagram(){
+    addDiagram() {
       alert("添加成功");
     }
   }
@@ -228,20 +276,26 @@ export default {
 .search {
   margin: 20px 0;
   display: flex;
-  justify-content: space-between; /* 保持原有的布局 */
-  width: 100%; /* 确保宽度为100% */
+  justify-content: space-between;
+  /* 保持原有的布局 */
+  width: 100%;
+  /* 确保宽度为100% */
 }
 
 .search-keyword {
   display: flex;
-  justify-content: center; /* 水平居中 */
-  align-items: center; /* 垂直居中 */
-  flex: 1; /* 占据剩余空间 */
+  justify-content: center;
+  /* 水平居中 */
+  align-items: center;
+  /* 垂直居中 */
+  flex: 1;
+  /* 占据剩余空间 */
 }
 
 .search-collaboration {
   display: flex;
-  align-items: center; /* 垂直居中 */
+  align-items: center;
+  /* 垂直居中 */
   margin-right: 50px;
 }
 
@@ -323,22 +377,39 @@ export default {
   color: #606266;
 }
 
-.delete-button {
+.delete-button, .rename-button {
   position: absolute;
-  top: 10px;
-  right: 10px;
   padding: 5px 10px;
-  background: #646464;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   transition: opacity 0.3s;
+  width: 65px; /* 设置固定宽度 */
+  text-align: center; /* 确保文本居中对齐 */
 }
 
+.delete-button {
+  top: 40px;
+  right: 10px;
+  background: #5a5a5a; /* 较深的灰色 */
+}
+
+.rename-button {
+  top: 10px;
+  right: 10px;
+  background: #8a8a8a; /* 较浅的灰色 */
+}
+
+/* 悬停效果 */
 .delete-button:hover {
   opacity: 0.8;
 }
+
+.rename-button:hover {
+  opacity: 0.8;
+}
+
 
 .error-message {
   color: #ff4d4f;

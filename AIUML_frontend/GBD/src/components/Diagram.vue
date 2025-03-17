@@ -5,7 +5,7 @@
     <diagram-toolbar class="diagram-toolbar" v-if="lf" :lf="lf" :activeEdges="activeEdges"
       @changeNodeFillColor="$_changeNodeFill" @saveGraph="$_saveGraph" />
     <div class="diagram-main">
-      <diagram-sidebar class="diagram-sidebar" @dragInNode="$_dragInNode" />
+      <diagram-sidebar ref="sidebar" class="diagram-sidebar" @dragInNode="$_dragInNode" />
       <div class="diagram-container" ref="container">
         <div class="diagram-wrapper">
           <div class="lf-diagram" ref="diagram"></div>
@@ -14,7 +14,7 @@
     </div>
     <div>
       <!-- 将 getUMLData 方法传递给 AIPanel -->
-      <AIPanel class="diagram-ai-panel" :getUMLData="getUMLData" />
+      <AIPanel ref="aipanel" class="diagram-ai-panel" :getUMLData="getUMLData" />
     </div>
     <!-- 属性面板 -->
     <PropertyPanel class="diagram-panel" v-if="activeNodes.length > 0 || activeEdges.length > 0"
@@ -133,6 +133,8 @@ export default {
         });
       });
       this.$refs.navbar.setLogicFlowInstance(this.lf);
+      this.$refs.aipanel.setLogicFlowInstance(this.lf);
+      this.$refs.sidebar.setLogicFlowInstance(this.lf);
     },
     $_getProperty() {
       let properties = {};
@@ -201,7 +203,7 @@ export default {
     },
     getUMLData() {
       return this.lf.getGraphData(); // 返回 LogicFlow 的图形数据
-    }
+    },
   }
 };
 </script>
