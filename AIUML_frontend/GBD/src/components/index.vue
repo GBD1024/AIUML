@@ -25,7 +25,7 @@
       <button @click="handleSearch">搜索</button>
     </div>
     <div class="search-collaboration">
-      <input style="width: 150px;" type="text" v-model="searchQuery" placeholder="输入密钥与他人协作绘图" @keyup.enter="addDiagram" />
+      <input style="width: 150px;" type="text" v-model="collaborationQuery" placeholder="输入密钥与他人协作绘图" @keyup.enter="addDiagram" />
       <button @click="addDiagram">添加</button>
     </div>
   </div>
@@ -83,6 +83,7 @@ export default {
       avatar: '',
       defaultImage: "https://img0.baidu.com/it/u=1479232965,1336077163&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500",
       searchQuery: "",
+      collaborationQuery: "",
       historyList: [],
       loading: true,
       errorMessage: "",
