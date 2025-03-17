@@ -96,6 +96,7 @@ export default {
           label: "分享",
           menuItems: [
             { label: "导出图片", action: "$_exportImage" },
+            { label: "分享密钥邀请他人协作", action: "$_invite" },
           ],
         },
       ],
@@ -238,6 +239,9 @@ export default {
       } else {
         alert("⚠ 画布未初始化！");
       }
+    },
+    $_invite(){
+      alert("密钥为 " + this.diagramId + "，请将此密钥发送给被邀请者");
     },
 
     // 设置 LogicFlow 实例

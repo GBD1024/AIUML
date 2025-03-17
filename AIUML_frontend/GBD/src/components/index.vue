@@ -20,9 +20,15 @@
 
     <!-- 搜索框 -->
     <div class="search">
+    <div class="search-keyword">
       <input type="text" v-model="searchQuery" placeholder="输入关键字搜索历史绘图" @keyup.enter="handleSearch" />
       <button @click="handleSearch">搜索</button>
     </div>
+    <div class="search-collaboration">
+      <input style="width: 150px;" type="text" v-model="searchQuery" placeholder="输入密钥与他人协作绘图" @keyup.enter="addDiagram" />
+      <button @click="addDiagram">添加</button>
+    </div>
+  </div>
 
     <!-- 新建绘图 -->
     <h3 style="padding: 0 20px;">新建绘图</h3>
@@ -153,7 +159,6 @@ export default {
       sessionStorage.setItem("graphData", graphData);
       this.$router.push({ path: "/diagram", query: { id } });
     },
-
     async handleDelete(id) {
       if (!confirm("确定要删除这个绘图吗？")) return;
       try {
@@ -175,6 +180,9 @@ export default {
 
     handleSearch() {
       alert(`搜索功能开发中，关键词：${this.searchQuery}`);
+    },
+    addDiagram(){
+      alert("添加成功");
     }
   }
 };
@@ -219,7 +227,21 @@ export default {
 .search {
   margin: 20px 0;
   display: flex;
-  justify-content: center;
+  justify-content: space-between; /* 保持原有的布局 */
+  width: 100%; /* 确保宽度为100% */
+}
+
+.search-keyword {
+  display: flex;
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
+  flex: 1; /* 占据剩余空间 */
+}
+
+.search-collaboration {
+  display: flex;
+  align-items: center; /* 垂直居中 */
+  margin-right: 50px;
 }
 
 .search input {
@@ -233,15 +255,14 @@ export default {
 .search button {
   padding: 10px 20px;
   background-color: #4c4c4c;
-  /* 改为白色背景 */
   color: #ffffff;
-  /* 黑色文字 */
   border: 1px solid #cccccc;
-  /* 灰色边框 */
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.3s ease;
 }
+
+
 
 .search button:hover {
   background-color: #302222;
@@ -337,6 +358,7 @@ export default {
   background: #fafafa;
   cursor: pointer;
   transition: border-color 0.3s;
+  margin-right: 10px;
 }
 
 .action-button:hover {
