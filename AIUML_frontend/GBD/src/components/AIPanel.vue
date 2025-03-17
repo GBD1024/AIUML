@@ -1,10 +1,8 @@
 <template>
   <div class="ai-panel-container">
     <!-- 圆形切换按钮（保持原样） -->
-    <button
-      @click="isSidebarVisible = !isSidebarVisible"
-      :class="['toggle-sidebar-btn', { 'rotate-btn': isSidebarVisible }]"
-    >
+    <button @click="isSidebarVisible = !isSidebarVisible"
+      :class="['toggle-sidebar-btn', { 'rotate-btn': isSidebarVisible }]">
       <span v-if="isSidebarVisible">X</span>
       <span v-else>AI</span>
     </button>
@@ -12,33 +10,22 @@
     <!-- 侧边栏内容 -->
     <aside :class="{ sidebar: true, 'sidebar-show': isSidebarVisible }">
       <!-- 上半部分：与AI的对话框（保持原样） -->
-      <div class="ai-dialog">
-        <p>{{ aiMessage }}</p>
-      </div>
+      <div class="ai-dialog" v-html="renderMarkdown(aiMessage)"></div>
+
 
       <!-- 中间部分：三个功能按钮 -->
       <div class="button-group">
-        <button 
-          :class="['func-btn', { 'active': selectedAction === 'generateUML' }]"
-          @click="selectedAction = 'generateUML'"
-        >生成UML</button>
-        <button 
-          :class="['func-btn', { 'active': selectedAction === 'generateCode' }]"
-          @click="selectedAction = 'generateCode'"
-        >生成代码</button>
-        <button 
-          :class="['func-btn', { 'active': selectedAction === 'explainCode' }]"
-          @click="selectedAction = 'explainCode'"
-        >代码解释</button>
+        <button :class="['func-btn', { 'active': selectedAction === 'generateUML' }]"
+          @click="selectedAction = 'generateUML'">生成UML</button>
+        <button :class="['func-btn', { 'active': selectedAction === 'generateCode' }]"
+          @click="selectedAction = 'generateCode'">生成代码</button>
+        <button :class="['func-btn', { 'active': selectedAction === 'explainCode' }]"
+          @click="selectedAction = 'explainCode'">代码解释</button>
       </div>
 
       <!-- 下半部分：用户对话框 -->
       <div class="user-dialog">
-        <textarea
-          v-model="userInput"
-          placeholder="请输入你的问题或代码..."
-          class="user-input"
-        ></textarea>
+        <textarea v-model="userInput" placeholder="请输入你的问题或代码..." class="user-input"></textarea>
         <button class="submit-btn" @click="handleSubmit">提交</button>
       </div>
     </aside>
@@ -46,12 +33,14 @@
 </template>
 
 <script>
+import { marked } from 'marked';
 export default {
   props: {
     getUMLData: Function
   },
   data() {
     return {
+      lfInstance: null,
       isSidebarVisible: false,
       aiMessage: '你好！我可以帮助你生成 UML、代码或解释代码。请选择以下功能：',
       userInput: '',
@@ -59,6 +48,17 @@ export default {
     };
   },
   methods: {
+    setLogicFlowInstance(lf) {
+      this.lfInstance = lf;
+
+      // 初始化 MiniMap 插件
+      this.lfInstance.extension.miniMap.init({
+        disabledPlugins: [], // 可禁用某些插件
+      });
+    },
+    renderMarkdown(text) {
+      return marked.parse(text || '');
+    },
     toggleSidebar() {
       this.isSidebarVisible = !this.isSidebarVisible;
     },
@@ -102,7 +102,7 @@ export default {
     submitRequest(url, data) {
       fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' , 'Authorization':localStorage.getItem('token') },
+        headers: { 'Content-Type': 'application/json', 'Authorization': localStorage.getItem('token') },
         body: JSON.stringify(data)
       })
         .then(response => response.json())
@@ -110,7 +110,32 @@ export default {
         .catch(this.handleError);
     },
     handleResponse(responseData) {
-      this.aiMessage = `后端返回的数据：\n${JSON.stringify(responseData, null, 2)}`;
+      switch (this.selectedAction) {
+        case 'generateUML':
+          this.aiMessage = "正在生成...";
+          setTimeout(() => {
+            if (this.lfInstance) {
+              const savedData = responseData.info;
+              if (savedData) {
+                this.lfInstance.render(savedData);
+                this.aiMessage = "UML图已绘制";
+              } else {
+                this.aiMessage = "⚠ 无数据可渲染";
+              }
+            } else {
+              alert("⚠ 画布未初始化！");
+              this.aiMessage = "⚠ 渲染失败，画布未初始化";
+            }
+          }, 5000); // 延迟1.5秒，可根据需要调整
+
+
+          break;
+        case 'generateCode':
+          this.aiMessage = responseData.info;
+          break;
+        case 'explainCode':
+          this.aiMessage = responseData.info;
+      }
     },
     handleError(error) {
       this.aiMessage = '提交失败！请检查网络连接或后端服务。';
@@ -142,10 +167,12 @@ export default {
   font-size: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
+
 .toggle-sidebar-btn:hover {
   transform: scale(1.1);
   box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
 }
+
 .rotate-btn {
   transform: rotate(90deg);
 }
@@ -214,9 +241,11 @@ export default {
   display: flex;
   flex-direction: column;
 }
+
 .sidebar.sidebar-show {
   right: 0;
 }
+
 .ai-dialog {
   background-color: #ffffff;
   padding: 15px;
@@ -225,25 +254,45 @@ export default {
   margin-bottom: 20px;
   margin-top: 100px;
   flex: 3;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+
+  /* 使用块级布局，更灵活地控制内容显示 */
+  display: block;
+
+  /* 文本格式优化，保留空格、缩进和换行 */
+  white-space: pre-wrap;
+  text-align: left;
+
+  /* 添加滚动条以应对内容溢出，提升用户体验 */
+  overflow-y: auto;
+
+  /* 设置合适的字体样式，更适合代码或长文本阅读 */
+  font-family: Consolas, Monaco, 'Courier New', monospace;
+  font-size: 15px;
+  color: #333;
+  line-height: 1.5;
+  max-height: 400px;
+  /* 防止内容过多时对话框无限拉伸 */
 }
+
+
 .ai-dialog p {
   margin: 0;
   font-size: 16px;
   color: #333;
-  text-align: center;
+  text-align: left;
 }
+
 .button-group {
   display: flex;
   justify-content: space-between;
   gap: 10px;
   margin-bottom: 20px;
 }
+
 .user-dialog {
   margin-top: auto;
 }
+
 .user-input {
   width: 100%;
   height: 80px;
