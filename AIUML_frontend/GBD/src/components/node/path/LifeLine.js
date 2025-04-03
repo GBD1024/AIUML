@@ -37,7 +37,7 @@ class VerticalblackRectangleView extends RectResize.view {
 
 // 注册节点
 export default {
-  type: 'vertical-black-rectangle',
+  type: 'pro-lifeline',
   view: VerticalblackRectangleView,
   model: VerticalblackRectangleModel
 };

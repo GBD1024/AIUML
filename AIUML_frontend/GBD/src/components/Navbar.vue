@@ -240,8 +240,8 @@ export default {
         alert("⚠ 画布未初始化！");
       }
     },
-    $_invite(){
-      alert("密钥为 " + this.diagramId + "，请将此密钥发送给被邀请者");
+    $_invite() {
+      alert("密钥为 " + "A5771BCE93E200C36F7CD9DFD0E5DEAA" + "，请将此密钥发送给被邀请者");
     },
 
     // 设置 LogicFlow 实例

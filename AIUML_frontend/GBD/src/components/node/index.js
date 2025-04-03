@@ -1,7 +1,7 @@
 // 基础图形
 import CircleNode from './basic/CircleNode'
 import RectNode from './basic/RectNode'
-import RectRadiusNode from './basic/RectRadiusNode'
+import RectRadiusNode from './basic/StateNode'
 import EllipseNode from './basic/EllipseNode'
 import TextNode from './basic/TextNode'
 import DiamondNode from './basic/DiamondNode'
@@ -22,7 +22,7 @@ import TimesNode from './path/TimesNode'
 import DivideNode from './path/DivideNode'
 import CubeNode from './path/CubeNode'
 import DecisionNode from './path/DecisionNode'
-import ExecutionSpecification from './path/ExecutionSpecification'
+import ExecutionSpecification from './path/ObjcetNode'
 import ComponentNode from './path/ComponentNode'
 // 多边形绘制的箭头
 import LeftArrow from './arrow/LeftArrow'
@@ -48,24 +48,26 @@ import Compositionline from './edge/Compositionline'
 import Dependencyline from './edge/Dependencyline'
 import Associationline from './edge/Associationline'
 import Dashedline from './edge/Dashedline'
-import BlackNode from './path/BlackNode'
-import WrappedBlackCircleNode from './path/WrappedBlackCircleNode'
-import BlackrectNode from './path/BlackrectNode'
+import BlackNode from './path/StartPointNode'
+import WrappedBlackCircleNode from './path/EndPointNode'
+import BlackrectNode from './path/ForkAndJoinNode'
 import Swimlane from './path/Swimlane'
 import BidirectionalAssociationline from './edge/BidirectionalAssociationline'
-import ObjectNode from './path/ObjectNode'
+import ObjectNode from './path/Object'
 import SequenceObjectNode from './path/SequenceObjectNode'
-import Verticalblackrect from './path/Verticalblackrect'
+import Verticalblackrect from './path/LifeLine'
 import MessageFlowline from './edge/MessageFlowline'
+import SystemNode from './path/SystemNode'
+import UsecaseNode from './path/UsecaseNode'
 export const registerCustomElement = (lf) => {
-  // 注册基础图形
+
   lf.register(CircleNode)
   lf.register(RectNode)
   lf.register(RectRadiusNode)
   lf.register(EllipseNode)
   lf.register(DiamondNode)
   lf.register(TextNode)
-  // 注册path绘制的个性化图形
+
   lf.register(CylindeNode)
   lf.register(TriangleNode)
   lf.register(ParallelogramNode)
@@ -81,20 +83,19 @@ export const registerCustomElement = (lf) => {
   lf.register(TimesNode)
   lf.register(DivideNode)
   lf.register(CubeNode)
-  // 注册多边形绘制的箭头
+
   lf.register(LeftArrow)
   lf.register(RightArrow)
   lf.register(HorizontalArrow)
   lf.register(UpArrow)
   lf.register(DownArrow)
   lf.register(VerticalArrow)
-  // 注册image绘制图片节点
+
   lf.register(ImageSetting)
   lf.register(ImageUser)
   lf.register(ImageCloud)
-  // 注册image绘制左上角icon节点
   lf.register(IconMessage)
-  // 注册边
+
   lf.register(Ployline)
   lf.register(Line)
   lf.register(Bezier)
@@ -117,6 +118,8 @@ export const registerCustomElement = (lf) => {
   lf.register(Verticalblackrect)
   lf.register(ComponentNode)
   lf.register(MessageFlowline)
+  lf.register(SystemNode)
+  lf.register(UsecaseNode)
 
 }
 

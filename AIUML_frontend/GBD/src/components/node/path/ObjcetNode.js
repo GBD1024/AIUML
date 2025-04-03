@@ -34,7 +34,7 @@ class ExecutionSpecificationView extends RectResize.view {
 }
 
 export default {
-    type: 'pro-executionspecification',
+    type: 'pro-objectnode',
     view: ExecutionSpecificationView,
     model: ExecutionSpecificationModel
 };

@@ -49,7 +49,7 @@ class WrappedBlackCircleView extends EllipseResize.view {
 }
 
 export default {
-  type: 'wrapped',
+  type: 'pro-endpointnode',
   model: WrappedBlackCircleModel,
   view: WrappedBlackCircleView,
 };

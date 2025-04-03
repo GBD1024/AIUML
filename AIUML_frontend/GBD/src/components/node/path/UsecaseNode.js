@@ -1,0 +1,19 @@
+import CircleNode from 'C:/Users/于钊京/Desktop/AIUML/AIUML_frontend/GBD/src/components/node/basic/CircleNode.js'
+
+// 椭圆
+class UsecaseModel extends CircleNode.model {
+    initNodeData(data) {
+        super.initNodeData(data)
+        this.rx = 60
+        this.ry = 30
+    }
+    getNodeStyle() {
+        const style = super.getNodeStyle()
+        return { ...style }
+    }
+}
+export default {
+    type: 'pro-usecasenode',
+    view: CircleNode.view,
+    model: UsecaseModel
+}

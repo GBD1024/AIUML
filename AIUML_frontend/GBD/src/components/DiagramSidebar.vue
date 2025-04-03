@@ -30,10 +30,10 @@
         <div class="node-item" @mousedown="dragInNode('actor')">
           <icon-actor class="svg-node" />
         </div>
-        <div class="node-item" @mousedown="dragInNode('pro-rect')">
+        <div class="node-item" @mousedown="dragInNode('pro-systemnode')">
           <icon-rect class="svg-node" />
         </div>
-        <div class="node-item" @mousedown="dragInNode('pro-ellipse')">
+        <div class="node-item" @mousedown="dragInNode('pro-usecasenode')">
           <icon-ellipse class="svg-node" />
         </div>
       </div>
@@ -42,25 +42,25 @@
         <div class="node-item" @mousedown="dragInNode('actor')">
           <icon-actor class="svg-node" />
         </div>
-        <div class="node-item" @mousedown="dragInNode('pro-executionspecification')">
+        <div class="node-item" @mousedown="dragInNode('pro-objectnode')">
           <icon-rect class="svg-node" />
         </div>
         <div class="node-item" @mousedown="dragInNode('sequence-object')">
           <icon-sequence-object class="svg-node" />
         </div>
-        <div class="node-item" @mousedown="dragInNode('vertical-black-rectangle')">
+        <div class="node-item" @mousedown="dragInNode('pro-lifeline')">
           <IconVerticalblackrect class="svg-node" />
         </div>
       </div>
       <div class="node-category">
         <h1 class="node-category-title">状态图</h1>
-        <div class="node-item" @mousedown="dragInNode('rect-radius')">
+        <div class="node-item" @mousedown="dragInNode('pro-statenode')">
           <icon-rect-radius class="svg-node" />
         </div>
-        <div class="node-item" @mousedown="dragInNode('black')">
+        <div class="node-item" @mousedown="dragInNode('pro-startpointnode')">
           <icon-black class="svg-node" />
         </div>
-        <div class="node-item" @mousedown="dragInNode('wrapped')">
+        <div class="node-item" @mousedown="dragInNode('pro-endpointnode')">
           <icon-wrapped-black-circle class="svg-node" />
         </div>
       </div>
@@ -69,13 +69,13 @@
         <div class="node-item" @mousedown="dragInNode('pro-decisionnode')">
           <icon-diamond class="svg-node" />
         </div>
-        <div class="node-item" @mousedown="dragInNode('black')">
+        <div class="node-item" @mousedown="dragInNode('pro-startpointnode')">
           <icon-black class="svg-node" />
         </div>
-        <div class="node-item" @mousedown="dragInNode('wrapped')">
+        <div class="node-item" @mousedown="dragInNode('pro-endpointnode')">
           <icon-wrapped-black-circle class="svg-node" />
         </div>
-        <div class="node-item" @mousedown="dragInNode('black-rectangle')">
+        <div class="node-item" @mousedown="dragInNode('pro-forkandjoinnode')">
           <icon-blackrect class="svg-node" />
         </div>
       </div>
@@ -212,6 +212,7 @@ export default {
       });
     },
     dragInNode(type) {
+      console.log("拖拽的节点类型:", type);
       this.$emit('dragInNode', type)
     },
     handleFileUpload(event) {
@@ -224,7 +225,104 @@ export default {
       setTimeout(() => {
         if (!this.lfInstance) {
           alert("⚠ 画布未初始化！");
-          this.loading = false;
+          return;
+        }
+        this.lfInstance.render({
+          "nodes": [
+            {
+              "id": "27763cfb-1d07-418b-946b-aa8b9852f6e4",
+              "type": "class",
+              "x": 180,
+              "y": 255,
+              "properties": {
+                "className": "person",
+                "attributes": [
+                  "height",
+                  "weight"
+                ],
+                "methods": []
+              },
+              "zIndex": 1002
+            }
+          ],
+          "edges": []
+        });
+      }, 5000);
+      setTimeout(() => {
+        if (!this.lfInstance) {
+          alert("⚠ 画布未初始化！");
+          return;
+        }
+        this.lfInstance.render({
+          "nodes": [
+            {
+              "id": "27763cfb-1d07-418b-946b-aa8b9852f6e4",
+              "type": "class",
+              "x": 180,
+              "y": 255,
+              "properties": {
+                "className": "person",
+                "attributes": [
+                  "height",
+                  "weight"
+                ],
+                "methods": [
+                  "eat()",
+                  "say()"
+                ]
+              },
+              "zIndex": 1002
+            }
+          ],
+          "edges": []
+        });
+      }, 7000);
+      setTimeout(() => {
+        if (!this.lfInstance) {
+          alert("⚠ 画布未初始化！");
+          return;
+        }
+        this.lfInstance.render({
+          "nodes": [
+            {
+              "id": "27763cfb-1d07-418b-946b-aa8b9852f6e4",
+              "type": "class",
+              "x": 180,
+              "y": 255,
+              "properties": {
+                "className": "person",
+                "attributes": [
+                  "height",
+                  "weight"
+                ],
+                "methods": [
+                  "eat()",
+                  "say()"
+                ]
+              },
+              "zIndex": 1002
+            },
+            {
+              "id": "ed558610-9054-4b16-9eef-ef42801d8af1",
+              "type": "class",
+              "x": 550,
+              "y": 520,
+              "properties": {
+                "className": "Chinese",
+                "attributes": [],
+                "methods": [
+                  "speakChinese()"
+                ]
+              },
+              "zIndex": 1004
+            }
+          ],
+          "edges": []
+        });
+      }, 9000);
+      setTimeout(() => {
+        if (!this.lfInstance) {
+          alert("⚠ 画布未初始化！");
           return;
         }
         this.lfInstance.render({
@@ -300,7 +398,7 @@ export default {
           ]
         });
         this.loading = false;
-      }, 5000); // 延迟1.5秒，可根据需要调整
+      }, 12000); // 延迟1.5秒，可根据需要调整
       reader.onload = () => {
 
 

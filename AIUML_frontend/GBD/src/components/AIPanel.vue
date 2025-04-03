@@ -75,7 +75,7 @@ export default {
         case 'generateUML':
           this.aiMessage = `正在生成 UML 图...\n用户输入：${this.userInput}`;
           url = 'api/aiuml/generateUML';
-          dataToSend = { type: 'generateUML', content: this.userInput };
+          dataToSend = { type: 'generateUML', content: this.userInput ,umlData: this.getUMLData()};
           break;
         case 'generateCode':
           this.aiMessage = `正在生成代码...\n用户输入：${this.userInput}`;
@@ -112,10 +112,10 @@ export default {
     handleResponse(responseData) {
       switch (this.selectedAction) {
         case 'generateUML':
-          this.aiMessage = "正在生成...";
-          setTimeout(() => {
+          this.aiMessage = "正在生成UML，请耐心等待";
             if (this.lfInstance) {
               const savedData = responseData.info;
+              console.log(savedData);
               if (savedData) {
                 this.lfInstance.render(savedData);
                 this.aiMessage = "UML图已绘制";
@@ -126,9 +126,6 @@ export default {
               alert("⚠ 画布未初始化！");
               this.aiMessage = "⚠ 渲染失败，画布未初始化";
             }
-          }, 5000); // 延迟1.5秒，可根据需要调整
-
-
           break;
         case 'generateCode':
           this.aiMessage = responseData.info;

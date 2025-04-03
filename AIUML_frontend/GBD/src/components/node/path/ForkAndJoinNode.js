@@ -37,7 +37,7 @@ class BlackRectangleView extends RectResize.view {
 
 // 注册节点
 export default {
-  type: 'black-rectangle',
+  type: 'pro-forkandjoinnode',
   view: BlackRectangleView,
   model: BlackRectangleModel
 };

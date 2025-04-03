@@ -38,7 +38,7 @@ class BlackCircleNode extends EllipseResize.view {
 }
 
 export default {
-  type: 'black',
+  type: 'pro-startpointnode',
   model: BlackCircleNodeModel,
   view: BlackCircleNode,
 };

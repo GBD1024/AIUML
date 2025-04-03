@@ -8,7 +8,7 @@ class RectRadiusModel extends RectNode.model {
   }
 }
 export default {
-  type: 'rect-radius',
+  type: 'pro-statenode',
   view: RectNode.view,
   model: RectRadiusModel
 }
