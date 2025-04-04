@@ -6,7 +6,7 @@ module.exports = {
   devServer: {
     host: "0.0.0.0", // 允许监听所有 IP
     port: 5173, // 本地开发端口
-    public: "localhost:5174", // 指定对外暴露的完整地址
+    public: "localhost:5173", // 指定对外暴露的完整地址
     proxy: {
       "/api": {
         // target: "http://192.168.214.196:8080",

@@ -219,196 +219,41 @@ export default {
       const file = event.target.files[0];
       if (!file) return;
 
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
       this.loading = true;
-      setTimeout(() => {
-        if (!this.lfInstance) {
-          alert("⚠ 画布未初始化！");
-          return;
-        }
-        this.lfInstance.render({
-          "nodes": [
-            {
-              "id": "27763cfb-1d07-418b-946b-aa8b9852f6e4",
-              "type": "class",
-              "x": 180,
-              "y": 255,
-              "properties": {
-                "className": "person",
-                "attributes": [
-                  "height",
-                  "weight"
-                ],
-                "methods": []
-              },
-              "zIndex": 1002
-            }
-          ],
-          "edges": []
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      fetch("api/aiuml/picToUml", {
+        method: "POST",
+        body: formData
+      })
+        .then(async (response) => {
+          if (!response.ok) {
+            throw new Error("上传失败");
+          }
+          const result = await response.json();
+          if (result.code !== 0) {
+            throw new Error(result.msg || "后端解析失败");
+          }
+
+          const diagramData = result.info;
+          if (!this.lfInstance) {
+            alert("⚠ 画布未初始化！");
+            return;
+          }
+
+          this.lfInstance.render(diagramData);
+        })
+        .catch((error) => {
+          console.error("上传或渲染出错：", error);
+          alert("上传失败：" + error.message);
+        })
+        .finally(() => {
+          this.loading = false;
         });
-      }, 5000);
-      setTimeout(() => {
-        if (!this.lfInstance) {
-          alert("⚠ 画布未初始化！");
-          return;
-        }
-        this.lfInstance.render({
-          "nodes": [
-            {
-              "id": "27763cfb-1d07-418b-946b-aa8b9852f6e4",
-              "type": "class",
-              "x": 180,
-              "y": 255,
-              "properties": {
-                "className": "person",
-                "attributes": [
-                  "height",
-                  "weight"
-                ],
-                "methods": [
-                  "eat()",
-                  "say()"
-                ]
-              },
-              "zIndex": 1002
-            }
-          ],
-          "edges": []
-        });
-      }, 7000);
-      setTimeout(() => {
-        if (!this.lfInstance) {
-          alert("⚠ 画布未初始化！");
-          return;
-        }
-        this.lfInstance.render({
-          "nodes": [
-            {
-              "id": "27763cfb-1d07-418b-946b-aa8b9852f6e4",
-              "type": "class",
-              "x": 180,
-              "y": 255,
-              "properties": {
-                "className": "person",
-                "attributes": [
-                  "height",
-                  "weight"
-                ],
-                "methods": [
-                  "eat()",
-                  "say()"
-                ]
-              },
-              "zIndex": 1002
-            },
-            {
-              "id": "ed558610-9054-4b16-9eef-ef42801d8af1",
-              "type": "class",
-              "x": 550,
-              "y": 520,
-              "properties": {
-                "className": "Chinese",
-                "attributes": [],
-                "methods": [
-                  "speakChinese()"
-                ]
-              },
-              "zIndex": 1004
-            }
-          ],
-          "edges": []
-        });
-      }, 9000);
-      setTimeout(() => {
-        if (!this.lfInstance) {
-          alert("⚠ 画布未初始化！");
-          return;
-        }
-        this.lfInstance.render({
-          "nodes": [
-            {
-              "id": "27763cfb-1d07-418b-946b-aa8b9852f6e4",
-              "type": "class",
-              "x": 180,
-              "y": 255,
-              "properties": {
-                "className": "person",
-                "attributes": [
-                  "height",
-                  "weight"
-                ],
-                "methods": [
-                  "eat()",
-                  "say()"
-                ]
-              },
-              "zIndex": 1002
-            },
-            {
-              "id": "ed558610-9054-4b16-9eef-ef42801d8af1",
-              "type": "class",
-              "x": 350,
-              "y": 550,
-              "properties": {
-                "className": "Chinese",
-                "attributes": [],
-                "methods": [
-                  "speakChinese()"
-                ]
-              },
-              "zIndex": 1004
-            }
-          ],
-          "edges": [
-            {
-              "id": "e6dd5bf8-70bd-4bb8-8492-d1d03de35adf",
-              "type": "pro-polyline",
-              "sourceNodeId": "ed558610-9054-4b16-9eef-ef42801d8af1",
-              "targetNodeId": "27763cfb-1d07-418b-946b-aa8b9852f6e4",
-              "startPoint": {
-                "x": 350,
-                "y": 470
-              },
-              "endPoint": {
-                "x": 180,
-                "y": 335
-              },
-              "properties": {},
-              "zIndex": 1005,
-              "pointsList": [
-                {
-                  "x": 350,
-                  "y": 470
-                },
-                {
-                  "x": 350,
-                  "y": 365
-                },
-                {
-                  "x": 180,
-                  "y": 365
-                },
-                {
-                  "x": 180,
-                  "y": 335
-                }
-              ]
-            }
-          ]
-        });
-        this.loading = false;
-      }, 12000); // 延迟1.5秒，可根据需要调整
-      reader.onload = () => {
-
-
-        console.log("上传的文件:", file.name);
-        console.log("Base64 数据:", reader.result);
-
-
-      };
-
     }
+
   },
   components: {
     IconCircle,
