@@ -1,4 +1,4 @@
-import CircleNode from 'C:/Users/于钊京/Desktop/AIUML/AIUML_frontend/GBD/src/components/node/basic/CircleNode.js'
+import CircleNode from '../basic/CircleNode.js'
 
 // 椭圆
 class UsecaseModel extends CircleNode.model {

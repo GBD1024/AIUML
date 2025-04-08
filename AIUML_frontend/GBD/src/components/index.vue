@@ -49,16 +49,13 @@
     </div>
 
     <!-- 历史绘图展示 -->
-    <div class="history-list">
+    <!-- <div class="history-list">
       <h3>历史绘图</h3>
 
-      <!-- 加载状态 -->
       <p v-if="loading">加载中...</p>
 
-      <!-- 错误提示 -->
       <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 
-      <!-- 历史绘图网格 -->
       <div v-if="historyList.length > 0" class="history-grid">
         <div v-for="(item, index) in historyList" :key="index" class="history-item">
           <button class="history-button" @click="goToDiagramWithHistory(item.id)">
@@ -71,9 +68,43 @@
         </div>
       </div>
 
-      <!-- 无历史绘图时的占位 -->
       <p v-else-if="!loading">暂无历史绘图</p>
+    </div> -->
+    <div class="history-list">
+      <!-- 加载 & 错误提示不变 -->
+      <p v-if="loading">加载中...</p>
+      <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+
+      <!-- 自己创建的绘图 -->
+      <h3>我创建的绘图</h3>
+      <div v-if="historyOwn.length > 0" class="history-grid">
+        <div v-for="(item, index) in historyOwn" :key="'own-' + index" class="history-item">
+          <button class="history-button" @click="goToDiagramWithHistory(item.id)">
+            <img :src="item.cover_pic || defaultImage" :alt="item.name" class="history-image" />
+            <span class="history-name">{{ item.name }}</span>
+          </button>
+          <button class="delete-button" @click="handleDelete(item.id)">删除</button>
+          <button class="rename-button" @click="openRenameDialog(item.id, item.name)">重命名</button>
+        </div>
+      </div>
+      <p v-else-if="!loading">暂无我创建的绘图</p>
+
+      <!-- 协作绘图 -->
+      <h3>协作绘图</h3>
+      <div v-if="historyCollaborative.length > 0" class="history-grid">
+        <div v-for="(item, index) in historyCollaborative" :key="'collab-' + index" class="history-item">
+          <div class="collab-tag">协作</div>
+          <button class="history-button" @click="goToDiagramWithHistory(item.id)">
+            <img :src="item.cover_pic || defaultImage" :alt="item.name" class="history-image" />
+            <span class="history-name">{{ item.name || '未命名协作绘图' }}</span>
+
+          </button>
+          <button class="cancel-button" @click="handleCancelCollaboration(item.id)">取消协作</button>
+        </div>
+      </div>
+      <p v-else-if="!loading">暂无协作绘图</p>
     </div>
+
   </div>
 </template>
 
@@ -98,7 +129,9 @@ export default {
       defaultImage: "https://img0.baidu.com/it/u=1479232965,1336077163&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500",
       searchQuery: "",
       collaborationQuery: "",
-      historyList: [],
+      // historyList: [],
+      historyOwn: [],
+      historyCollaborative: [],
       loading: true,
       errorMessage: "",
       userId: ''
@@ -151,8 +184,16 @@ export default {
           headers: { "Authorization": token }
         });
 
+        // if (response.data.code === 0) {
+        //   this.historyList = response.data.info;
+        // } else {
+        //   this.errorMessage = "获取历史绘图失败：" + response.data.message;
+        // }
         if (response.data.code === 0) {
-          this.historyList = response.data.info;
+          const data = response.data.info;
+          console.log(data);
+          this.historyOwn = data.own || [];
+          this.historyCollaborative = data.collaborative || [];
         } else {
           this.errorMessage = "获取历史绘图失败：" + response.data.message;
         }
@@ -167,7 +208,7 @@ export default {
     goToDiagramWithHistory(id) {
       let graphData = {};
       if (id !== -1) {
-        const selectedGraph = this.historyList.find(graph => graph.id === id);
+        const selectedGraph = [...this.historyOwn, ...this.historyCollaborative].find(graph => graph.id === id);
         if (!selectedGraph) return;
         graphData = selectedGraph.uml_data;
       }
@@ -377,7 +418,8 @@ export default {
   color: #606266;
 }
 
-.delete-button, .rename-button {
+.delete-button,
+.rename-button {
   position: absolute;
   padding: 5px 10px;
   color: white;
@@ -385,20 +427,24 @@ export default {
   border-radius: 4px;
   cursor: pointer;
   transition: opacity 0.3s;
-  width: 65px; /* 设置固定宽度 */
-  text-align: center; /* 确保文本居中对齐 */
+  width: 65px;
+  /* 设置固定宽度 */
+  text-align: center;
+  /* 确保文本居中对齐 */
 }
 
 .delete-button {
   top: 40px;
   right: 10px;
-  background: #5a5a5a; /* 较深的灰色 */
+  background: #5a5a5a;
+  /* 较深的灰色 */
 }
 
 .rename-button {
   top: 10px;
   right: 10px;
-  background: #8a8a8a; /* 较浅的灰色 */
+  background: #8a8a8a;
+  /* 较浅的灰色 */
 }
 
 /* 悬停效果 */
@@ -435,5 +481,36 @@ export default {
 
 .action-button:hover {
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+.collab-tag {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #409EFF;
+  color: white;
+  padding: 2px 6px;
+  font-size: 12px;
+  border-radius: 4px;
+  z-index: 1;
+}
+
+.cancel-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #5a5a5a;
+  ;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  cursor: pointer;
+  width: 80px;
+  text-align: center;
+}
+
+.cancel-button:hover {
+  opacity: 0.8;
 }
 </style>
