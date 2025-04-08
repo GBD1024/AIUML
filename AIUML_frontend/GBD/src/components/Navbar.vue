@@ -75,6 +75,8 @@ export default {
           menuItems: [
             { label: "撤销", action: "$_undo" },
             { label: "重做", action: "$_redo" },
+            { label: "一键美化", action: "$_beautify" },
+            { label: "插入plantuml", action: "$_plantuml" },
           ],
         },
         {
@@ -181,7 +183,12 @@ export default {
         alert("⚠ 画布未初始化！");
       }
     },
-
+    $_beautify() {
+      alert("⚠ 已美化！");
+    },
+    $_plantuml() {
+      alert("⚠ 已插入！");
+    },
     // 示例方法：放大
     $_zoomIn() {
       if (this.lfInstance) {

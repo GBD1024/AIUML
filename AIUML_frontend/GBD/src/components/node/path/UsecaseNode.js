@@ -1,5 +1,4 @@
 import CircleNode from '../basic/CircleNode.js'
-
 // 椭圆
 class UsecaseModel extends CircleNode.model {
     initNodeData(data) {
