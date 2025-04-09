@@ -146,23 +146,215 @@ export default {
       userId: '',
       templateDiagrams: [
         {
-          name: "类图模板",
+          name: "类图模板1",
           uml_data: {
-            nodes: [
+            "nodes": [
               {
-                id: "20e4c391-7f1f-4fc9-a4c3-6bdff2b78f72",
-                type: "class",
-                x: 380,
-                y: 280,
-                properties: {
-                  className: "NewClass",
-                  attributes: ["+ attribute"],
-                  methods: ["+ method"]
+                "id": "85984ea0-b328-47e6-ac6f-322e1d03a18b",
+                "type": "class",
+                "x": 335,
+                "y": 230,
+                "properties": {
+                  "className": "Class1",
+                  "attributes": [
+                    "+ attribute"
+                  ],
+                  "methods": [
+                    "+ method"
+                  ]
                 },
-                zIndex: 1002
+                "zIndex": 1002
+              },
+              {
+                "id": "03362b57-5ce3-41e7-a0db-0ae4155af835",
+                "type": "class",
+                "x": 695,
+                "y": 460,
+                "properties": {
+                  "className": "Class2",
+                  "attributes": [
+                    "+ attribute"
+                  ],
+                  "methods": [
+                    "+ method"
+                  ]
+                },
+                "zIndex": 1004
               }
             ],
-            edges: []
+            "edges": [
+              {
+                "id": "1d048c8c-4c80-4953-a45c-96c6b40b5ae5",
+                "type": "pro-generalizationline",
+                "sourceNodeId": "03362b57-5ce3-41e7-a0db-0ae4155af835",
+                "targetNodeId": "85984ea0-b328-47e6-ac6f-322e1d03a18b",
+                "startPoint": {
+                  "x": 595,
+                  "y": 460
+                },
+                "endPoint": {
+                  "x": 335,
+                  "y": 310
+                },
+                "properties": {},
+                "zIndex": 1005,
+                "pointsList": [
+                  {
+                    "x": 595,
+                    "y": 460
+                  },
+                  {
+                    "x": 335,
+                    "y": 460
+                  },
+                  {
+                    "x": 335,
+                    "y": 310
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          name: "类图模板2",
+          uml_data: {
+            "nodes": [
+              {
+                "id": "85984ea0-b328-47e6-ac6f-322e1d03a18b",
+                "type": "class",
+                "x": 335,
+                "y": 230,
+                "properties": {
+                  "className": "Class1",
+                  "attributes": [
+                    "+ attribute"
+                  ],
+                  "methods": [
+                    "+ method"
+                  ]
+                },
+                "zIndex": 1002
+              },
+              {
+                "id": "03362b57-5ce3-41e7-a0db-0ae4155af835",
+                "type": "class",
+                "x": 695,
+                "y": 460,
+                "properties": {
+                  "className": "Class2",
+                  "attributes": [
+                    "+ attribute"
+                  ],
+                  "methods": [
+                    "+ method"
+                  ]
+                },
+                "zIndex": 1004
+              }
+            ],
+            "edges": [
+              {
+                "id": "1d048c8c-4c80-4953-a45c-96c6b40b5ae5",
+                "type": "pro-generalizationline",
+                "sourceNodeId": "03362b57-5ce3-41e7-a0db-0ae4155af835",
+                "targetNodeId": "85984ea0-b328-47e6-ac6f-322e1d03a18b",
+                "startPoint": {
+                  "x": 595,
+                  "y": 460
+                },
+                "endPoint": {
+                  "x": 335,
+                  "y": 310
+                },
+                "properties": {},
+                "zIndex": 1005,
+                "pointsList": [
+                  {
+                    "x": 595,
+                    "y": 460
+                  },
+                  {
+                    "x": 335,
+                    "y": 460
+                  },
+                  {
+                    "x": 335,
+                    "y": 310
+                  }
+                ]
+              }
+            ]
+          }
+        },{
+          name: "类图模板3",
+          uml_data: {
+            "nodes": [
+              {
+                "id": "85984ea0-b328-47e6-ac6f-322e1d03a18b",
+                "type": "class",
+                "x": 335,
+                "y": 230,
+                "properties": {
+                  "className": "Class1",
+                  "attributes": [
+                    "+ attribute"
+                  ],
+                  "methods": [
+                    "+ method"
+                  ]
+                },
+                "zIndex": 1002
+              },
+              {
+                "id": "03362b57-5ce3-41e7-a0db-0ae4155af835",
+                "type": "class",
+                "x": 695,
+                "y": 460,
+                "properties": {
+                  "className": "Class2",
+                  "attributes": [
+                    "+ attribute"
+                  ],
+                  "methods": [
+                    "+ method"
+                  ]
+                },
+                "zIndex": 1004
+              }
+            ],
+            "edges": [
+              {
+                "id": "1d048c8c-4c80-4953-a45c-96c6b40b5ae5",
+                "type": "pro-generalizationline",
+                "sourceNodeId": "03362b57-5ce3-41e7-a0db-0ae4155af835",
+                "targetNodeId": "85984ea0-b328-47e6-ac6f-322e1d03a18b",
+                "startPoint": {
+                  "x": 595,
+                  "y": 460
+                },
+                "endPoint": {
+                  "x": 335,
+                  "y": 310
+                },
+                "properties": {},
+                "zIndex": 1005,
+                "pointsList": [
+                  {
+                    "x": 595,
+                    "y": 460
+                  },
+                  {
+                    "x": 335,
+                    "y": 460
+                  },
+                  {
+                    "x": 335,
+                    "y": 310
+                  }
+                ]
+              }
+            ]
           }
         }
       ]
