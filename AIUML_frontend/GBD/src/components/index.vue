@@ -39,14 +39,23 @@
     </el-dialog>
 
 
-    <!-- 新建绘图 -->
     <h3 style="padding: 0 20px;">新建绘图</h3>
     <div class="actions">
-      <button class="action-button" @click="goToDiagramWithHistory(-1)">
+      <!-- 空白绘图 -->
+      <button class="action-button" @click="goToDiagramWithTemplate(null)">
         <img :src="defaultImage" class="history-image" />
         <div class="history-name">空白绘图</div>
       </button>
+
+      <!-- 模板绘图 -->
+      <button class="action-button" v-for="(template, index) in templateDiagrams" :key="'tpl-' + index"
+        @click="goToDiagramWithTemplate(template.uml_data)">
+        <img :src="defaultImage" class="history-image" />
+        <div class="history-name">{{ template.name }}</div>
+      </button>
     </div>
+
+
 
     <!-- 历史绘图展示 -->
     <!-- <div class="history-list">
@@ -134,7 +143,29 @@ export default {
       historyCollaborative: [],
       loading: true,
       errorMessage: "",
-      userId: ''
+      userId: '',
+      templateDiagrams: [
+        {
+          name: "类图模板",
+          uml_data: {
+            nodes: [
+              {
+                id: "20e4c391-7f1f-4fc9-a4c3-6bdff2b78f72",
+                type: "class",
+                x: 380,
+                y: 280,
+                properties: {
+                  className: "NewClass",
+                  attributes: ["+ attribute"],
+                  methods: ["+ method"]
+                },
+                zIndex: 1002
+              }
+            ],
+            edges: []
+          }
+        }
+      ]
     };
   },
   mounted() {
@@ -215,6 +246,12 @@ export default {
       sessionStorage.setItem("graphData", graphData);
       this.$router.push({ path: "/diagram", query: { id } });
     },
+    goToDiagramWithTemplate(umlData) {
+      const data = umlData || { nodes: [], edges: [] }; // 空白或模板
+      sessionStorage.setItem("graphData", JSON.stringify(data));
+      this.$router.push({ path: "/diagram", query: { id: -1 } });
+    },
+
     async handleDelete(id) {
       if (!confirm("确定要删除这个绘图吗？")) return;
       try {
@@ -247,6 +284,30 @@ export default {
       this.handleRename(this.renameId, this.renameInput);
       this.renameDialogVisible = false;
     },
+    async handleCancelCollaboration(graphId) {
+      if (!confirm("确定要取消该协作绘图吗？")) return;
+
+      try {
+        const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+
+        const response = await axios.post(
+          "/api/collaboration/cancelCollaboration",
+          { graph_id: graphId },
+          { headers: { Authorization: token } }
+        );
+
+        if (response.data.code === 0) {
+          this.$message.success("取消协作成功！");
+          this.fetchHistoryList(); // 重新加载列表
+        } else {
+          this.$message.error(`取消失败：${response.data.message}`);
+        }
+      } catch (error) {
+        console.error("取消协作请求失败：", error);
+        this.$message.error("请求失败，请检查网络连接！");
+      }
+    },
+
     async handleRename(id, name) {
 
       try {
@@ -271,9 +332,42 @@ export default {
     handleSearch() {
       alert(`搜索功能开发中，关键词：${this.searchQuery}`);
     },
-    addDiagram() {
-      alert("添加成功");
+    async addDiagram() {
+      if (!this.collaborationQuery.trim()) {
+        this.$message.warning("请输入协作密钥！");
+        return;
+      }
+
+      try {
+        const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+        if (!token) {
+          this.$message.error("未登录，无法添加协作绘图！");
+          return;
+        }
+
+        const payload = {
+          secret_key: this.collaborationQuery.trim()
+        };
+
+        const response = await axios.post(
+          "/api/collaboration/createCollaboration",
+          payload,
+          { headers: { Authorization: token } }
+        );
+
+        if (response.data.code === 0) {
+          this.$message.success("协作绘图添加成功！");
+          this.collaborationQuery = "";
+          this.fetchHistoryList(); // 重新拉取列表以刷新显示
+        } else {
+          this.$message.error(`添加失败：${response.data.message}`);
+        }
+      } catch (error) {
+        console.error("添加协作绘图失败:", error);
+        this.$message.error("请求失败，请检查网络连接！");
+      }
     }
+
   }
 };
 </script>

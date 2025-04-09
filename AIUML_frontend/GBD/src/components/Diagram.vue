@@ -72,27 +72,19 @@ export default {
     }
   },
   mounted() {
-    const query = this.$route.query;
-    console.log(query);
+    const { id } = this.$route.query;
+    this.diagramId = id || "new";
 
-    if (query.id) {
-      this.diagramId = query.id; // ✅ 存储传来的 id
+    const storedData = sessionStorage.getItem("graphData");
+    let graphData = null;
 
-      // ✅ 读取 sessionStorage 中存储的绘图数据
-      const storedData = sessionStorage.getItem("graphData");
-      console.log(storedData)
-      if (storedData && query.id !== "-1") {
-        // 如果有数据，且 id 不是 -1，说明是打开已有绘图
-        this.initLogicFlow(JSON.parse(storedData));
-      } else {
-        // 如果 id 是 -1，则初始化空白画布
-        this.initLogicFlow();
-      }
-    } else {
-      // 万一没有 id，兜底逻辑，初始化空画布
-      this.initLogicFlow();
-      this.diagramId = "new";
+    try {
+      graphData = storedData ? JSON.parse(storedData) : null;
+    } catch (e) {
+      console.warn("解析图数据失败:", e);
     }
+
+    this.initLogicFlow(graphData || { nodes: [], edges: [] });
   },
   methods: {
     initLogicFlow(data) {
