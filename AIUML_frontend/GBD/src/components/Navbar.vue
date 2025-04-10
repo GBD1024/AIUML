@@ -268,17 +268,17 @@ export default {
           const key = response.data.info;
           this.$copyText?.(key); // 如果你集成了 vue-clipboard 等复制插件
           this.$message.success({
-            message: `✅ 协作密钥生成成功：${key}`,
+            message: ` 协作密钥生成成功：${key}`,
             duration: 0, // 0 表示永不自动关闭
             showClose: true // 提供一个关闭按钮
           });
 
         } else {
-          this.$message.error("❌ 协作密钥生成失败：" + response.data.message);
+          this.$message.error(" 协作密钥生成失败：" + response.data.message);
         }
       } catch (error) {
         console.error("生成协作密钥失败:", error);
-        this.$message.error("❌ 请求出错，生成密钥失败");
+        this.$message.error(" 请求出错，生成密钥失败");
       }
     },
 
