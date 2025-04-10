@@ -3,7 +3,7 @@
     <!-- 传递 `lf` 实例和 `id` 给 Navbar -->
     <Navbar ref="navbar" :diagramId="diagramId" @updateDiagramId="diagramId = $event" />
     <diagram-toolbar class="diagram-toolbar" v-if="lf" :lf="lf" :activeEdges="activeEdges"
-      @changeNodeFillColor="$_changeNodeFill" @saveGraph="$_saveGraph" />
+      @changeNodeFillColor="$_changeNodeFill" @saveGraph="$_saveGraph" @searchNode="$_searchNode" />
     <div class="diagram-main">
       <diagram-sidebar ref="sidebar" class="diagram-sidebar" @dragInNode="$_dragInNode" />
       <div class="diagram-container" ref="container">
@@ -24,6 +24,8 @@
 </template>
 
 <script>
+
+import Fuse from 'fuse.js';
 import LogicFlow from '@logicflow/core';
 import { SelectionSelect } from '@logicflow/extension';
 import '@logicflow/core/dist/style/index.css';
@@ -88,7 +90,13 @@ export default {
   },
   methods: {
     initLogicFlow(data) {
-      LogicFlow.use(SelectionSelect);
+
+      if (
+        !LogicFlow.plugins ||
+        !LogicFlow.plugins.some(p => p?.pluginName === 'selectionSelect')
+      ) {
+        LogicFlow.use(SelectionSelect);
+      }
       const lf = new LogicFlow({
         container: this.$refs.diagram,
         overlapMode: 1,
@@ -169,6 +177,70 @@ export default {
     $_saveGraph() {
       const data = this.lf.getGraphData();
       this.$refs.navbar.saveGraph(data); // 调用 Navbar 的 saveGraph 方法
+    },
+    $_searchNode(keyword) {
+      if (!keyword || !this.lf) return;
+
+      const allNodes = this.lf.getGraphData().nodes;
+
+      // 1. 构建搜索用的数据结构
+      const searchList = allNodes.map(node => {
+        let label = '';
+        if (node.type === 'class') {
+          label = node.properties?.className || '';
+        } if (node.type === 'object') {
+          label = node.properties?.objectName || '';
+        } else if (node.text?.value) {
+          label = node.text.value;
+        }
+
+        return {
+          id: node.id,
+          label,
+          raw: node
+        };
+      });
+
+      // 2. 初始化 Fuse.js
+      const fuse = new Fuse(searchList, {
+        keys: ['label'],
+        threshold: 0.3,
+        ignoreLocation: true,
+        distance: 100
+      });
+
+      // 3. 搜索匹配
+      const results = fuse.search(keyword);
+      if (results.length === 0) {
+        this.$message.warning('未找到匹配的节点');
+        return;
+      }
+
+      // 4. 聚焦第一个匹配项
+      const matchedNodeId = results[0].item.id;
+      this.$_focusNode(matchedNodeId);
+    },
+
+    $_focusNode(nodeId) {
+      const nodeModel = this.lf.getNodeModelById(nodeId);
+      if (nodeModel) {
+        const { x, y } = nodeModel;
+        this.lf.translateCenter(x, y);
+        this.lf.clearSelectElements();
+        this.lf.selectElementById(nodeId);
+
+        this.lf.setProperties(nodeId, {
+          stroke: '#f56c6c',
+          strokeWidth: 2
+        });
+
+        setTimeout(() => {
+          this.lf.setProperties(nodeId, {
+            stroke: '#000000',
+            strokeWidth: 1
+          });
+        }, 2000);
+      }
     },
     download(filename, text) {
       window.sessionStorage.setItem(filename, text);

@@ -47,6 +47,11 @@
         <el-option v-for="item in lineOptions" :key="item.value" :value="item.value" :label="item.label"></el-option>
       </el-select>
     </div>
+    <div class="search-container">
+      <input v-model="searchQuery" placeholder="搜索节点..." class="search-input" />
+      <button @click="onSearchConfirm" class="search-button">搜索节点</button>
+    </div>
+
   </div>
 </template>
 
@@ -74,6 +79,7 @@ export default {
   },
   data() {
     return {
+      searchQuery: '',
       selectionOpened: false,
       undoAble: false,
       redoAble: false,
@@ -137,8 +143,16 @@ export default {
       this.$data.redoAble = redoAble
       this.$data.undoAble = undoAble
     })
+
   },
   methods: {
+    onSearchInput() {
+      // 如果你希望输入过程就实时搜索，可保留这句
+      // this.$emit('searchNode', this.searchQuery);
+    },
+    onSearchConfirm() {
+      this.$emit('searchNode', this.searchQuery);
+    },
     $_changeFillColor(val) {
       this.$emit('changeNodeFillColor', val.hex)
     },
@@ -265,4 +279,32 @@ export default {
     }
   }
 }
+.search-container {
+  display: flex;
+  align-items: center;
+  margin-left: 20px;
+}
+
+.search-input {
+  padding: 4px 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px 0 0 4px;
+}
+
+.search-button {
+  padding: 2.5px 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-left: none;
+  background-color: #666666;
+  color: white;
+  border-radius: 4px 4px 4px 4px;
+  cursor: pointer;
+}
+
+.search-button:hover {
+  background-color: #969696;
+}
+
 </style>
