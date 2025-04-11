@@ -91,12 +91,8 @@ export default {
   methods: {
     initLogicFlow(data) {
 
-      if (
-        !LogicFlow.plugins ||
-        !LogicFlow.plugins.some(p => p?.pluginName === 'selectionSelect')
-      ) {
         LogicFlow.use(SelectionSelect);
-      }
+
       const lf = new LogicFlow({
         container: this.$refs.diagram,
         overlapMode: 1,
@@ -135,6 +131,7 @@ export default {
       this.$refs.navbar.setLogicFlowInstance(this.lf);
       this.$refs.aipanel.setLogicFlowInstance(this.lf);
       this.$refs.sidebar.setLogicFlowInstance(this.lf);
+      
     },
     $_getProperty() {
       let properties = {};

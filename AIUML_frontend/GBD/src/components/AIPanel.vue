@@ -14,20 +14,47 @@
 
 
       <!-- 中间部分：三个功能按钮 -->
+      <!-- 功能按钮组：添加 isLoading 禁用控制 -->
       <div class="button-group">
-        <button :class="['func-btn', { 'active': selectedAction === 'generateUML' }]"
-          @click="selectedAction = 'generateUML'">生成UML</button>
-        <button :class="['func-btn', { 'active': selectedAction === 'generateCode' }]"
-          @click="selectedAction = 'generateCode'">生成代码</button>
-        <button :class="['func-btn', { 'active': selectedAction === 'explainCode' }]"
-          @click="selectedAction = 'explainCode'">代码解释</button>
+        <button :class="['func-btn', { 'active': selectedAction === 'generateUML', 'disabled': isLoading }]"
+          @click="!isLoading && (selectedAction = 'generateUML')" :disabled="isLoading">生成UML</button>
+
+        <button :class="['func-btn', { 'active': selectedAction === 'generateCode', 'disabled': isLoading }]"
+          @click="!isLoading && (selectedAction = 'generateCode')" :disabled="isLoading">生成代码</button>
+
+        <button :class="['func-btn', { 'active': selectedAction === 'explainCode', 'disabled': isLoading }]"
+          @click="!isLoading && (selectedAction = 'explainCode')" :disabled="isLoading">代码解释</button>
       </div>
 
+
+
+
+
       <!-- 下半部分：用户对话框 -->
-      <div class="user-dialog">
-        <textarea v-model="userInput" placeholder="请输入你的问题或代码..." class="user-input"></textarea>
-        <button class="submit-btn" @click="handleSubmit">提交</button>
+      <!-- 用户输入区域 -->
+      <div style="position: relative;">
+        <textarea v-model="userInput" placeholder="请输入你的问题或代码..." class="user-input" :disabled="isLoading"></textarea>
+
+        <!-- ✨ 遮罩和按钮放一起，并使用 pointer-events 管控 -->
+        <div v-if="isLoading" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+              background: rgba(0, 0, 0, 0.12); z-index: 20;
+              display: flex; align-items: flex-end; justify-content: center; padding-bottom: 20px;
+              pointer-events: none;">
+          <button @click="confirmCancel" style="pointer-events: auto;
+                   padding: 12px 24px; border: 2px solid #000;
+                   background: white; color: #000; font-weight: bold;
+                   font-size: 16px; border-radius: 8px; cursor: pointer;
+                   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);">
+             取消生成
+          </button>
+        </div>
+
+        <button class="submit-btn" @click="handleSubmit" :disabled="isLoading">
+          {{ isLoading ? '加载中...' : '提交' }}
+        </button>
       </div>
+
+
     </aside>
   </div>
 </template>
@@ -40,6 +67,10 @@ export default {
   },
   data() {
     return {
+      isLoading: false,
+      abortController: null,
+
+
       lfInstance: null,
       isSidebarVisible: false,
       aiMessage: '你好！我可以帮助你生成 UML、代码或解释代码。请选择以下功能：',
@@ -68,6 +99,13 @@ export default {
         return;
       }
 
+      if (!this.selectedAction) {
+        this.aiMessage = '请选择一个功能后再提交！';
+        return;
+      }
+
+      this.isLoading = true;
+
       let url = '';
       let dataToSend = {};
 
@@ -75,7 +113,11 @@ export default {
         case 'generateUML':
           this.aiMessage = `正在生成 UML 图...\n用户输入：${this.userInput}`;
           url = 'api/aiuml/generateUML';
-          dataToSend = { type: 'generateUML', content: this.userInput ,umlData: this.getUMLData()};
+          dataToSend = {
+            type: 'generateUML',
+            content: this.userInput,
+            umlData: this.getUMLData()
+          };
           break;
         case 'generateCode':
           this.aiMessage = `正在生成代码...\n用户输入：${this.userInput}`;
@@ -89,43 +131,78 @@ export default {
         case 'explainCode':
           this.aiMessage = `正在解释代码...\n用户输入：${this.userInput}`;
           url = 'api/aiuml/explainCode';
-          dataToSend = { type: 'explainCode', content: this.userInput };
+          dataToSend = {
+            type: 'explainCode',
+            content: this.userInput
+          };
           break;
-        default:
-          this.aiMessage = '请选择一个功能后再提交！';
-          return;
       }
 
       this.userInput = '';
       this.submitRequest(url, dataToSend);
     },
+
     submitRequest(url, data) {
+      this.abortController = new AbortController(); // 创建中断控制器
+      const signal = this.abortController.signal;
+
       fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': localStorage.getItem('token') },
-        body: JSON.stringify(data)
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': localStorage.getItem('token')
+        },
+        body: JSON.stringify(data),
+        signal // ✅ 传入 signal
       })
         .then(response => response.json())
         .then(this.handleResponse)
-        .catch(this.handleError);
+        .catch(err => {
+          if (err.name === 'AbortError') {
+            this.aiMessage = '❌ 请求已取消';
+          } else {
+            this.handleError(err);
+          }
+        })
+        .finally(() => {
+          this.isLoading = false;
+          this.abortController = null;
+        });
     },
+    cancelRequest() {
+      if (this.abortController) {
+        this.abortController.abort();
+      }
+    },
+    confirmCancel() {
+      this.$confirm?.('生成过程可能较慢，确定要取消吗？', '确认取消', {
+        confirmButtonText: '确定',
+        cancelButtonText: '继续等待',
+        type: 'warning'
+      }).then(() => {
+        this.cancelRequest();
+      }).catch(() => {
+        // 用户点了“继续等待”，不做任何事
+      });
+    },
+
     handleResponse(responseData) {
       switch (this.selectedAction) {
         case 'generateUML':
           this.aiMessage = "正在生成UML，请耐心等待";
-            if (this.lfInstance) {
-              const savedData = responseData.info;
-              console.log(savedData);
-              if (savedData) {
-                this.lfInstance.render(savedData);
-                this.aiMessage = "UML图已绘制";
-              } else {
-                this.aiMessage = "⚠ 无数据可渲染";
-              }
+          if (this.lfInstance) {
+            const savedData = responseData.info;
+            console.log(savedData);
+            if (savedData) {
+              this.lfInstance.render(savedData);
+              this.aiMessage = "UML图已绘制";
             } else {
-              alert("⚠ 画布未初始化！");
-              this.aiMessage = "⚠ 渲染失败，画布未初始化";
+              this.aiMessage = "⚠ 无数据可渲染";
             }
+          } else {
+            alert("⚠ 画布未初始化！");
+            this.aiMessage = "⚠ 渲染失败，画布未初始化";
+          }
           break;
         case 'generateCode':
           this.aiMessage = responseData.info;
@@ -299,5 +376,15 @@ export default {
   resize: none;
   font-size: 14px;
   margin-bottom: 10px;
+}
+
+.func-btn.disabled,
+.func-btn:disabled,
+.submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+  background-color: #ddd !important;
+  color: #999 !important;
 }
 </style>

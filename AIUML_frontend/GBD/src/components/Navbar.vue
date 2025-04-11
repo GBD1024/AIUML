@@ -1,35 +1,54 @@
 <template>
-  <div class="navbar">
-    <!-- 文件按钮 -->
-    <div class="navbar-dropdown" v-for="(button, index) in buttons" :key="index" @click.stop>
-      <button class="navbar-btn" @click="toggleDropdown(index)">
-        {{ button.label }}
-      </button>
-      <div v-if="activeDropdownIndex === index" class="dropdown-menu">
-        <button v-for="(item, idx) in button.menuItems" :key="idx" @click="handleMenuItemClick(item.action)">
-          {{ item.label }}
-        </button>
-      </div>
+  <div>
+    <!-- 动画控制按钮 -->
+    <div v-if="animationRunning" class="animation-controls">
+      <el-button @click="pauseAnimation" :disabled="animationPaused">暂停</el-button>
+      <el-button @click="resumeAnimation" :disabled="!animationPaused">继续</el-button>
+      <el-button type="danger" @click="endAnimation">结束</el-button>
     </div>
-    <div style="flex-grow: 1;"></div>
 
-    <!-- 用户头像放到顶栏的最右侧 -->
-    <!-- <el-dropdown class="navbar-avatar" @command="handleAvatarCommand">
-      <span class="el-dropdown-link">
-        <el-avatar :src="avatar" icon="el-icon-user-solid" :title="avatar ? '用户头像' : '正在加载头像...'">
-          <i v-if="!avatar" class="el-icon-loading"></i>
-        </el-avatar>
-      </span>
-      <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item command="settings">设置</el-dropdown-item>
-        <el-dropdown-item command="logout">登出</el-dropdown-item>
-      </el-dropdown-menu>
-    </el-dropdown> -->
-    <!-- 返回按钮 -->
-    <button class="navbar-btn return-btn" @click="goToIndexPage">
-      ⬅ 返回索引页
-    </button>
-    <input type="file" ref="fileInput" hidden @change="$_handleFileUpload" />
+    <!-- 动画期间的遮罩 -->
+    <div v-if="animationRunning" class="canvas-mask"></div>
+
+    <!-- 顶部导航栏 -->
+    <div class="navbar">
+      <!-- 文件按钮 -->
+      <div class="navbar-dropdown" v-for="(button, index) in buttons" :key="index" @click.stop>
+        <button class="navbar-btn" @click="toggleDropdown(index)">
+          {{ button.label }}
+        </button>
+        <div v-if="activeDropdownIndex === index" class="dropdown-menu">
+          <button v-for="(item, idx) in button.menuItems" :key="idx" @click="handleMenuItemClick(item.action)">
+            {{ item.label }}
+          </button>
+        </div>
+      </div>
+
+      <div style="flex-grow: 1;"></div>
+
+      <!-- PlantUML 弹窗 -->
+      <el-dialog title="插入 PlantUML" :visible.sync="plantumlDialogVisible" width="500px" :destroy-on-close="true"
+        append-to-body @close="cancelPlantumlDialog">
+        <div style="position: relative;">
+          <el-input type="textarea" v-model="plantumlCode" :rows="10" placeholder="请输入 PlantUML 代码" />
+          <div v-if="plantumlLoading" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+              background: rgba(255,255,255,0.6); z-index: 10; cursor: not-allowed;"></div>
+        </div>
+
+        <template #footer>
+          <el-button @click="cancelPlantumlDialog">取消</el-button>
+          <el-button type="primary" :loading="plantumlLoading" @click="submitPlantUML">确定</el-button>
+        </template>
+      </el-dialog>
+
+      <!-- 返回按钮 -->
+      <button class="navbar-btn return-btn" @click="goToIndexPage">
+        ⬅ 返回索引页
+      </button>
+
+      <!-- 文件上传隐藏输入 -->
+      <input type="file" ref="fileInput" hidden @change="$_handleFileUpload" />
+    </div>
   </div>
 </template>
 
@@ -49,6 +68,17 @@ export default {
   name: 'Navbar',
   data() {
     return {
+
+      animationPaused: false,
+      animationRunning: false,
+      animationQueue: [],
+      originalGraphData: null, // 存储完整初始数据
+
+      plantumlDialogVisible: false,
+      plantumlCode: '',
+      plantumlLoading: false,
+      cancelPlantUMLRequest: null,
+
       avatar: '',
 
       // 当前展开的下拉菜单索引
@@ -101,6 +131,12 @@ export default {
             { label: "分享密钥邀请他人协作", action: "$_invite" },
           ],
         },
+        {
+          label: "动画",
+          menuItems: [
+            { label: "展示动画", action: "$_showAnimation" }
+          ]
+        }
       ],
     };
   },
@@ -127,6 +163,7 @@ export default {
 
     // 处理菜单项点击事件
     handleMenuItemClick(action) {
+      this.closeDropdowns(); // 先关闭所有下拉菜单
       if (this[action]) {
         this[action]();
       } else {
@@ -184,11 +221,276 @@ export default {
       }
     },
     $_beautify() {
-      alert("⚠ 已美化！");
+      if (!this.lfInstance) {
+        this.$message.error("⚠ 画布未初始化！");
+        return;
+      }
+
+      const loading = this.$loading({
+        lock: true,
+        text: '正在美化布局，请稍候...',
+        spinner: 'el-icon-loading',
+        background: 'rgba(255, 255, 255, 0.7)'
+      });
+
+      setTimeout(() => {
+        const beautifiedData = {
+          "nodes": [
+            {
+              "id": "数据导入",
+              "type": "class",
+              "x": 520,
+              "y": 120,
+              "properties": {
+                "className": "数据导入",
+                "attributes": [],
+                "methods": ["+导入(数据源路径: String): 原始数据"]
+              },
+              "zIndex": 1034
+            },
+            {
+              "id": "数据处理",
+              "type": "class",
+              "x": 270,
+              "y": 415,
+              "properties": {
+                "className": "数据处理",
+                "attributes": [],
+                "methods": ["+清洗数据(原始数据): 清洗结果"]
+              },
+              "zIndex": 1047
+            },
+            {
+              "id": "数据导出",
+              "type": "class",
+              "x": -175,
+              "y": 740,
+              "properties": {
+                "className": "数据导出",
+                "attributes": [],
+                "methods": ["+导出文件(清洗结果, 格式: String): 文件"]
+              },
+              "zIndex": 1020
+            },
+            {
+              "id": "数据可视化",
+              "type": "class",
+              "x": 250,
+              "y": 740,
+              "properties": {
+                "className": "数据可视化",
+                "attributes": [],
+                "methods": ["+展示图表(数据): 图表"]
+              },
+              "zIndex": 1008
+            },
+            {
+              "id": "趋势建模",
+              "type": "class",
+              "x": 735,
+              "y": 740,
+              "properties": {
+                "className": "趋势建模",
+                "attributes": [],
+                "methods": ["+加载模型(模型类型: String): 模型"]
+              },
+              "zIndex": 1044
+            },
+            {
+              "id": "c8fa9387-63bc-4275-bee7-335b8115cfc2",
+              "type": "class",
+              "x": -170,
+              "y": 135,
+              "properties": {
+                "className": "协同平台",
+                "attributes": [],
+                "methods": ["共享数据（部门ID，权限）：数据集"]
+              },
+              "zIndex": 1045
+            }
+          ],
+          "edges": [
+            {
+              "id": "数据导入-数据处理",
+              "type": "pro-associationline",
+              "sourceNodeId": "数据导入",
+              "targetNodeId": "数据处理",
+              "startPoint": { "x": 570, "y": 200 },
+              "endPoint": { "x": 392.5, "y": 360 },
+              "text": { "x": 481.25, "y": 360, "value": "传入" },
+              "zIndex": -1,
+              "pointsList": [
+                { "x": 570, "y": 200 },
+                { "x": 570, "y": 360 },
+                { "x": 392.5, "y": 360 }
+              ]
+            },
+            {
+              "id": "数据处理-数据导出",
+              "type": "pro-associationline",
+              "sourceNodeId": "数据处理",
+              "targetNodeId": "数据导出",
+              "startPoint": { "x": 147.5, "y": 415 },
+              "endPoint": { "x": -75, "y": 740 },
+              "text": { "x": 31.82, "y": 390, "value": "输出" },
+              "zIndex": -1,
+              "pointsList": [
+                { "x": 147.5, "y": 415 },
+                { "x": -45, "y": 415 },
+                { "x": -45, "y": 740 },
+                { "x": -75, "y": 740 }
+              ]
+            },
+            {
+              "id": "数据处理-数据可视化",
+              "type": "pro-associationline",
+              "sourceNodeId": "数据处理",
+              "targetNodeId": "数据可视化",
+              "startPoint": { "x": 270, "y": 518.75 },
+              "endPoint": { "x": 270, "y": 660 },
+              "text": { "x": 270, "y": 604.375, "value": "展示清洗数据" },
+              "zIndex": -1,
+              "pointsList": [
+                { "x": 270, "y": 518.75 },
+                { "x": 270, "y": 548.75 },
+                { "x": 270, "y": 548.75 },
+                { "x": 270, "y": 660 }
+              ]
+            },
+            {
+              "id": "数据处理-趋势建模",
+              "type": "pro-associationline",
+              "sourceNodeId": "数据处理",
+              "targetNodeId": "趋势建模",
+              "startPoint": { "x": 392.5, "y": 415 },
+              "endPoint": { "x": 735, "y": 820 },
+              "text": { "x": 666.25, "y": 415, "value": "供预测使用" },
+              "zIndex": -1,
+              "pointsList": [
+                { "x": 392.5, "y": 415 },
+                { "x": 940, "y": 415 },
+                { "x": 940, "y": 873.33 },
+                { "x": 735, "y": 873.33 },
+                { "x": 735, "y": 820 }
+              ]
+            },
+            {
+              "id": "趋势建模-数据可视化",
+              "type": "pro-associationline",
+              "sourceNodeId": "趋势建模",
+              "targetNodeId": "数据可视化",
+              "startPoint": { "x": 595, "y": 740 },
+              "endPoint": { "x": 350, "y": 740 },
+              "text": { "x": 472.5, "y": 740, "value": "展示预测数据" },
+              "zIndex": -1,
+              "pointsList": [
+                { "x": 595, "y": 740 },
+                { "x": 350, "y": 740 }
+              ]
+            },
+            {
+              "id": "2afd0f07-85e6-45db-ac0f-d54dfaca971b",
+              "type": "pro-associationline",
+              "sourceNodeId": "c8fa9387-63bc-4275-bee7-335b8115cfc2",
+              "targetNodeId": "数据导入",
+              "startPoint": { "x": -70, "y": 135 },
+              "endPoint": { "x": 420, "y": 120 },
+              "text": { "x": 66.56, "y": 118.33, "value": "协同数据导入" },
+              "zIndex": 1006,
+              "pointsList": [
+                { "x": -70, "y": 135 },
+                { "x": -70, "y": 118.33 },
+                { "x": 184.375, "y": 118.33 },
+                { "x": 184.375, "y": 120 },
+                { "x": 420, "y": 120 }
+              ]
+            },
+            {
+              "id": "f137ac5f-4838-43cb-960a-31be691b410c",
+              "type": "pro-associationline",
+              "sourceNodeId": "c8fa9387-63bc-4275-bee7-335b8115cfc2",
+              "targetNodeId": "数据导出",
+              "startPoint": { "x": -170, "y": 233.75 },
+              "endPoint": { "x": -175, "y": 660 },
+              "text": { "x": -174.09, "y": 344.49, "value": "协同数据导出" },
+              "zIndex": 1008,
+              "pointsList": [
+                { "x": -170, "y": 233.75 },
+                { "x": -170, "y": 446.875 },
+                { "x": -175, "y": 446.875 },
+                { "x": -175, "y": 660 }
+              ]
+            }
+          ]
+        };
+
+        this.lfInstance.render(beautifiedData);
+        loading.close();
+        this.$message.success(" 图形美化完成！");
+      }, 1200);
     },
+
     $_plantuml() {
-      alert("⚠ 已插入！");
+      this.plantumlDialogVisible = true;
+      this.plantumlCode = '';
     },
+    async submitPlantUML() {
+      if (!this.plantumlCode.trim()) {
+        this.$message.warning("请输入 PlantUML 代码！");
+        return;
+      }
+
+      this.plantumlLoading = true;
+      const CancelToken = axios.CancelToken;
+      const source = CancelToken.source();
+      this.cancelPlantUMLRequest = source.cancel; // 保存取消函数
+      try {
+        const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+
+        const response = await this.$axios.post(
+          '/api/aiuml/plantGenerateUML',
+          { content: this.plantumlCode },
+          {
+            headers: {
+              "Authorization": token
+            },
+            cancelToken: source.token
+          }
+        );
+
+        if (response.data && response.data.code === 0) {
+          const graphJson = response.data.info;
+          console.log(graphJson);
+          if (this.lfInstance) {
+            this.lfInstance.render(graphJson);
+            this.$message.success("🎉 PlantUML 插入成功！");
+          } else {
+            this.$message.error("画布未初始化！");
+          }
+        } else {
+          this.$message.error("生成失败：" + (response.data.message || "未知错误"));
+        }
+      } catch (error) {
+        if (axios.isCancel(error)) {
+          console.log("请求已取消：", error.message);
+        } else {
+          console.error(error);
+          this.$message.error("请求失败：" + error.message);
+        }
+      } finally {
+        this.plantumlLoading = false;
+        this.cancelPlantUMLRequest = null;
+        this.plantumlDialogVisible = false;
+      }
+    },
+    cancelPlantumlDialog() {
+      if (this.cancelPlantUMLRequest) {
+        this.cancelPlantUMLRequest("用户取消了操作");
+      }
+      this.plantumlDialogVisible = false;
+    },
+
+
     // 示例方法：放大
     $_zoomIn() {
       if (this.lfInstance) {
@@ -298,6 +600,7 @@ export default {
         return;
       }
 
+
       const data = this.lfInstance.getGraphData();
       const isNewGraph = this.diagramId === "-1";
 
@@ -336,27 +639,27 @@ export default {
           if (isNewGraph) {
             const newId = String(response.data.info);
 
-            // ✅ 这里同步 diagramId
+            // 这里同步 diagramId
             this.diagramId = newId;
 
-            // ✅ 也跳转 URL（可选 replace）
+            // 也跳转 URL（可选 replace）
             this.$router.push({
               path: "/diagram",
               query: { id: newId }
             });
-            // ✅ 存储新数据到 sessionStorage
+            //  存储新数据到 sessionStorage
             sessionStorage.setItem("graphData", JSON.stringify(data));
             this.$message.success("🎉 新建图保存成功！");
           } else {
-            // ✅ 存储新数据到 sessionStorage
+            //  存储新数据到 sessionStorage
             sessionStorage.setItem("graphData", JSON.stringify(data));
-            this.$message.success("✅ 图形更新成功！");
+            this.$message.success(" 图形更新成功！");
           }
         } else {
-          this.$message.error("❌ 保存失败：" + response.data.message);
+          this.$message.error(" 保存失败：" + response.data.message);
         }
       } catch (error) {
-        this.$message.error("❌ 保存失败：" + error.message);
+        this.$message.error(" 保存失败：" + error.message);
       }
     }
     ,
@@ -432,7 +735,7 @@ export default {
             alert("⚠ 画布未初始化！");
           }
         } catch (error) {
-          alert("❌ 解析文件失败，请确保是正确的 JSON 格式！");
+          alert(" 解析文件失败，请确保是正确的 JSON 格式！");
         }
       };
       reader.readAsText(file);
@@ -444,7 +747,165 @@ export default {
     },
     goToIndexPage() {
       this.$router.push('/index');
+    },
+    getStartNodes(nodes, edges) {
+      const allNodeIds = nodes.map(n => n.id);
+      const targetNodeIds = edges.map(e => e.targetNodeId);
+      return allNodeIds.filter(id => !targetNodeIds.includes(id));
+    },
+
+    async $_showAnimation() {
+      const lf = this.lfInstance;
+      if (!lf) {
+        this.$message.warning("⚠ 画布未初始化！");
+        return;
+      }
+
+      this.animationRunning = true;
+      this.animationPaused = false;
+
+      // 保存原始完整图数据
+      this.originalGraphData = lf.getGraphData();
+      const { nodes, edges } = this.originalGraphData;
+
+      // 识别多个连通子图
+      const connectedComponents = this.getConnectedComponents(nodes, edges);
+      this.animationQueue = connectedComponents;
+
+      // 清空当前画布用于动画演示
+      lf.clearData();
+
+      for (const component of this.animationQueue) {
+        if (!this.animationRunning) break;
+        await this.playComponent(component);
+      }
+
+      if (this.animationRunning) {
+        this.$message.success(' 动画播放完毕！');
+      }
+
+      this.endAnimation(); // 自动恢复原图 + 结束控制状态
+    },
+    async waitWhilePaused() {
+      while (this.animationPaused && this.animationRunning) {
+        await new Promise(resolve => setTimeout(resolve, 200));
+      }
+    },
+    async playComponent(component) {
+      const { nodes, edges } = component;
+      const nodeMap = new Map(nodes.map(n => [n.id, n]));
+      const visitedNodes = new Set();
+      const visitedEdges = new Set();
+      const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+      const startIds = this.getStartNodes(nodes, edges);
+      const allIds = nodes.map(n => n.id);
+      const extraIds = allIds.filter(id => !startIds.includes(id));
+      const queue = [...startIds, ...extraIds]; // 起点优先，其余节点补上
+
+      while (queue.length && this.animationRunning) {
+        await this.waitWhilePaused();  // 👈 新增：暂停控制
+
+        const currentId = queue.shift();
+        if (!visitedNodes.has(currentId)) {
+          const node = nodeMap.get(currentId);
+          await this.lfInstance.addNode({
+            ...node,
+            style: { stroke: 'red', fill: '#ffe6e6' }
+          });
+          visitedNodes.add(currentId);
+          await sleep(800);
+        }
+
+        const outgoingEdges = edges.filter(e => e.sourceNodeId === currentId);
+        for (const edge of outgoingEdges) {
+          if (!this.animationRunning) return; // 👈 新增：防止点击结束后继续执行
+          await this.waitWhilePaused();      // 👈 新增：暂停控制
+
+          if (!visitedEdges.has(edge.id)) {
+            const targetNode = nodeMap.get(edge.targetNodeId);
+            if (!visitedNodes.has(targetNode.id)) {
+              await this.lfInstance.addNode({
+                ...targetNode,
+                style: { stroke: 'red', fill: '#ffe6e6' }
+              });
+              visitedNodes.add(targetNode.id);
+            }
+
+            await this.lfInstance.addEdge({
+              ...edge,
+              style: { stroke: 'red' }
+            });
+            visitedEdges.add(edge.id);
+            await sleep(800);
+          }
+        }
+      }
+    },
+
+    pauseAnimation() {
+      this.animationPaused = true;
+      this.$message.info(" 已暂停动画");
+    },
+
+    resumeAnimation() {
+      this.animationPaused = false;
+      this.$message.success(" 已继续动画");
+    },
+
+    endAnimation() {
+      this.animationRunning = false;
+      this.animationPaused = false;
+      this.animationQueue = [];
+
+      // 恢复原图
+      if (this.originalGraphData && this.lfInstance) {
+        this.lfInstance.clearData();
+        this.lfInstance.render(this.originalGraphData);
+        this.originalGraphData = null;
+      }
+
+
+    },
+    getConnectedComponents(nodes, edges) {
+      const graph = {};
+      nodes.forEach(n => { graph[n.id] = []; });
+      edges.forEach(e => {
+        graph[e.sourceNodeId].push(e.targetNodeId);
+        graph[e.targetNodeId].push(e.sourceNodeId);
+      });
+
+      const visited = new Set();
+      const components = [];
+
+      function dfs(nodeId, group) {
+        visited.add(nodeId);
+        group.push(nodeId);
+        for (const neighbor of graph[nodeId]) {
+          if (!visited.has(neighbor)) dfs(neighbor, group);
+        }
+      }
+
+      for (const node of nodes) {
+        if (!visited.has(node.id)) {
+          const group = [];
+          dfs(node.id, group);
+          const groupNodes = nodes.filter(n => group.includes(n.id));
+          const groupEdges = edges.filter(e =>
+            group.includes(e.sourceNodeId) && group.includes(e.targetNodeId)
+          );
+          components.push({ nodes: groupNodes, edges: groupEdges });
+        }
+      }
+
+      return components;
     }
+
+
+
+
+
+
   },
   mounted() {
     this.fetchUserInfo(); // 新增此行
@@ -573,5 +1034,29 @@ export default {
 
 ::v-deep .el-popper[x-placement^="bottom"] .popper__arrow {
   border-bottom-color: #ebeef5;
+}
+
+.animation-controls {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 999;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+}
+
+.canvas-mask {
+  position: fixed;
+  top: 50px;
+  /* 避开顶部 navbar */
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.4);
+  z-index: 998;
+  pointer-events: auto;
+  cursor: not-allowed;
 }
 </style>
