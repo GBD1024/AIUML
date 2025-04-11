@@ -47,12 +47,12 @@
         <div class="history-name">空白绘图</div>
       </button>
 
-      <!-- 模板绘图 -->
       <button class="action-button" v-for="(template, index) in templateDiagrams" :key="'tpl-' + index"
         @click="goToDiagramWithTemplate(template.uml_data)">
-        <img :src="defaultImage" class="history-image" />
+        <img :src="template.cover_pic" class="history-image" />
         <div class="history-name">{{ template.name }}</div>
       </button>
+
     </div>
 
 
@@ -146,70 +146,149 @@ export default {
       userId: '',
       templateDiagrams: [
         {
-          name: "类图模板1",
+          name: "类图模板",
+          cover_pic: "https://jing104-demo.oss-cn-beijing.aliyuncs.com/21e9f227-5c79-4e2b-b92f-d1a769b4ea35.png", // 更新封面
           uml_data: {
             "nodes": [
               {
-                "id": "85984ea0-b328-47e6-ac6f-322e1d03a18b",
+                "id": "animal-class",
                 "type": "class",
-                "x": 335,
-                "y": 230,
+                "x": 200,
+                "y": 105,
                 "properties": {
-                  "className": "Class1",
-                  "attributes": [
-                    "+ attribute"
-                  ],
-                  "methods": [
-                    "+ method"
-                  ]
+                  "className": "Animal",
+                  "attributes": [],
+                  "methods": [],
+                  "nodeSize": {
+                    "width": 198.4375,
+                    "height": 170.9375
+                  }
                 },
-                "zIndex": 1002
+                "zIndex": 1016
               },
               {
-                "id": "03362b57-5ce3-41e7-a0db-0ae4155af835",
+                "id": "elephant-class",
                 "type": "class",
-                "x": 695,
-                "y": 460,
+                "x": 200,
+                "y": 395,
                 "properties": {
-                  "className": "Class2",
-                  "attributes": [
-                    "+ attribute"
-                  ],
-                  "methods": [
-                    "+ method"
-                  ]
+                  "className": "Elephant",
+                  "attributes": [],
+                  "methods": []
                 },
-                "zIndex": 1004
+                "zIndex": 1013
+              },
+              {
+                "id": "water-object",
+                "type": "object",
+                "x": 490,
+                "y": -35,
+                "properties": {
+                  "objectName": "Water",
+                  "attributes": [],
+                  "nodeSize": {
+                    "width": 206.25,
+                    "height": 96.875
+                  }
+                },
+                "zIndex": 1011
+              },
+              {
+                "id": "oxygen-object",
+                "type": "object",
+                "x": 630,
+                "y": 210,
+                "properties": {
+                  "objectName": "Oxygen",
+                  "attributes": []
+                },
+                "zIndex": 1018
               }
             ],
             "edges": [
               {
-                "id": "1d048c8c-4c80-4953-a45c-96c6b40b5ae5",
+                "id": "inheritance-line",
                 "type": "pro-generalizationline",
-                "sourceNodeId": "03362b57-5ce3-41e7-a0db-0ae4155af835",
-                "targetNodeId": "85984ea0-b328-47e6-ac6f-322e1d03a18b",
+                "sourceNodeId": "elephant-class",
+                "targetNodeId": "animal-class",
                 "startPoint": {
-                  "x": 595,
-                  "y": 460
+                  "x": 200,
+                  "y": 345
                 },
                 "endPoint": {
-                  "x": 335,
-                  "y": 310
+                  "x": 200,
+                  "y": 190.46875
                 },
                 "properties": {},
-                "zIndex": 1005,
+                "zIndex": 1010,
                 "pointsList": [
                   {
-                    "x": 595,
-                    "y": 460
+                    "x": 200,
+                    "y": 345
                   },
                   {
-                    "x": 335,
-                    "y": 460
+                    "x": 200,
+                    "y": 190.46875
+                  }
+                ]
+              },
+              {
+                "id": "dependency-on-water",
+                "type": "pro-dependencyline",
+                "sourceNodeId": "animal-class",
+                "targetNodeId": "water-object",
+                "startPoint": {
+                  "x": 205.3125,
+                  "y": 19.53125
+                },
+                "endPoint": {
+                  "x": 386.875,
+                  "y": -35
+                },
+                "properties": {},
+                "zIndex": 1012,
+                "pointsList": [
+                  {
+                    "x": 205.3125,
+                    "y": 19.53125
                   },
                   {
-                    "x": 335,
-                    "y": 310
+                    "x": 205.3125,
+                    "y": -35
+                  },
+                  {
+                    "x": 386.875,
+                    "y": -35
+                  }
+                ]
+              },
+              {
+                "id": "dependency-on-oxygen",
+                "type": "pro-dependencyline",
+                "sourceNodeId": "animal-class",
+                "targetNodeId": "oxygen-object",
+                "startPoint": {
+                  "x": 299.21875,
+                  "y": 105
+                },
+                "endPoint": {
+                  "x": 580,
+                  "y": 160
+                },
+                "properties": {},
+                "zIndex": 1014,
+                "pointsList": [
+                  {
+                    "x": 299.21875,
+                    "y": 105
+                  },
+                  {
+                    "x": 580,
+                    "y": 105
+                  },
+                  {
+                    "x": 580,
+                    "y": 160
                   }
                 ]
               }
@@ -217,140 +296,574 @@ export default {
           }
         },
         {
-          name: "类图模板2",
+          name: "流程图模板",
+          cover_pic: "https://jing104-demo.oss-cn-beijing.aliyuncs.com/307237a3-2513-460f-87a1-8b56570bc08e.png", // 更新封面
           uml_data: {
             "nodes": [
               {
-                "id": "85984ea0-b328-47e6-ac6f-322e1d03a18b",
-                "type": "class",
-                "x": 335,
-                "y": 230,
-                "properties": {
-                  "className": "Class1",
-                  "attributes": [
-                    "+ attribute"
-                  ],
-                  "methods": [
-                    "+ method"
-                  ]
-                },
-                "zIndex": 1002
+                "id": "start-node",
+                "type": "pro-startpointnode",
+                "x": 145,
+                "y": -2.5757174171303632e-14,
+                "properties": {},
+                "zIndex": 1000
               },
               {
-                "id": "03362b57-5ce3-41e7-a0db-0ae4155af835",
-                "type": "class",
-                "x": 695,
-                "y": 460,
+                "id": "decision-node-1",
+                "type": "pro-decisionnode",
+                "x": 145,
+                "y": 135,
                 "properties": {
-                  "className": "Class2",
-                  "attributes": [
-                    "+ attribute"
-                  ],
-                  "methods": [
-                    "+ method"
-                  ]
+                  "nodeSize": {
+                    "rx": 35.78125,
+                    "ry": 31.875
+                  }
                 },
-                "zIndex": 1004
+                "zIndex": 1021,
+                "text": {
+                  "x": 145,
+                  "y": 135,
+                  "value": "条件判断1"
+                }
+              },
+              {
+                "id": "process-node-1",
+                "type": "pro-statenode",
+                "x": 145,
+                "y": 250,
+                "properties": {
+                  "nodeSize": {
+                    "width": 104.6875,
+                    "height": 86.25
+                  }
+                },
+                "zIndex": 1024,
+                "text": {
+                  "x": 145,
+                  "y": 250,
+                  "value": "执行步骤1"
+                }
+              },
+              {
+                "id": "decision-node-2",
+                "type": "pro-decisionnode",
+                "x": 145,
+                "y": 350,
+                "properties": {
+                  "nodeSize": {
+                    "rx": 29.53125,
+                    "ry": 36.5625
+                  }
+                },
+                "zIndex": 1027,
+                "text": {
+                  "x": 145,
+                  "y": 350,
+                  "value": "条件判断2"
+                }
+              },
+              {
+                "id": "process-node-2",
+                "type": "pro-statenode",
+                "x": 145,
+                "y": 455,
+                "properties": {
+                  "nodeSize": {
+                    "width": 92.1875,
+                    "height": 87.8125
+                  }
+                },
+                "zIndex": 1029,
+                "text": {
+                  "x": 145,
+                  "y": 455,
+                  "value": "执行步骤2"
+                }
+              },
+              {
+                "id": "end-node",
+                "type": "pro-endpointnode",
+                "x": 145,
+                "y": 550,
+                "properties": {},
+                "zIndex": 1005
               }
             ],
             "edges": [
               {
-                "id": "1d048c8c-4c80-4953-a45c-96c6b40b5ae5",
-                "type": "pro-generalizationline",
-                "sourceNodeId": "03362b57-5ce3-41e7-a0db-0ae4155af835",
-                "targetNodeId": "85984ea0-b328-47e6-ac6f-322e1d03a18b",
+                "id": "edge-start-to-decision1",
+                "type": "pro-line",
+                "sourceNodeId": "start-node",
+                "targetNodeId": "decision-node-1",
                 "startPoint": {
-                  "x": 595,
-                  "y": 460
+                  "x": 145,
+                  "y": 19.999999999999975
                 },
                 "endPoint": {
-                  "x": 335,
-                  "y": 310
+                  "x": 145,
+                  "y": 103.125
                 },
                 "properties": {},
-                "zIndex": 1005,
-                "pointsList": [
-                  {
-                    "x": 595,
-                    "y": 460
-                  },
-                  {
-                    "x": 335,
-                    "y": 460
-                  },
-                  {
-                    "x": 335,
-                    "y": 310
-                  }
-                ]
+                "zIndex": -1
+              },
+              {
+                "id": "edge-decision1-to-process1",
+                "type": "pro-line",
+                "sourceNodeId": "decision-node-1",
+                "targetNodeId": "process-node-1",
+                "startPoint": {
+                  "x": 145,
+                  "y": 166.875
+                },
+                "endPoint": {
+                  "x": 145,
+                  "y": 206.875
+                },
+                "properties": {},
+                "zIndex": -1
+              },
+              {
+                "id": "edge-process1-to-decision2",
+                "type": "pro-line",
+                "sourceNodeId": "process-node-1",
+                "targetNodeId": "decision-node-2",
+                "startPoint": {
+                  "x": 145,
+                  "y": 293.125
+                },
+                "endPoint": {
+                  "x": 145,
+                  "y": 313.4375
+                },
+                "properties": {},
+                "zIndex": -1
+              },
+              {
+                "id": "edge-decision2-to-process2",
+                "type": "pro-line",
+                "sourceNodeId": "decision-node-2",
+                "targetNodeId": "process-node-2",
+                "startPoint": {
+                  "x": 145,
+                  "y": 386.5625
+                },
+                "endPoint": {
+                  "x": 145,
+                  "y": 411.09375
+                },
+                "properties": {},
+                "zIndex": -1
+              },
+              {
+                "id": "edge-process2-to-end",
+                "type": "pro-line",
+                "sourceNodeId": "process-node-2",
+                "targetNodeId": "end-node",
+                "startPoint": {
+                  "x": 145,
+                  "y": 498.90625
+                },
+                "endPoint": {
+                  "x": 145,
+                  "y": 530
+                },
+                "properties": {},
+                "zIndex": -1
               }
             ]
           }
-        },{
-          name: "类图模板3",
+        }, {
+          name: "E-R图模板",
+          cover_pic: "https://jing104-demo.oss-cn-beijing.aliyuncs.com/1b7df6a9-2b2d-415c-bd96-877e124344cd.png", // 更新封面
           uml_data: {
             "nodes": [
               {
-                "id": "85984ea0-b328-47e6-ac6f-322e1d03a18b",
-                "type": "class",
-                "x": 335,
-                "y": 230,
+                "id": "relationship",
+                "type": "pro-decisionnode",
+                "x": 365,
+                "y": 270,
                 "properties": {
-                  "className": "Class1",
-                  "attributes": [
-                    "+ attribute"
-                  ],
-                  "methods": [
-                    "+ method"
-                  ]
+                  "nodeSize": {
+                    "rx": 42.5,
+                    "ry": 33.75
+                  }
                 },
-                "zIndex": 1002
+                "zIndex": 1097,
+                "text": {
+                  "x": 365,
+                  "y": 270,
+                  "value": "关系"
+                }
               },
               {
-                "id": "03362b57-5ce3-41e7-a0db-0ae4155af835",
-                "type": "class",
-                "x": 695,
-                "y": 460,
-                "properties": {
-                  "className": "Class2",
-                  "attributes": [
-                    "+ attribute"
-                  ],
-                  "methods": [
-                    "+ method"
-                  ]
-                },
-                "zIndex": 1004
+                "id": "ea450312-055e-4752-b013-77be3261bca8",
+                "type": "pro-systemnode",
+                "x": 180,
+                "y": 70,
+                "properties": {},
+                "zIndex": 1072,
+                "text": {
+                  "x": 180,
+                  "y": 70,
+                  "value": "属性一"
+                }
+              },
+              {
+                "id": "387a92da-8ce2-4bae-b4f3-7643ef9300d8",
+                "type": "pro-usecasenode",
+                "x": 365,
+                "y": 155,
+                "properties": {},
+                "zIndex": 1099,
+                "text": {
+                  "x": 365,
+                  "y": 155,
+                  "value": "实体一"
+                }
+              },
+              {
+                "id": "fdfc4995-1aed-47b4-9ab7-11a87b4ebdd7",
+                "type": "pro-usecasenode",
+                "x": 365,
+                "y": 390,
+                "properties": {},
+                "zIndex": 1095,
+                "text": {
+                  "x": 365,
+                  "y": 390,
+                  "value": "实体二"
+                }
+              },
+              {
+                "id": "c4855ce6-795e-4f5d-acb6-e28ade207a09",
+                "type": "pro-systemnode",
+                "x": 365,
+                "y": -5,
+                "properties": {},
+                "zIndex": 1082,
+                "text": {
+                  "x": 365,
+                  "y": -5,
+                  "value": "属性二"
+                }
+              },
+              {
+                "id": "9b48c91b-8e67-4318-9340-aff206fa9dfb",
+                "type": "pro-systemnode",
+                "x": 575,
+                "y": 70,
+                "properties": {},
+                "zIndex": 1084,
+                "text": {
+                  "x": 575,
+                  "y": 70,
+                  "value": "属性三"
+                }
+              },
+              {
+                "id": "b39ff889-1171-49b4-b18e-18fdc113dfef",
+                "type": "pro-systemnode",
+                "x": 170,
+                "y": 520,
+                "properties": {},
+                "zIndex": 1075,
+                "text": {
+                  "x": 170,
+                  "y": 520,
+                  "value": "属性一"
+                }
+              },
+              {
+                "id": "e6f6e080-d41a-49da-9ff1-b73a7f43dbdc",
+                "type": "pro-systemnode",
+                "x": 365,
+                "y": 520,
+                "properties": {},
+                "zIndex": 1077,
+                "text": {
+                  "x": 365,
+                  "y": 520,
+                  "value": "属性二"
+                }
+              },
+              {
+                "id": "ef1eca74-bae6-4673-a102-89373af206e9",
+                "type": "pro-systemnode",
+                "x": 545,
+                "y": 520,
+                "properties": {},
+                "zIndex": 1079,
+                "text": {
+                  "x": 545,
+                  "y": 520,
+                  "value": "属性三"
+                }
               }
             ],
             "edges": [
               {
-                "id": "1d048c8c-4c80-4953-a45c-96c6b40b5ae5",
-                "type": "pro-generalizationline",
-                "sourceNodeId": "03362b57-5ce3-41e7-a0db-0ae4155af835",
-                "targetNodeId": "85984ea0-b328-47e6-ac6f-322e1d03a18b",
+                "id": "bb140ed6-e309-4959-88ed-0730379c91e2",
+                "type": "pro-bidirectionalassociationline",
+                "sourceNodeId": "387a92da-8ce2-4bae-b4f3-7643ef9300d8",
+                "targetNodeId": "ea450312-055e-4752-b013-77be3261bca8",
                 "startPoint": {
-                  "x": 595,
-                  "y": 460
+                  "x": 305.052105958591,
+                  "y": 153.75
                 },
                 "endPoint": {
-                  "x": 335,
-                  "y": 310
+                  "x": 180,
+                  "y": 110
                 },
                 "properties": {},
-                "zIndex": 1005,
+                "zIndex": 1086,
                 "pointsList": [
                   {
-                    "x": 595,
-                    "y": 460
+                    "x": 305.052105958591,
+                    "y": 153.75
                   },
                   {
-                    "x": 335,
-                    "y": 460
+                    "x": 180,
+                    "y": 153.75
                   },
                   {
-                    "x": 335,
-                    "y": 310
+                    "x": 180,
+                    "y": 110
+                  }
+                ]
+              },
+              {
+                "id": "62c84ca2-d85c-4391-8aa0-a3737c61f03d",
+                "type": "pro-bidirectionalassociationline",
+                "sourceNodeId": "387a92da-8ce2-4bae-b4f3-7643ef9300d8",
+                "targetNodeId": "c4855ce6-795e-4f5d-acb6-e28ade207a09",
+                "startPoint": {
+                  "x": 365,
+                  "y": 125
+                },
+                "endPoint": {
+                  "x": 365,
+                  "y": 35
+                },
+                "properties": {},
+                "zIndex": 1088,
+                "pointsList": [
+                  {
+                    "x": 365,
+                    "y": 125
+                  },
+                  {
+                    "x": 365,
+                    "y": 35
+                  }
+                ]
+              },
+              {
+                "id": "467d4471-985c-4f52-a9fa-6565ade3c05d",
+                "type": "pro-bidirectionalassociationline",
+                "sourceNodeId": "387a92da-8ce2-4bae-b4f3-7643ef9300d8",
+                "targetNodeId": "9b48c91b-8e67-4318-9340-aff206fa9dfb",
+                "startPoint": {
+                  "x": 424.947894041409,
+                  "y": 153.75
+                },
+                "endPoint": {
+                  "x": 575,
+                  "y": 110
+                },
+                "properties": {},
+                "zIndex": 1090,
+                "pointsList": [
+                  {
+                    "x": 424.947894041409,
+                    "y": 153.75
+                  },
+                  {
+                    "x": 575,
+                    "y": 153.75
+                  },
+                  {
+                    "x": 575,
+                    "y": 110
+                  }
+                ]
+              },
+              {
+                "id": "8f94b01c-b691-4a8c-be7f-d893b9d5b04b",
+                "type": "pro-bidirectionalassociationline",
+                "sourceNodeId": "fdfc4995-1aed-47b4-9ab7-11a87b4ebdd7",
+                "targetNodeId": "b39ff889-1171-49b4-b18e-18fdc113dfef",
+                "startPoint": {
+                  "x": 305,
+                  "y": 390
+                },
+                "endPoint": {
+                  "x": 170,
+                  "y": 480
+                },
+                "properties": {},
+                "zIndex": 1092,
+                "pointsList": [
+                  {
+                    "x": 305,
+                    "y": 390
+                  },
+                  {
+                    "x": 170,
+                    "y": 390
+                  },
+                  {
+                    "x": 170,
+                    "y": 480
+                  }
+                ]
+              },
+              {
+                "id": "225b187f-c0ee-44d4-b6f8-4e4820663f9a",
+                "type": "pro-bidirectionalassociationline",
+                "sourceNodeId": "fdfc4995-1aed-47b4-9ab7-11a87b4ebdd7",
+                "targetNodeId": "e6f6e080-d41a-49da-9ff1-b73a7f43dbdc",
+                "startPoint": {
+                  "x": 365,
+                  "y": 420
+                },
+                "endPoint": {
+                  "x": 365,
+                  "y": 480
+                },
+                "properties": {},
+                "zIndex": 1094,
+                "pointsList": [
+                  {
+                    "x": 365,
+                    "y": 420
+                  },
+                  {
+                    "x": 365,
+                    "y": 480
+                  }
+                ]
+              },
+              {
+                "id": "de1de9cd-d401-48d9-b46b-cfb7e4c38805",
+                "type": "pro-bidirectionalassociationline",
+                "sourceNodeId": "fdfc4995-1aed-47b4-9ab7-11a87b4ebdd7",
+                "targetNodeId": "ef1eca74-bae6-4673-a102-89373af206e9",
+                "startPoint": {
+                  "x": 425,
+                  "y": 390
+                },
+                "endPoint": {
+                  "x": 545,
+                  "y": 480
+                },
+                "properties": {},
+                "zIndex": 1096,
+                "pointsList": [
+                  {
+                    "x": 425,
+                    "y": 390
+                  },
+                  {
+                    "x": 545,
+                    "y": 390
+                  },
+                  {
+                    "x": 545,
+                    "y": 480
+                  }
+                ]
+              },
+              {
+                "id": "3fe4df9b-d14d-477b-b799-ae14a99e8cfa",
+                "type": "pro-bidirectionalassociationline",
+                "sourceNodeId": "relationship",
+                "targetNodeId": "fdfc4995-1aed-47b4-9ab7-11a87b4ebdd7",
+                "startPoint": {
+                  "x": 365,
+                  "y": 303.75
+                },
+                "endPoint": {
+                  "x": 365,
+                  "y": 360
+                },
+                "properties": {},
+                "text": {
+                  "x": 365,
+                  "y": 318.75,
+                  "value": "1"
+                },
+                "zIndex": 1104,
+                "pointsList": [
+                  {
+                    "x": 365,
+                    "y": 303.75
+                  },
+                  {
+                    "x": 365,
+                    "y": 333.75
+                  },
+                  {
+                    "x": 365,
+                    "y": 333.75
+                  },
+                  {
+                    "x": 365,
+                    "y": 330
+                  },
+                  {
+                    "x": 365,
+                    "y": 330
+                  },
+                  {
+                    "x": 365,
+                    "y": 360
+                  }
+                ]
+              },
+              {
+                "id": "5a3945c0-f462-4457-8042-6bf864f6d429",
+                "type": "pro-bidirectionalassociationline",
+                "sourceNodeId": "387a92da-8ce2-4bae-b4f3-7643ef9300d8",
+                "targetNodeId": "relationship",
+                "startPoint": {
+                  "x": 365,
+                  "y": 185
+                },
+                "endPoint": {
+                  "x": 365,
+                  "y": 236.25
+                },
+                "properties": {},
+                "text": {
+                  "x": 365,
+                  "y": 200,
+                  "value": "n"
+                },
+                "zIndex": 1102,
+                "pointsList": [
+                  {
+                    "x": 365,
+                    "y": 185
+                  },
+                  {
+                    "x": 365,
+                    "y": 215
+                  },
+                  {
+                    "x": 365,
+                    "y": 215
+                  },
+                  {
+                    "x": 365,
+                    "y": 206.25
+                  },
+                  {
+                    "x": 365,
+                    "y": 206.25
+                  },
+                  {
+                    "x": 365,
+                    "y": 236.25
                   }
                 ]
               }
